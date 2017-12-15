@@ -3,39 +3,37 @@ grammar restructuredtext;
 /* https://stackoverflow.com/questions/6178546/antlr-grammar-for-restructuredtext-rule-priorities */
 
 options {
-  output=AST;
-  backtrack=true;
-  memoize=true;
+  language=CSharp;
 }
 
 tokens {
-  ROOT;
-  PARAGRAPH;
-  INDENTATION;
-  LINE;
-  WORD;
-  BOLD;
-  ITALIC;
-  INTERPRETED_TEXT;
-  INLINE_LITERAL;
-  REFERENCE;
+  ROOT,
+  PARAGRAPH,
+  INDENTATION,
+  LINE,
+  WORD,
+  BOLD,
+  ITALIC,
+  INTERPRETED_TEXT,
+  INLINE_LITERAL,
+  REFERENCE,
 }
 
 parse
-  :  paragraph+ EOF -> ^(ROOT paragraph+)
+  :  paragraph+ EOF
   ;
 
 paragraph
-  :  line+ -> ^(PARAGRAPH line+)
-  |  Space* LineBreak -> /* omit line-breaks between paragraphs from AST */
+  :  line+
+  |  Space* LineBreak
   ;
 
 line
-  :  indentation text+ LineBreak -> ^(LINE text+)
+  :  indentation text+ LineBreak
   ;
 
 indentation
-  :  Space* -> ^(INDENTATION Space*)
+  :  Space*
   ;
 
 text
@@ -55,11 +53,11 @@ styledText
   ;
 
 bold
-  :  Star Star boldAtom+ Star Star -> ^(BOLD boldAtom+)
+  :  Star Star boldAtom+ Star Star
   ;  
 
 italic
-  :  Star italicAtom+ Star -> ^(ITALIC italicAtom+)
+  :  Star italicAtom+ Star
   ;
 
 boldAtom
@@ -73,7 +71,7 @@ italicAtom
   ;
 
 interpretedText
-  :  BackTick interpretedTextAtoms BackTick -> ^(INTERPRETED_TEXT interpretedTextAtoms)
+  :  BackTick interpretedTextAtoms BackTick
   ;
 
 interpretedTextAtoms
@@ -81,7 +79,7 @@ interpretedTextAtoms
   ;
 
 inlineLiteral
-  :  BackTick BackTick inlineLiteralAtoms BackTick BackTick -> ^(INLINE_LITERAL inlineLiteralAtoms)
+  :  BackTick BackTick inlineLiteralAtoms BackTick BackTick
   ;
 
 inlineLiteralAtoms
@@ -94,7 +92,7 @@ inlineLiteralAtom
   ;
 
 reference
-  :  Any+ UnderScore -> ^(REFERENCE Any+)
+  :  Any+ UnderScore
   ;
 
 UnderScore
