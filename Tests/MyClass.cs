@@ -9,12 +9,13 @@ namespace Tests
         [Fact]
         public void Test()
         {
-            var content = "I test";
+            var content = "I test\n";
             var path = Path.GetTempFileName();
             File.WriteAllText(path, content);
 
-            restructuredtextParser.ParseDocument(path);
-            Assert.False(true);
+            var document = restructuredtextParser.ParseDocument(path);
+            Assert.Equal(1, document.Paragraphs.Count);
+            Assert.Equal("I test\n", document.Paragraphs[0].Text);
         }
     }
 }
