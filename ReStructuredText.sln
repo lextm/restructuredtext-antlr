@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27205.2004
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReStructuredText", "ReStructuredText\ReStructuredText.csproj", "{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{24301766-26F9-40E6-90DB-77A7C92739EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24301766-26F9-40E6-90DB-77A7C92739EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24301766-26F9-40E6-90DB-77A7C92739EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24301766-26F9-40E6-90DB-77A7C92739EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24301766-26F9-40E6-90DB-77A7C92739EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
