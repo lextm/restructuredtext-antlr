@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ReStructuredText
 {
-    public class BlockQuote : IElement
+    public class BlockQuote : IElement, IParent
     {
         public int Level { get; }
         public IList<IElement> Content { get; }
@@ -14,7 +13,7 @@ namespace ReStructuredText
             Content = new List<IElement>(content);
             foreach (var item in Content)
             {
-                item.Block = this;
+                item.Parent = this;
             }
         }
 
@@ -23,20 +22,21 @@ namespace ReStructuredText
         // TODO:
         public IList<Line> Lines => Content[0].Lines;
 
-        public BlockQuote Block { get; set; }
+        public IParent Parent { get; set; }
 
-        internal void Eat(IElement current, int level)
+        public void Add(IElement current, int level)
         {
             if (level == Level)
             {
                 Content.Add(current);
-                current.Block = this;
+                current.Parent = this;
                 return;
             }
 
             if (level < Level)
             {
-                Block?.Eat(current, level);
+                var block = Parent as BlockQuote;
+                block?.Add(current, level);
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace ReStructuredText
             }
 
             Content.Add(current);
-            current.Block = this;
+            current.Parent = this;
         }
     }
 }

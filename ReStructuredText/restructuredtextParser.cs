@@ -50,52 +50,9 @@ namespace ReStructuredText
                     raw.Add(item);
                 }
 
-                var elements = new List<IElement>();
-                IElement last = null;
-                var indentation = IndentationTracker.Instance.Minimum;
-                // IMPORTANT: block quote processing
-                for (int i = 0; i < raw.Count; i++)
-                {
-                    var current = raw[i];
-                    if (current.TypeCode == ElementType.Comment)
-                    {
-                        elements.Add(current);
-                        last = current;
-                        continue;
-                    }
-
-                    var block = last as BlockQuote;
-                    if (block == null)
-                    {
-                        if (current.Lines[0].IsIndented)
-                        {
-                            var level = current.Lines[0].Indentation / indentation;
-                            while (level > 0)
-                            {
-                                current = new BlockQuote(level, current);
-                                level--;
-                            }
-                        }
-
-                        elements.Add(current);
-                        last = current;
-                        continue;
-                    }
-
-                    if (current.Lines[0].IsIndented)
-                    {
-                        var level = current.Lines[0].Indentation / indentation;
-                        block.Eat(current, level);
-                    }
-                    else
-                    {
-                        elements.Add(current);
-                        last = current;
-                    }
-                }
-
-
-                return new Document(elements);
+                var result = new Document();
+                result.Eat(raw);
+                return result;
             }
         }
 
@@ -155,7 +112,7 @@ namespace ReStructuredText
                 var textVisitor = new TextVisitor();
                 var text = context.text();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
-                IndentationTracker.Instance.Track(length);
+                Document.IndentationTracker.Instance.Track(length);
                 return new Line(textVisitor.VisitText(text)) { IsIndented = indentation != null, Indentation = length };
             }
         }
@@ -166,31 +123,6 @@ namespace ReStructuredText
             {
                 var text = context.GetText();
                 return new Text(text);
-            }
-        }
-
-        class IndentationTracker
-        {
-            public static IndentationTracker Instance = new IndentationTracker();
-
-            public void Track(int indentation)
-            {
-                if (indentation == 0)
-                {
-                    return;
-                }
-
-                if (Minimum > 0 && Minimum < indentation)
-                {
-                    return;
-                }
-
-                Minimum = indentation;
-            }
-
-            public int Minimum
-            {
-                get; private set;
             }
         }
     }

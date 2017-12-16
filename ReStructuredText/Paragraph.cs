@@ -15,7 +15,7 @@ namespace ReStructuredText
 
         public ElementType TypeCode => ElementType.Paragraph;
 
-        public BlockQuote Block { get; set; }
+        public IParent Parent { get; set; }
 
         public override string ToString()
         {

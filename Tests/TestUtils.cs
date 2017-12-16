@@ -9,7 +9,9 @@ namespace ReStructuredText.Tests
             var path = Path.GetTempFileName();
             File.WriteAllText(path, content);
 
-            return ReStructuredTextParser.ParseDocument(path);
+            var result = ReStructuredTextParser.ParseDocument(path);
+            File.Delete(path);
+            return result;
         }
     }
 }

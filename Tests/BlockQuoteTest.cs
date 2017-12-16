@@ -52,6 +52,6 @@ namespace ReStructuredText.Tests
             Assert.Equal("Indent 4 spaces.\n", paragraph3.Lines[0].Text.Content);
             Assert.Equal("Is this correct? Should it generate a warning?\n", document.Elements[2].Lines[0].Text.Content);
             Assert.Equal("Yes, it is correct, no warning necessary.\n", document.Elements[2].Lines[1].Text.Content);
-        }
+        } 
     }
 }

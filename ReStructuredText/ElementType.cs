@@ -4,6 +4,7 @@
     {
         Paragraph,
         Comment,
-        BlockQuote
+        BlockQuote,
+        Section
     }
 }

@@ -8,6 +8,6 @@ namespace ReStructuredText
 
         IList<Line> Lines { get; }
 
-        BlockQuote Block { get; set; }
+        IParent Parent { get; set; }
     }
 }

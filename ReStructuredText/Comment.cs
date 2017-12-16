@@ -13,6 +13,6 @@ namespace ReStructuredText
 
         public ElementType TypeCode => ElementType.Comment;
 
-        public BlockQuote Block { get; set; }
+        public IParent Parent { get; set; }
     }
 }
