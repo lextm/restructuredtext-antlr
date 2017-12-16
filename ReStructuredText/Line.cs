@@ -1,4 +1,6 @@
-﻿namespace ReStructuredText
+﻿using System;
+
+namespace ReStructuredText
 {
     public class Line
     {
@@ -22,9 +24,27 @@
             }
         }
 
+        public char isBullet
+        {
+            get
+            {
+                if (Text.Content.StartsWith("- ") || Text.Content.StartsWith("* ") || Text.Content.StartsWith("+ "))
+                {
+                    return Text.Content[0];
+                }
+                
+                return char.MinValue;
+            }
+        }
+
         public Line(Text text)
         {
             Text = text;
+        }
+
+        public override string ToString()
+        {
+            return Text.Content;
         }
     }
 }

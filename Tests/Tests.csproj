@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockQuoteTest.cs" />
+    <Compile Include="BulletListTest.cs" />
     <Compile Include="CommentTest.cs" />
     <Compile Include="ParagraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

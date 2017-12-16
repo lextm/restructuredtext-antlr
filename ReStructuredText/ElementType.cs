@@ -5,6 +5,7 @@
         Paragraph,
         Comment,
         BlockQuote,
-        Section
+        Section,
+        BulletList
     }
 }

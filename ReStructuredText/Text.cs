@@ -7,6 +7,11 @@
             Content = text;
         }
 
-        public string Content { get; }
+        public string Content { get; private set; }
+
+        public void RemoveList()
+        {
+            Content = Content.Substring(2);
+        }
     }
 }
