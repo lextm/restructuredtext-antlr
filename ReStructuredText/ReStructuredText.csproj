@@ -40,8 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="Line.cs" />
+    <Compile Include="Paragraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReStructuredTextParser.cs" />
+    <Compile Include="Text.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4">
@@ -52,7 +56,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="restructuredtext.g4" />
+    <Antlr4 Include="ReStructuredText.g4" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

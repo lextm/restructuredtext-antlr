@@ -1,4 +1,4 @@
-grammar restructuredtext;
+grammar ReStructuredText;
 
 /* https://stackoverflow.com/questions/6178546/antlr-grammar-for-restructuredtext-rule-priorities */
 
@@ -6,37 +6,31 @@ options {
   language=CSharp;
 }
 
-tokens {
-  ROOT,
-  PARAGRAPH,
-  INDENTATION,
-  LINE,
-  WORD,
-  BOLD,
-  ITALIC,
-  INTERPRETED_TEXT,
-  INLINE_LITERAL,
-  REFERENCE,
-}
-
 parse
-  :  paragraph+ EOF
+  :  (paragraph | empty_line) + EOF
   ;
 
 paragraph
-  :  line+
-  |  Space* LineBreak
+  :  Comment? line+
   ;
 
 line
-  :  indentation text+ LineBreak
+  :  indentation? text
+  ;
+
+empty_line
+  : Space* LineBreak
   ;
 
 indentation
-  :  Space*
+  :  Space+
   ;
 
 text
+  : text_fragment+ LineBreak
+  ;
+
+text_fragment
   :  styledText
   |  interpretedText
   |  inlineLiteral
@@ -95,6 +89,10 @@ reference
   :  Any+ UnderScore
   ;
 
+Comment
+  :  '..'
+  ;
+
 UnderScore
   :  '_'
   ;
@@ -118,7 +116,6 @@ EscapeSequence
 
 LineBreak
   :  '\r'? '\n'
-  |  '\r'
   ;
 
 Any
