@@ -42,23 +42,85 @@ namespace ReStructuredText
         {
             public override Document VisitParse([NotNull] ParseContext context)
             {
-                var paragraghVisitor = new ParagraphVisitor();
-                var paragraphs = new List<Paragraph>();
-                foreach (var paragraph in context.paragraph())
+                var elementVisitor = new ElementVisitor();
+                var raw = new List<IElement>();
+                foreach (var element in context.element())
                 {
-                    var item = paragraghVisitor.VisitParagraph(paragraph);
-                    paragraphs.Add(item);
+                    var item = elementVisitor.VisitElement(element);
+                    raw.Add(item);
                 }
 
-                return new Document(paragraphs);
+                var elements = new List<IElement>();
+                IElement last = null;
+                var indentation = IndentationTracker.Instance.Minimum;
+                // IMPORTANT: block quote processing
+                for (int i = 0; i < raw.Count; i++)
+                {
+                    var current = raw[i];
+                    if (current.TypeCode == ElementType.Comment)
+                    {
+                        elements.Add(current);
+                        last = current;
+                        continue;
+                    }
+
+                    var block = last as BlockQuote;
+                    if (block == null)
+                    {
+                        if (current.Lines[0].IsIndented)
+                        {
+                            var level = current.Lines[0].Indentation / indentation;
+                            while (level > 0)
+                            {
+                                current = new BlockQuote(level, current);
+                                level--;
+                            }
+                        }
+
+                        elements.Add(current);
+                        last = current;
+                        continue;
+                    }
+
+                    if (current.Lines[0].IsIndented)
+                    {
+                        var level = current.Lines[0].Indentation / indentation;
+                        block.Eat(current, level);
+                    }
+                    else
+                    {
+                        elements.Add(current);
+                        last = current;
+                    }
+                }
+
+
+                return new Document(elements);
             }
         }
 
-        class ParagraphVisitor : ReStructuredTextBaseVisitor<Paragraph>
+        class ElementVisitor : ReStructuredTextBaseVisitor<IElement>
         {
-            public override Paragraph VisitParagraph([NotNull] ParagraphContext context)
+            public override IElement VisitElement([NotNull] ElementContext context)
             {
-                var comment = context.Comment();
+                var commentContext = context.comment();
+                if (commentContext != null)
+                {
+                    var commentVisitor = new CommentVisitor();
+                    var comment = commentVisitor.VisitComment(commentContext);
+                    return comment;
+                }
+
+                var paragraphVisitor = new ParagraphVisitor();
+                var paragraph = paragraphVisitor.VisitParagraph(context.paragraph());
+                return paragraph;
+            }
+        }
+
+        class CommentVisitor : ReStructuredTextBaseVisitor<Comment>
+        {
+            public override Comment VisitComment([NotNull] CommentContext context)
+            {
                 var lineVisitor = new LineVisitor();
                 var lines = new List<Line>();
                 foreach (var line in context.line())
@@ -66,7 +128,22 @@ namespace ReStructuredText
                     lines.Add(lineVisitor.VisitLine(line));
                 }
 
-                return new Paragraph(lines) { IsComment = comment != null };
+                return new Comment(lines);
+            }
+        }
+
+        class ParagraphVisitor : ReStructuredTextBaseVisitor<Paragraph>
+        {
+            public override Paragraph VisitParagraph([NotNull] ParagraphContext context)
+            {
+                var lineVisitor = new LineVisitor();
+                var lines = new List<Line>();
+                foreach (var line in context.line())
+                {
+                    lines.Add(lineVisitor.VisitLine(line));
+                }
+
+                return new Paragraph(lines);
             }
         }
 
@@ -77,7 +154,9 @@ namespace ReStructuredText
                 var indentation = context.indentation();
                 var textVisitor = new TextVisitor();
                 var text = context.text();
-                return new Line(textVisitor.VisitText(text)) { IsIndented = indentation != null };
+                int length = indentation == null ? 0 : indentation.GetText().Length;
+                IndentationTracker.Instance.Track(length);
+                return new Line(textVisitor.VisitText(text)) { IsIndented = indentation != null, Indentation = length };
             }
         }
 
@@ -87,6 +166,31 @@ namespace ReStructuredText
             {
                 var text = context.GetText();
                 return new Text(text);
+            }
+        }
+
+        class IndentationTracker
+        {
+            public static IndentationTracker Instance = new IndentationTracker();
+
+            public void Track(int indentation)
+            {
+                if (indentation == 0)
+                {
+                    return;
+                }
+
+                if (Minimum > 0 && Minimum < indentation)
+                {
+                    return;
+                }
+
+                Minimum = indentation;
+            }
+
+            public int Minimum
+            {
+                get; private set;
             }
         }
     }

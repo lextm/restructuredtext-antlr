@@ -40,7 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockQuote.cs" />
+    <Compile Include="Comment.cs" />
     <Compile Include="Document.cs" />
+    <Compile Include="ElementType.cs" />
+    <Compile Include="IElement.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Paragraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

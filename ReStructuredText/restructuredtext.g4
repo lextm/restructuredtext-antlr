@@ -7,11 +7,19 @@ options {
 }
 
 parse
-  :  (paragraph | empty_line) + EOF
+  :  (element | empty_line) + EOF
+  ;
+
+element
+  :  comment | paragraph
+  ;
+
+comment
+  :  Comment line+
   ;
 
 paragraph
-  :  Comment? line+
+  :  line+
   ;
 
 line

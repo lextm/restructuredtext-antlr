@@ -1,7 +1,6 @@
 ﻿using System.IO;
-using ReStructuredText;
 
-namespace Tests
+namespace ReStructuredText.Tests
 {
     public static class TestUtils
     {

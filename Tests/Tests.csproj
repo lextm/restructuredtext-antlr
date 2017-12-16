@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{24301766-26F9-40E6-90DB-77A7C92739EE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Tests</RootNamespace>
+    <RootNamespace>ReStructuredText.Tests</RootNamespace>
     <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
@@ -41,6 +41,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockQuoteTest.cs" />
     <Compile Include="CommentTest.cs" />
     <Compile Include="ParagraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

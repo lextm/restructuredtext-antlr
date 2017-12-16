@@ -2,7 +2,7 @@
 
 namespace ReStructuredText
 {
-    public class Paragraph
+    public class Paragraph : IElement
     {
         public IList<Line> Lines { get; }
 
@@ -10,9 +10,16 @@ namespace ReStructuredText
         {
             Lines = lines;
         }
-        
-        public bool IsComment { get; internal set; }
 
         public bool IsBlockQuote => Lines.Count > 0 && Lines[0].IsIndented;
+
+        public ElementType TypeCode => ElementType.Paragraph;
+
+        public BlockQuote Block { get; set; }
+
+        public override string ToString()
+        {
+            return Lines[0].Text.Content;
+        }
     }
 }

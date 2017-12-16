@@ -4,11 +4,11 @@ namespace ReStructuredText
 {
     public class Document
     {
-        public Document(IList<Paragraph> paragraphs)
+        public Document(IList<IElement> elements)
         {
-            this.Paragraphs = paragraphs;
+            Elements = elements;
         }
 
-        public IList<Paragraph> Paragraphs { get; }
+        public IList<IElement> Elements { get; }
     }
 }

@@ -4,6 +4,7 @@
     {
         public Text Text { get; }
         public bool IsIndented { get; internal set; }
+        public int Indentation { get; internal set; }
 
         public Line(Text text)
         {
