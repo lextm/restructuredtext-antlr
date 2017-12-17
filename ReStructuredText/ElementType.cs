@@ -7,6 +7,7 @@
         BlockQuote,
         Section,
         BulletList,
-        LineBlock
+        LineBlock,
+        ListItem
     }
 }

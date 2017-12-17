@@ -9,7 +9,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SectionWithParagraph()
         {
-            var document = TestUtils.Test("\nTitle\n=====\n\nParagraph.\n");
+            var document = TestUtils.Test("section_paragraph");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -24,7 +24,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SectionWithParagraphNoBlankLine()
         {
-            var document = TestUtils.Test("\nTitle\n=====\nParagraph.\n");
+            var document = TestUtils.Test("section_paragraph_noblankline");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -39,7 +39,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SectionSurroundedByParagraph()
         {
-            var document = TestUtils.Test("\nParagraph.\n\nTitle\n=====\nParagraph.\n");
+            var document = TestUtils.Test("section_paragraph_surrounded");
             Assert.Equal(2, document.Elements.Count);
             Assert.Equal(ElementType.Paragraph, document.Elements[0].TypeCode);
             Assert.Equal(ElementType.Section, document.Elements[1].TypeCode);
@@ -55,7 +55,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SectionWithOverlineTitle()
         {
-            var document = TestUtils.Test("\n=====\nTitle\n=====\n\nTest overline title.\n");
+            var document = TestUtils.Test("section_overline");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -70,7 +70,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SectionWithOverlineTitleWithInset()
         {
-            var document = TestUtils.Test("\n=======\n Title \n=======\n\nTest overline title.\n");
+            var document = TestUtils.Test("section_overline_inset");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -85,7 +85,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Nested()
         {
-            var document = TestUtils.Test("\nTitle 1\n=======\nParagraph 1.\n\nTitle 2\n-------\nParagraph 2.\n\nTitle 3\n=======\nParagraph 3.\n\nTitle 4\n-------\nParagraph 4.\n");
+            var document = TestUtils.Test("section_nested");
             Assert.Equal(2, document.Elements.Count);
             
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
@@ -128,7 +128,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void NestedWithOverlines()
         {
-            var document = TestUtils.Test("\nTest return to existing, highest-level section (Title 3, with overlines).\n\n=======\nTitle 1\n=======\nParagraph 1.\n\n-------\nTitle 2\n-------\nParagraph 2.\n\n=======\nTitle 3\n=======\n\nParagraph 3.\n\n-------\nTitle 4\n-------\nParagraph 4.\n");
+            var document = TestUtils.Test("section_nested_overline");
             Assert.Equal(3, document.Elements.Count);
             
             Assert.Equal(ElementType.Paragraph, document.Elements[0].TypeCode);
@@ -174,7 +174,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void NestedWithOverlinesLevel3()
         {
-            var document = TestUtils.Test("\nTitle 1\n=======\nParagraph 1.\n\nTitle 2\n-------\nParagraph 2.\n\nTitle 3\n+++++++\nParagraph 3.\n\nTitle 4\n-------\nParagraph 4.\n");
+            var document = TestUtils.Test("section_nested_overline_level3");
             Assert.Equal(1, document.Elements.Count);
             
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
@@ -218,7 +218,7 @@ namespace ReStructuredText.Tests
         public void InlineMarkup()
         {
             var document =
-                TestUtils.Test("\nTitle containing *inline* **markup**\n=======================\n\nParagraph.\n");
+                TestUtils.Test("section_inlinemarkup");
             Assert.Equal(1, document.Elements.Count);
             var section = (Section) document.Elements[0];
             // TODO:
@@ -228,7 +228,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void NumberedTitle()
         {
-            var document = TestUtils.Test("\n1. Numbered Title\n=================\n\nParagraph.\n");
+            var document = TestUtils.Test("section_numbered");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -243,7 +243,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Short()
         {
-            var document = TestUtils.Test("\nABC\n===\n\nShort title.\n");
+            var document = TestUtils.Test("section_short");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -258,7 +258,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void BlockquoteLike()
         {
-            var document = TestUtils.Test("\nParagraph\n\n    ABC\n    ==\n\n    Underline too short.\n");
+            var document = TestUtils.Test("section_blockquote");
             Assert.Equal(2, document.Elements.Count);
             Assert.Equal(ElementType.Paragraph, document.Elements[0].TypeCode);
             Assert.Equal(ElementType.BlockQuote, document.Elements[1].TypeCode);
@@ -272,7 +272,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Empty()
         {
-            var document = TestUtils.Test("\nEmpty Section\n==============\n");
+            var document = TestUtils.Test("section_empty");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
@@ -285,7 +285,7 @@ namespace ReStructuredText.Tests
         public void ShortTitles()
         {
             var document = TestUtils.Test(
-                "\n===\nOne\n===\n\nThe bubble-up parser strategy conflicts with short titles\n(<= 3 char-long over- & underlines).\n\n===\nTwo\n===\n\nThe parser currently contains a work-round kludge.\nWithout it, the parser ends up in an infinite loop.\n");
+                "section_shorts");
             Assert.Equal(2, document.Elements.Count);
             var section = (Section)document.Elements[0];
             Assert.Equal("One", section.Title);

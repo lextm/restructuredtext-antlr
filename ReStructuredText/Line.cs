@@ -27,19 +27,6 @@ namespace ReStructuredText
             }
         }
 
-        public char BulletChar
-        {
-            get
-            {
-                if (Text.Content.StartsWith("- ") || Text.Content.StartsWith("* ") || Text.Content.StartsWith("+ "))
-                {
-                    return Text.Content[0];
-                }
-                
-                return char.MinValue;
-            }
-        }
-
         public Line(Text text)
         {
             Text = text;

@@ -18,7 +18,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Multiple()
         {
-            var document = TestUtils.Test("bulletlist_mutiple");
+            var document = TestUtils.Test("bulletlist_multiple");
             Assert.Equal(1, document.Elements.Count);
 
             var list = (BulletList) document.Elements[0];

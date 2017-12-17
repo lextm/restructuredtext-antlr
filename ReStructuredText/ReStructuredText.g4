@@ -11,7 +11,11 @@ parse
   ;
 
 element
-  :  comment | paragraph | lineBlock | listItem
+  :  section | sectionElement
+  ;
+  
+sectionElement
+  :  comment | listItem | paragraph | lineBlock
   ;
 
 comment
@@ -20,6 +24,10 @@ comment
 
 paragraph
   :  line+
+  ;
+  
+section
+  :  (Section LineBreak)? line Section (LineBreak)+ sectionElement*
   ;
   
 lineBlock
@@ -48,7 +56,7 @@ text_fragment_start
   |  inlineLiteral
   |  reference
   |  hyperlinkTarget
-  |  Space
+  |  Section
   |  Star
   |  Plus
   |  Minus
@@ -58,7 +66,9 @@ text_fragment_start
 
 text_fragment
   : text_fragment_start
+  | Space
   | Block
+  | Bullet
   ;
 
 styledText
@@ -71,16 +81,16 @@ bold
   ;  
 
 italic
-  :  Star italicAtom+ Star
+  :  Star italicAtom+ (Star | StarSpace)
   ;
 
 boldAtom
-  :  ~(Star | LineBreak)
+  :  ~Star | ~LineBreak
   |  italic
   ;
 
 italicAtom
-  :  ~(Star | LineBreak)
+  :  ~Star | ~LineBreak
   |  bold
   ;
 
@@ -114,14 +124,21 @@ hyperlinkTarget
   ;
   
 listItem
-  : (bulletSign Space+ paragraph*)
-  | (bulletSign LineBreak paragraph*)
+  : Bullet (paragraph+)?
   ;
 
-bulletSign
-  : Star
-  | Plus
-  | Minus
+Section
+  : ('-' | '=' | '+') ('-' | '=' | '+')+
+  ;
+  
+Bullet
+  : StarSpace 
+  | Plus Space 
+  | Minus Space
+  ;
+
+StarSpace
+  : Star Space
   ;
 
 Plus

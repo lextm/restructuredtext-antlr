@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace ReStructuredText.Tests
@@ -8,7 +9,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Empty()
         {
-            var document = TestUtils.Test("\n");
+            var document = TestUtils.Test("paragraph_empty");
             Assert.Equal(0, document.Elements.Count);
         }
 
@@ -16,15 +17,13 @@ namespace ReStructuredText.Tests
         public void SingleLine()
         {
             // TODO: see how to resolve this.
-            var document = TestUtils.Test("A paragraph.");
-            Assert.Equal(1, document.Elements.Count);
-            Assert.Equal("A paragraph.<missing LineBreak>", document.Elements[0].Lines[0].Text.Content);
+            Assert.Throws<InvalidOperationException>(() => TestUtils.Test("paragraph_single"));
         }
 
         [Fact]
         public void SingleLineWithNewLine()
         {
-            var document = TestUtils.Test("A paragraph.\n");
+            var document = TestUtils.Test("paragraph_single_newline");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal("A paragraph.\n", document.Elements[0].Lines[0].Text.Content);
         }
@@ -32,7 +31,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultipleLines()
         {
-            var document = TestUtils.Test("\nA paragraph.\n");
+            var document = TestUtils.Test("paragraph_multiple");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal("A paragraph.\n", document.Elements[0].Lines[0].Text.Content);
         }
@@ -40,7 +39,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultipleSingleLines()
         {
-            var document = TestUtils.Test("\nParagraph 1.\n\nParagraph 2.\n");
+            var document = TestUtils.Test("paragraph_multiplesinglelines");
             Assert.Equal(2, document.Elements.Count);
             Assert.Equal("Paragraph 1.\n", document.Elements[0].Lines[0].Text.Content);
             Assert.Equal("Paragraph 2.\n", document.Elements[1].Lines[0].Text.Content);
@@ -49,7 +48,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultilineParagraph()
         {
-            var document = TestUtils.Test("\nLine 1.\nLine 2.\nLine 3.\n");
+            var document = TestUtils.Test("paragraph_multiline");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal("Line 1.\n", document.Elements[0].Lines[0].Text.Content);
             Assert.Equal("Line 2.\n", document.Elements[0].Lines[1].Text.Content);
@@ -59,7 +58,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultilineParagraphs()
         {
-            var document = TestUtils.Test("\nParagraph 1, Line 1.\nLine 2.\nLine 3.\n\nParagraph 2, Line 1.\nLine 2.\nLine 3.\n");
+            var document = TestUtils.Test("paragraph_multilines");
             Assert.Equal(2, document.Elements.Count);
             Assert.Equal("Paragraph 1, Line 1.\n", document.Elements[0].Lines[0].Text.Content);
             Assert.Equal("Line 2.\n", document.Elements[0].Lines[1].Text.Content);
@@ -72,7 +71,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SimpleParagraphs()
         {
-            var document = TestUtils.Test("\nA. Einstein was a really\nsmart dude.\n");
+            var document = TestUtils.Test("paragraph_simple");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal("A. Einstein was a really\n", document.Elements[0].Lines[0].Text.Content);
             Assert.Equal("smart dude.\n", document.Elements[0].Lines[1].Text.Content);

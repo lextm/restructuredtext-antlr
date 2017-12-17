@@ -7,7 +7,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Simple()
         {
-            var document = TestUtils.Test("\n| This is a line block.\n");
+            var document = TestUtils.Test("lineblock_simple");
             Assert.Equal(1, document.Elements.Count);
             var block = (LineBlock) document.Elements[0];
             Assert.Equal("This is a line block.", block.Lines[0].Text.Content);
@@ -16,7 +16,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Multiple()
         {
-            var document = TestUtils.Test("\n| This is a line block.\n| Line breaks are *preserved*.\n\n| This is a second line block.\n\n| This is a third.\n");
+            var document = TestUtils.Test("lineblock_multiple");
             Assert.Equal(3, document.Elements.Count);
             var block = (LineBlock) document.Elements[0];
             Assert.Equal("This is a line block.", block.Lines[0].Text.Content);
@@ -29,7 +29,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void InitialIndentation()
         {
-            var document = TestUtils.Test("\n| In line blocks,\n|     Initial indentation is also *preserved*.\n");
+            var document = TestUtils.Test("lineblock_indentation");
             Assert.Equal(1, document.Elements.Count);
             var block = (LineBlock) document.Elements[0];
             Assert.Equal("In line blocks,", block.Lines[0].Text.Content);

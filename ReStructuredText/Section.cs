@@ -9,9 +9,9 @@ namespace ReStructuredText
         public IList<IElement> Content { get; }
         public string Title { get; set; }
 
-        public Section(int level, string title, params IElement[] content)
+        public Section(int level, string title, IList<IElement> content)
         {
-            Title = title;
+            Title = title.Trim();
             Level = level;
             Content = new List<IElement>();
             foreach (var item in content)
@@ -53,56 +53,40 @@ namespace ReStructuredText
             }
         }
 
-        internal static Section Parse(ref IElement current)
-        {
-            if (current.Lines.Count < 2)
-            {
-                return null;
-            }
-
-            if (current.Lines[1].IsSection)
-            {
-                var title = current.Lines[0].Text.Content.TrimEnd();
-                current.Lines.RemoveAt(0);
-                var line = current.Lines[0].Text.Content;
-                var level = SectionTracker.Instance.Track(line[0]);
-                current.Lines.RemoveAt(0);
-                var result = new Section(level, title, current);
-                current = result;
-                return result;
-            }
-
-            // overline title.
-            if (current.Lines.Count > 2 && current.Lines[0].IsSection && current.Lines[2].IsSection)
-            {
-                current.Lines.RemoveAt(0);
-                var title = current.Lines[0].Text.Content.TrimEnd();
-                current.Lines.RemoveAt(0);
-                var line = current.Lines[0].Text.Content;
-                var level = SectionTracker.Instance.Track(line[0]);
-                current.Lines.RemoveAt(0);
-                var result = new Section(level, title, current);
-                current = result;
-                return result;
-            }
-
-            return null;
-        }
-
-        class SectionTracker
-        {
-            public static readonly SectionTracker Instance = new SectionTracker();
-            private readonly IList<char> _sections = new List<char>();
-
-            public int Track(char item)
-            {
-                if (!_sections.Contains(item))
-                {
-                    _sections.Add(item);
-                }
-
-                return _sections.IndexOf(item) + 1;
-            }
-        }
+//        internal static Section Parse(ref IElement current)
+//        {
+//            if (current.Lines.Count < 2)
+//            {
+//                return null;
+//            }
+//
+//            if (current.Lines[1].IsSection)
+//            {
+//                var title = current.Lines[0].Text.Content.TrimEnd();
+//                current.Lines.RemoveAt(0);
+//                var line = current.Lines[0].Text.Content;
+//                var level = SectionTracker.Instance.Track(line[0]);
+//                current.Lines.RemoveAt(0);
+//                var result = new Section(level, title, current);
+//                current = result;
+//                return result;
+//            }
+//
+//            // overline title.
+//            if (current.Lines.Count > 2 && current.Lines[0].IsSection && current.Lines[2].IsSection)
+//            {
+//                current.Lines.RemoveAt(0);
+//                var title = current.Lines[0].Text.Content.TrimEnd();
+//                current.Lines.RemoveAt(0);
+//                var line = current.Lines[0].Text.Content;
+//                var level = SectionTracker.Instance.Track(line[0]);
+//                current.Lines.RemoveAt(0);
+//                var result = new Section(level, title, current);
+//                current = result;
+//                return result;
+//            }
+//
+//            return null;
+//        }
     }
 }

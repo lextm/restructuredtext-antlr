@@ -35,7 +35,12 @@ namespace ReStructuredText
         
         public void Add(IElement element, int level = 0)
         {
-           
+            if (element is ListItem listItem)
+            {
+                Add(listItem);
+                return;
+            }
+            
             Elements.Add(element);
             element.Parent = this;
         }
@@ -48,7 +53,7 @@ namespace ReStructuredText
             for (int i = 0; i < raw.Count; i++)
             {
                 var current = raw[i];
-                if (current.TypeCode == ElementType.Comment)
+                if (current.TypeCode == ElementType.Comment || current.TypeCode == ElementType.ListItem)
                 {
                     if (section == null)
                     {
@@ -61,12 +66,25 @@ namespace ReStructuredText
 
                     continue;
                 }
-                
+
+                if (current.TypeCode == ElementType.Section)
+                {
+                    var newSection = current as Section;  
+                    if (section == null)
+                    {
+                        Add(current);
+                    }
+                    else
+                    {
+                        section.Add(current);
+                    }
+                    
+                    section = newSection ?? section;
+                    continue;
+                }
 
                 if (!(Elements.LastOrDefault() is BlockQuote block))
                 {
-                    Section newSection = null;
-                    var bullet = current.Lines[0].BulletChar;
                     if (current.Lines[0].IsIndented)
                     {
                         if (Elements.LastOrDefault() is BulletList list)
@@ -85,15 +103,6 @@ namespace ReStructuredText
                             level--;
                         }
                     }
-                    else if (bullet != char.MinValue)
-                    {
-                        Add(ListItem.Parse(bullet, (Paragraph)current));
-                        continue;
-                    }
-                    else
-                    {
-                        newSection = Section.Parse(ref current);
-                    }
 
                     if (section == null)
                     {
@@ -104,7 +113,6 @@ namespace ReStructuredText
                         section.Add(current);
                     }
 
-                    section = newSection ?? section;
                     continue;
                 }
 

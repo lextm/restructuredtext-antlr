@@ -9,11 +9,6 @@
 
         public string Content { get; private set; }
 
-        public void RemoveList()
-        {
-            Content = Content.Substring(2);
-        }
-
         public void RemoveEnd()
         {
             Content = Content.TrimEnd();
