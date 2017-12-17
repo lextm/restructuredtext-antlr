@@ -8,6 +8,7 @@
         Section,
         BulletList,
         LineBlock,
-        ListItem
+        ListItem,
+        LiteralBlock
     }
 }

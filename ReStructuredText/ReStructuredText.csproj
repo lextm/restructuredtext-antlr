@@ -50,6 +50,7 @@
     <Compile Include="Line.cs" />
     <Compile Include="LineBlock.cs" />
     <Compile Include="ListItem.cs" />
+    <Compile Include="LiteralBlock.cs" />
     <Compile Include="Paragraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReStructuredTextParser.cs" />

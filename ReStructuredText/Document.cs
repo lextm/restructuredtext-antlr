@@ -85,22 +85,31 @@ namespace ReStructuredText
 
                 if (!(Elements.LastOrDefault() is BlockQuote block))
                 {
-                    if (current.Lines[0].IsIndented)
+                    if (current.Lines[0].IsIndented || current.Lines[0].IsQuoted)
                     {
-                        if (Elements.LastOrDefault() is BulletList list)
+                        var last = Elements.LastOrDefault()?.Lines?.LastOrDefault()?.Text.Content.TrimEnd();
+                        if (last != null && last.EndsWith("::"))
                         {
-                            if (current.Lines[0].Indentation == 2)
-                            {
-                                list.Add(current);
-                                continue;
-                            }
+                            current = new LiteralBlock(current.Lines);
+                            Elements.Last().Lines.Last().Text.RemoveLiteral();
                         }
-                        
-                        var level = current.Lines[0].Indentation / indentation;
-                        while (level > 0)
+                        else
                         {
-                            current = new BlockQuote(level, current);
-                            level--;
+                            if (Elements.LastOrDefault() is BulletList list)
+                            {
+                                if (current.Lines[0].Indentation == 2)
+                                {
+                                    list.Add(current);
+                                    continue;
+                                }
+                            }
+
+                            var level = current.Lines[0].Indentation / indentation;
+                            while (level > 0)
+                            {
+                                current = new BlockQuote(level, current);
+                                level--;
+                            }
                         }
                     }
 

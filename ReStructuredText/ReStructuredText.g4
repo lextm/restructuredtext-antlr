@@ -69,6 +69,7 @@ text_fragment
   | Space
   | Block
   | Bullet
+  | Literal
   ;
 
 styledText
@@ -125,6 +126,10 @@ hyperlinkTarget
   
 listItem
   : Bullet (paragraph+)?
+  ;
+  
+Literal
+  : ':' LineBreak LineBreak* '::'
   ;
 
 Section

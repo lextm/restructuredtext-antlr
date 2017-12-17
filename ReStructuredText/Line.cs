@@ -27,6 +27,8 @@ namespace ReStructuredText
             }
         }
 
+        public bool IsQuoted => Text.Content.StartsWith("> ");
+
         public Line(Text text)
         {
             Text = text;
