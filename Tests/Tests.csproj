@@ -50,6 +50,11 @@
     <Compile Include="TestUtils.cs" />
     <Compile Include="SectionTest.cs" />
   </ItemGroup>
+  <ItemGroup> 
+    <Content Include="xunit.runner.json"> 
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </Content> 
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReStructuredText\ReStructuredText.csproj">
       <Project>{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}</Project>
