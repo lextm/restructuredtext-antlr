@@ -7,11 +7,9 @@ namespace ReStructuredText.Tests
         public static Document Test(string content)
         {
             var path = Path.GetTempFileName();
-            File.Delete(path);
             File.WriteAllText(path, content);
 
             var result = ReStructuredTextParser.ParseDocument(path);
-            File.Delete(path);
             return result;
         }
     }
