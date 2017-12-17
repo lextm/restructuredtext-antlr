@@ -69,9 +69,9 @@ namespace ReStructuredText
             element.Parent = this;
         }
 
-        public void Eat(List<IElement> raw)
+        internal void Eat(List<IElement> raw, ITracked tracked)
         {
-            var indentation = IndentationTracker.Instance.Minimum;
+            var indentation = tracked.IndentationTracker.Minimum;
             Section section = null;
             // IMPORTANT: block quote processing
             for (int i = 0; i < raw.Count; i++)
@@ -174,31 +174,6 @@ namespace ReStructuredText
                         section.Add(current);
                     }
                 }
-            }
-        }
-
-        internal class IndentationTracker
-        {
-            public static readonly IndentationTracker Instance = new IndentationTracker();
-
-            public void Track(int indentation)
-            {
-                if (indentation == 0)
-                {
-                    return;
-                }
-
-                if (Minimum > 0 && Minimum < indentation)
-                {
-                    return;
-                }
-
-                Minimum = indentation;
-            }
-
-            public int Minimum
-            {
-                get; private set;
             }
         }
     }

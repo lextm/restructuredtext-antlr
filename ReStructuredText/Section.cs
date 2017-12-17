@@ -52,41 +52,5 @@ namespace ReStructuredText
                 child?.Add(current);
             }
         }
-
-//        internal static Section Parse(ref IElement current)
-//        {
-//            if (current.Lines.Count < 2)
-//            {
-//                return null;
-//            }
-//
-//            if (current.Lines[1].IsSection)
-//            {
-//                var title = current.Lines[0].Text.Content.TrimEnd();
-//                current.Lines.RemoveAt(0);
-//                var line = current.Lines[0].Text.Content;
-//                var level = SectionTracker.Instance.Track(line[0]);
-//                current.Lines.RemoveAt(0);
-//                var result = new Section(level, title, current);
-//                current = result;
-//                return result;
-//            }
-//
-//            // overline title.
-//            if (current.Lines.Count > 2 && current.Lines[0].IsSection && current.Lines[2].IsSection)
-//            {
-//                current.Lines.RemoveAt(0);
-//                var title = current.Lines[0].Text.Content.TrimEnd();
-//                current.Lines.RemoveAt(0);
-//                var line = current.Lines[0].Text.Content;
-//                var level = SectionTracker.Instance.Track(line[0]);
-//                current.Lines.RemoveAt(0);
-//                var result = new Section(level, title, current);
-//                current = result;
-//                return result;
-//            }
-//
-//            return null;
-//        }
     }
 }

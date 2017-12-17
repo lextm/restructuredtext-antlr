@@ -9,6 +9,8 @@ namespace ReStructuredText
 {
     public partial class ReStructuredTextParser
     {
+        private SectionTracker _sectionTrackerInstance = new SectionTracker();
+        
         public ParserRuleContext Parse()
         {
             ErrorHandler = new BailErrorStrategy();
@@ -23,7 +25,11 @@ namespace ReStructuredText
             var tokens = new CommonTokenStream(lexer);
             var parser = new ReStructuredTextParser(tokens);
 
-            DocumentVisitor visitor = new DocumentVisitor();
+            DocumentVisitor visitor = new DocumentVisitor()
+            {
+                IndentationTracker = new IndentationTracker(),
+                SectionTracker = new SectionTracker()
+            };
 
             try
             {
@@ -39,11 +45,11 @@ namespace ReStructuredText
             }
         }
 
-        class DocumentVisitor : ReStructuredTextBaseVisitor<Document>
+        class DocumentVisitor : TrackedBaseVisitor<Document>
         {
             public override Document VisitParse([NotNull] ParseContext context)
             {
-                var elementVisitor = new ElementVisitor();
+                var elementVisitor = new ElementVisitor().Inherit(this);
                 var raw = new List<IElement>();
                 foreach (var element in context.element())
                 {
@@ -52,19 +58,19 @@ namespace ReStructuredText
                 }
 
                 var result = new Document();
-                result.Eat(raw);
+                result.Eat(raw, this);
                 return result;
             }
         }
 
-        class ElementVisitor : ReStructuredTextBaseVisitor<IElement>
+        class ElementVisitor : TrackedBaseVisitor<IElement>
         {
             public override IElement VisitElement([NotNull] ElementContext context)
             {
                 var sectionContext = context.section();
                 if (sectionContext != null)
                 {
-                    var sectionVisitor = new SectionVisitor();
+                    var sectionVisitor = new SectionVisitor().Inherit(this);
                     var section = sectionVisitor.VisitSection(sectionContext);
                     return section;
                 }
@@ -72,7 +78,7 @@ namespace ReStructuredText
                 var sectionElementContext = context.sectionElement();
                 if (sectionElementContext != null)
                 {
-                    var elementVisitor = new ElementVisitor();
+                    var elementVisitor = new ElementVisitor().Inherit(this);
                     var element = elementVisitor.VisitSectionElement(context.sectionElement());
                     return element;
                 }
@@ -87,7 +93,7 @@ namespace ReStructuredText
                 var commentContext = context.comment();
                 if (commentContext != null)
                 {
-                    var commentVisitor = new CommentVisitor();
+                    var commentVisitor = new CommentVisitor().Inherit(this);
                     var comment = commentVisitor.VisitComment(commentContext);
                     return comment;
                 }
@@ -95,7 +101,7 @@ namespace ReStructuredText
                 var blockContext = context.lineBlock();
                 if (blockContext != null)
                 {
-                    var blockVisitor = new LineBlockVisitor();
+                    var blockVisitor = new LineBlockVisitor().Inherit(this);
                     var lineBlock = blockVisitor.VisitLineBlock(blockContext);
                     return lineBlock;
                 }
@@ -103,7 +109,7 @@ namespace ReStructuredText
                 var listItemContext = context.listItemBullet();
                 if (listItemContext != null)
                 {
-                    var listItemVisitor = new ListItemVisitor();
+                    var listItemVisitor = new ListItemVisitor().Inherit(this);
                     var listItem = listItemVisitor.VisitListItemBullet(listItemContext);
                     return listItem;
                 }
@@ -111,26 +117,26 @@ namespace ReStructuredText
                 var listItemContext2 = context.listItemEnumerated();
                 if (listItemContext2 != null)
                 {
-                    var listItemVisitor = new ListItemVisitor();
+                    var listItemVisitor = new ListItemVisitor().Inherit(this);
                     var listItem = listItemVisitor.VisitListItemEnumerated(listItemContext2);
                     return listItem;
                 }
 
-                var paragraphVisitor = new ParagraphVisitor();
+                var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var paragraph = paragraphVisitor.VisitParagraph(context.paragraph());
                 return paragraph;
             }
         }
 
-        class SectionVisitor : ReStructuredTextBaseVisitor<Section>
+        class SectionVisitor : TrackedBaseVisitor<Section>
         {
             public override Section VisitSection(SectionContext context)
             {
                 var title = context.title().GetText();
                 var separator = context.Section()[0].GetText();
-                var level = SectionTracker.Instance.Track(separator[0]);
+                var level = SectionTracker.Track(separator[0]);
                 var list = new List<IElement>();
-                var elementVisitor = new ElementVisitor();
+                var elementVisitor = new ElementVisitor().Inherit(this);
                 var element = context.sectionElement();
                 if (element != null)
                 {
@@ -142,31 +148,15 @@ namespace ReStructuredText
 
                 return new Section(level, title, list);
             }
-            
-            class SectionTracker
-            {
-                public static readonly SectionTracker Instance = new SectionTracker();
-                private readonly IList<char> _sections = new List<char>();
-
-                public int Track(char item)
-                {
-                    if (!_sections.Contains(item))
-                    {
-                        _sections.Add(item);
-                    }
-
-                    return _sections.IndexOf(item) + 1;
-                }
-            }
         }
         
-        class ListItemVisitor : ReStructuredTextBaseVisitor<ListItem>
+        class ListItemVisitor : TrackedBaseVisitor<ListItem>
         {
             public override ListItem VisitListItemBullet(ListItemBulletContext context)
             {
                 var start = context.Bullet()?.GetText();
                 var list = new List<Paragraph>();
-                var paragraphVisitor = new ParagraphVisitor();
+                var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var paragraph = context.paragraph();
                 if (paragraph != null)
                 {
@@ -183,7 +173,7 @@ namespace ReStructuredText
             {
                 var enumerator = context.Enumerated()?.GetText();
                 var list = new List<Paragraph>();
-                var paragraphVisitor = new ParagraphVisitor();
+                var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var paragraph = context.paragraph();
                 if (paragraph != null)
                 {
@@ -198,11 +188,11 @@ namespace ReStructuredText
             }
         }
         
-        class LineBlockVisitor : ReStructuredTextBaseVisitor<LineBlock>
+        class LineBlockVisitor : TrackedBaseVisitor<LineBlock>
         {
             public override LineBlock VisitLineBlock(LineBlockContext context)
             {
-                var lineVisitor = new LineVisitor();
+                var lineVisitor = new LineVisitor().Inherit(this);
                 var lines = new List<Line>();
                 foreach (var line in context.line())
                 {
@@ -213,11 +203,11 @@ namespace ReStructuredText
             }
         }
 
-        class CommentVisitor : ReStructuredTextBaseVisitor<Comment>
+        class CommentVisitor : TrackedBaseVisitor<Comment>
         {
             public override Comment VisitComment([NotNull] CommentContext context)
             {
-                var lineVisitor = new LineVisitor();
+                var lineVisitor = new LineVisitor().Inherit(this);
                 var lines = new List<Line>();
                 foreach (var line in context.line())
                 {
@@ -228,11 +218,11 @@ namespace ReStructuredText
             }
         }
 
-        class ParagraphVisitor : ReStructuredTextBaseVisitor<Paragraph>
+        class ParagraphVisitor : TrackedBaseVisitor<Paragraph>
         {
             public override Paragraph VisitParagraph([NotNull] ParagraphContext context)
             {
-                var lineVisitor = new LineVisitor();
+                var lineVisitor = new LineVisitor().Inherit(this);
                 var lines = new List<Line>();
                 foreach (var line in context.line())
                 {
@@ -243,26 +233,84 @@ namespace ReStructuredText
             }
         }
 
-        class LineVisitor : ReStructuredTextBaseVisitor<Line>
+        class LineVisitor : TrackedBaseVisitor<Line>
         {
             public override Line VisitLine([NotNull] LineContext context)
             {
                 var indentation = context.indentation();
-                var textVisitor = new TextVisitor();
+                var textVisitor = new TextVisitor().Inherit(this);
                 var text = context.text();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
-                Document.IndentationTracker.Instance.Track(length);
+                IndentationTracker.Track(length);
                 return new Line(textVisitor.VisitText(text)) { Indentation = length };
             }
         }
 
-        class TextVisitor : ReStructuredTextBaseVisitor<Text>
+        class TextVisitor : TrackedBaseVisitor<Text>
         {
             public override Text VisitText([NotNull] TextContext context)
             {
                 var text = context.GetText();
                 return new Text(text);
             }
+        }
+
+        class TrackedBaseVisitor<T> : ReStructuredTextBaseVisitor<T>, ITracked
+        {
+            public SectionTracker SectionTracker { get; set; }
+
+            public IndentationTracker IndentationTracker { get; set; }
+
+            internal TrackedBaseVisitor<T> Inherit(ITracked item)
+            {
+                SectionTracker = item.SectionTracker;
+                IndentationTracker = item.IndentationTracker;
+                return this;
+            }
+        }
+    }
+
+    interface ITracked
+    {
+        SectionTracker SectionTracker { get; }
+        IndentationTracker IndentationTracker { get; }
+    }
+
+    class SectionTracker
+    {
+        private readonly IList<char> _sections = new List<char>();
+
+        public int Track(char item)
+        {
+            if (!_sections.Contains(item))
+            {
+                _sections.Add(item);
+            }
+
+            return _sections.IndexOf(item) + 1;
+        }
+    }
+
+    class IndentationTracker
+    {
+        public void Track(int indentation)
+        {
+            if (indentation == 0)
+            {
+                return;
+            }
+
+            if (Minimum > 0 && Minimum < indentation)
+            {
+                return;
+            }
+
+            Minimum = indentation;
+        }
+
+        public int Minimum
+        {
+            get; private set;
         }
     }
 }
