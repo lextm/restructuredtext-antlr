@@ -23,7 +23,7 @@ namespace ReStructuredText
             for (var index = 1; index < paragraph.Lines.Count; index++)
             {
                 var line = paragraph.Lines[index];
-                if (line.isBullet != char.MinValue)
+                if (line.BulletChar != char.MinValue)
                 {
                     pivot = index;
                     break;

@@ -5,8 +5,11 @@ namespace ReStructuredText
     public class Line
     {
         public Text Text { get; }
-        public bool IsIndented { get; internal set; }
+
+        public bool IsIndented => Indentation > 0;
+
         public int Indentation { get; internal set; }
+        
         public bool IsSection 
         { 
             get {
@@ -24,7 +27,7 @@ namespace ReStructuredText
             }
         }
 
-        public char isBullet
+        public char BulletChar
         {
             get
             {

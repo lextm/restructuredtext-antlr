@@ -44,6 +44,7 @@
     <Compile Include="BlockQuoteTest.cs" />
     <Compile Include="BulletListTest.cs" />
     <Compile Include="CommentTest.cs" />
+    <Compile Include="LineBlockTest.cs" />
     <Compile Include="ParagraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtils.cs" />
@@ -54,6 +55,11 @@
       <Project>{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}</Project>
       <Name>ReStructuredText</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

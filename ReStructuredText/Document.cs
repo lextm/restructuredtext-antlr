@@ -66,7 +66,7 @@ namespace ReStructuredText
                 if (!(Elements.LastOrDefault() is BlockQuote block))
                 {
                     Section newSection = null;
-                    var bullet = current.Lines[0].isBullet;
+                    var bullet = current.Lines[0].BulletChar;
                     if (current.Lines[0].IsIndented)
                     {
                         if (Elements.LastOrDefault() is BulletList list)

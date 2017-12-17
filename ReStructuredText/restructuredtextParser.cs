@@ -68,9 +68,32 @@ namespace ReStructuredText
                     return comment;
                 }
 
+                var blockContext = context.line_block();
+                if (blockContext != null)
+                {
+                    var blockVisitor = new LineBlockVisitor();
+                    var lineBlock = blockVisitor.VisitLine_block(blockContext);
+                    return lineBlock;
+                }
+
                 var paragraphVisitor = new ParagraphVisitor();
                 var paragraph = paragraphVisitor.VisitParagraph(context.paragraph());
                 return paragraph;
+            }
+        }
+
+        class LineBlockVisitor : ReStructuredTextBaseVisitor<LineBlock>
+        {
+            public override LineBlock VisitLine_block(Line_blockContext context)
+            {
+                var lineVisitor = new LineVisitor();
+                var lines = new List<Line>();
+                foreach (var line in context.line())
+                {
+                    lines.Add(lineVisitor.VisitLine(line));
+                }
+                
+                return new LineBlock(lines);
             }
         }
 
@@ -113,7 +136,7 @@ namespace ReStructuredText
                 var text = context.text();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
                 Document.IndentationTracker.Instance.Track(length);
-                return new Line(textVisitor.VisitText(text)) { IsIndented = indentation != null, Indentation = length };
+                return new Line(textVisitor.VisitText(text)) { Indentation = length };
             }
         }
 

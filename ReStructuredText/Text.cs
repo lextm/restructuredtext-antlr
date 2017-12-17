@@ -13,5 +13,10 @@
         {
             Content = Content.Substring(2);
         }
+
+        public void RemoveEnd()
+        {
+            Content = Content.TrimEnd();
+        }
     }
 }

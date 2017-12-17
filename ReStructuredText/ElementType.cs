@@ -6,6 +6,7 @@
         Comment,
         BlockQuote,
         Section,
-        BulletList
+        BulletList,
+        LineBlock
     }
 }

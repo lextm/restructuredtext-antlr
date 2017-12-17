@@ -48,6 +48,7 @@
     <Compile Include="IElement.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="Line.cs" />
+    <Compile Include="LineBlock.cs" />
     <Compile Include="ListItem.cs" />
     <Compile Include="Paragraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

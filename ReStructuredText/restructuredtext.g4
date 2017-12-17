@@ -11,7 +11,7 @@ parse
   ;
 
 element
-  :  comment | paragraph
+  :  comment | paragraph | line_block
   ;
 
 comment
@@ -21,13 +21,17 @@ comment
 paragraph
   :  line+
   ;
+  
+line_block
+  :  (Block line)+
+  ;  
 
 line
   :  indentation? text
   ;
 
 empty_line
-  : Space* LineBreak
+  :  Space* LineBreak
   ;
 
 indentation
@@ -35,10 +39,10 @@ indentation
   ;
 
 text
-  : text_fragment+ LineBreak
+  : text_fragment_start text_fragment* LineBreak
   ;
-
-text_fragment
+ 
+text_fragment_start
   :  styledText
   |  interpretedText
   |  inlineLiteral
@@ -47,6 +51,11 @@ text_fragment
   |  Star
   |  EscapeSequence
   |  Any
+  ;
+
+text_fragment
+  : text_fragment_start
+  | Block
   ;
 
 styledText
@@ -95,6 +104,10 @@ inlineLiteralAtom
 
 reference
   :  Any+ UnderScore
+  ;
+
+Block
+  :  '| '
   ;
 
 Comment
