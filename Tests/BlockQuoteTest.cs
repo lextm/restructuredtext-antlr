@@ -7,7 +7,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Simple()
         {
-            var document = TestUtils.Test("\nLine 1.\nLine 2.\n\n   Indented.\n");
+            var document = TestUtils.Test("blockquote_simple");
             Assert.Equal(2, document.Elements.Count);
             Paragraph paragraph = (Paragraph)document.Elements[0];
             Assert.Equal("Line 1.\n", paragraph.Lines[0].Text.Content);
@@ -21,7 +21,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Nested()
         {
-            var document = TestUtils.Test("\nLine 1.\nLine 2.\n\n   Indented 1.\n\n      Indented 2.\n");
+            var document = TestUtils.Test("blockquote_nested");
             Assert.Equal(2, document.Elements.Count);
             Paragraph paragraph = (Paragraph)document.Elements[0];
             Assert.Equal("Line 1.\n", paragraph.Lines[0].Text.Content);
@@ -39,7 +39,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Nested2()
         {
-            var document = TestUtils.Test("\nHere is a paragraph.\n\n        Indent 8 spaces.\n\n    Indent 4 spaces.\n\nIs this correct? Should it generate a warning?\nYes, it is correct, no warning necessary.\n");
+            var document = TestUtils.Test("blockquote_nested2");
             Assert.Equal(3, document.Elements.Count);
             Paragraph paragraph = (Paragraph)document.Elements[0];
             Assert.Equal("Here is a paragraph.\n", paragraph.Lines[0].Text.Content);

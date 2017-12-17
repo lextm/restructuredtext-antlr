@@ -7,7 +7,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentAndParagraph()
         {
-            var document = TestUtils.Test("\n.. A comment\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_commentandparagraph");
             Assert.Equal(2, document.Elements.Count);
             Assert.Equal("A comment\n", document.Elements[0].Lines[0].Text.Content);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
@@ -18,7 +18,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void TwoLinesCommentAndParagraph()
         {
-            var document = TestUtils.Test("\n.. A comment\n   block.\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_twolinescommentandparagraph");
             Assert.Equal(2, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("A comment\n", document.Elements[0].Lines[0].Text.Content);
@@ -29,7 +29,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultipleLinesComment()
         {
-            var document = TestUtils.Test("\n..\n   A comment consisting of multiple lines\n   starting on the line after the\n   explicit markup start.\n");
+            var document = TestUtils.Test("comment_multiplelines");
             Assert.Single(document.Elements);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("A comment consisting of multiple lines\n", document.Elements[0].Lines[0].Text.Content);
@@ -40,7 +40,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultipleCommentsAndParagraph()
         {
-            var document = TestUtils.Test("\n.. A comment.\n.. Another.\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_multiple");
             Assert.Equal(3, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("A comment.\n", document.Elements[0].Lines[0].Text.Content);
@@ -52,7 +52,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentWithDoubleColonsAndParagraph()
         {
-            var document = TestUtils.Test("\n.. A comment::\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_doublecolons");
             Assert.Equal(2, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("A comment::\n", document.Elements[0].Lines[0].Text.Content);
@@ -62,7 +62,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentSimilarToDirective()
         {
-            var document = TestUtils.Test("\n..\n   A comment::\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_directive");
             Assert.Equal(2, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("A comment::\n", document.Elements[0].Lines[0].Text.Content);
@@ -72,7 +72,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentSimilarToHyperlinkTarget()
         {
-            var document = TestUtils.Test("\n..\n   _comment: http://example.org\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_hyperlinktarget");
             Assert.Equal(2, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("_comment: http://example.org\n", document.Elements[0].Lines[0].Text.Content);
@@ -82,7 +82,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentSimilarToCitation()
         {
-            var document = TestUtils.Test("\n..\n  [comment] Not a citation.\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_citation");
             Assert.Equal(2, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("[comment] Not a citation.\n", document.Elements[0].Lines[0].Text.Content);
@@ -92,7 +92,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentSimilarToSubstitutionDefinition()
         {
-            var document = TestUtils.Test("\n..\n  |comment| image:: bogus.png\n\nParagraph.\n");
+            var document = TestUtils.Test("comment_substitution");
             Assert.Equal(2, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("|comment| image:: bogus.png\n", document.Elements[0].Lines[0].Text.Content);
@@ -102,7 +102,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void CommentFollowedByEmptyComment()
         {
-            var document = TestUtils.Test("\n.. Next is an empty comment, which serves to end this comment and\n   prevents the following block quote being swallowed up.\n\n..\n\n   A block quote.\n");
+            var document = TestUtils.Test("comment_followedbyempty");
             Assert.Equal(3, document.Elements.Count);
             Assert.True(document.Elements[0].TypeCode == ElementType.Comment);
             Assert.Equal("Next is an empty comment, which serves to end this comment and\n", document.Elements[0].Lines[0].Text.Content);

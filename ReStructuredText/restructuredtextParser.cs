@@ -68,11 +68,11 @@ namespace ReStructuredText
                     return comment;
                 }
 
-                var blockContext = context.line_block();
+                var blockContext = context.lineBlock();
                 if (blockContext != null)
                 {
                     var blockVisitor = new LineBlockVisitor();
-                    var lineBlock = blockVisitor.VisitLine_block(blockContext);
+                    var lineBlock = blockVisitor.VisitLineBlock(blockContext);
                     return lineBlock;
                 }
 
@@ -84,7 +84,7 @@ namespace ReStructuredText
 
         class LineBlockVisitor : ReStructuredTextBaseVisitor<LineBlock>
         {
-            public override LineBlock VisitLine_block(Line_blockContext context)
+            public override LineBlock VisitLineBlock(LineBlockContext context)
             {
                 var lineVisitor = new LineVisitor();
                 var lines = new List<Line>();

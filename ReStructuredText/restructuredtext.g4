@@ -11,7 +11,7 @@ parse
   ;
 
 element
-  :  comment | paragraph | line_block
+  :  comment | paragraph | lineBlock
   ;
 
 comment
@@ -22,7 +22,7 @@ paragraph
   :  line+
   ;
   
-line_block
+lineBlock
   :  (Block line)+
   ;  
 
@@ -47,6 +47,7 @@ text_fragment_start
   |  interpretedText
   |  inlineLiteral
   |  reference
+  |  hyperlinkTarget
   |  Space
   |  Star
   |  EscapeSequence
@@ -104,6 +105,10 @@ inlineLiteralAtom
 
 reference
   :  Any+ UnderScore
+  ;
+
+hyperlinkTarget
+  :  UnderScore Any+
   ;
 
 Block

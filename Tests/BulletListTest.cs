@@ -7,7 +7,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Single()
         {
-            var document = TestUtils.Test("\n- item\n");
+            var document = TestUtils.Test("bulletlist_single");
             Assert.Equal(1, document.Elements.Count);
 
             var list = (BulletList) document.Elements[0];
@@ -18,7 +18,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Multiple()
         {
-            var document = TestUtils.Test("\n* item 1\n\n* item 2\n");
+            var document = TestUtils.Test("bulletlist_mutiple");
             Assert.Equal(1, document.Elements.Count);
 
             var list = (BulletList) document.Elements[0];
@@ -31,7 +31,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultipleNoBlankLine()
         {
-            var document = TestUtils.Test("\nNo blank line between:\n\n+ item 1\n+ item 2\n");
+            var document = TestUtils.Test("bulletlist_multiple_noblankline");
             Assert.Equal(2, document.Elements.Count);
             Assert.Equal("No blank line between:\n", document.Elements[0].Lines[0].Text.Content);
 
@@ -45,7 +45,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultiLineBody()
         {
-            var document = TestUtils.Test("\n- item 1, para 1.\n\n  item 1, para 2.\n\n- item 2\n");
+            var document = TestUtils.Test("bulletlist_multilinebody");
             Assert.Equal(1, document.Elements.Count);
 
             var list = (BulletList)document.Elements[0];
@@ -63,7 +63,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void MultiLineBodyWithNoBlankLine()
         {
-            var document = TestUtils.Test("\n- item 1, para 1.\n  item 1, para 2.\n- item 2\n");
+            var document = TestUtils.Test("bulletlist_multilinebody_noblankline");
             Assert.Equal(1, document.Elements.Count);
 
             var list = (BulletList)document.Elements[0];
@@ -81,7 +81,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void DifferentMarker()
         {
-            var document = TestUtils.Test("\nDifferent bullets:\n\n- item 1\n\n+ item 2\n\n* item 3\n- item 4\n");
+            var document = TestUtils.Test("bulletlist_differentmarker");
             Assert.Equal(5, document.Elements.Count);
 
             Assert.Equal("item 1\n", ((BulletList)document.Elements[1]).Items[0].Elements[0].Lines[0].Text.Content);
@@ -93,7 +93,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void EmptyItemAbove()
         {
-            var document = TestUtils.Test("\n-\n\nempty item above\n");
+            var document = TestUtils.Test("bulletlist_emptyitemabove");
             // TODO: Read the spec to know if this is supported.
             Assert.Equal(2, document.Elements.Count);
         }
@@ -101,9 +101,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void Unicode()
         {
-            var document =
-                TestUtils.Test(
-                    "\nUnicode bullets:\n\n\u2022 BULLET\n\n\u2023 TRIANGULAR BULLET\n\n\u2043 HYPHEN BULLET\n\n");
+            var document = TestUtils.Test("bulletlist_unicode");
             // TODO: read the spec to confirm the characters.
             Assert.Equal(4, document.Elements.Count);
         }
@@ -111,7 +109,7 @@ namespace ReStructuredText.Tests
         [Fact]
         public void BeginWithNewLine()
         {
-            var document = TestUtils.Test("\n-\n   1\n-\n  2\n-\n 3\n");
+            var document = TestUtils.Test("bulletlist_beginwithnewline");
             // TODO: read the spec to confirm this is supported.
             Assert.Equal(1, document.Elements.Count);
         }
