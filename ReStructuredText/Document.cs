@@ -22,14 +22,38 @@ namespace ReStructuredText
         
         private void Add(ListItem item)
         {
-            if (!(Elements.LastOrDefault() is BulletList list) || list.Start != item.Start)
+            if (item.Enumerator == null)
             {
-                list = new BulletList(item);
-                Elements.Add(list);
+                if (!(Elements.LastOrDefault() is BulletList list) || list.Start != item.Start)
+                {
+                    list = new BulletList(item);
+                    Elements.Add(list);
+                }
+                else
+                {
+                    list.Items.Add(item);
+                }
             }
             else
             {
-                list.Items.Add(item);
+                if (!(Elements.LastOrDefault() is EnumeratedList list))
+                {
+                    list = new EnumeratedList(item);
+                    Elements.Add(list);
+                }
+                else if (item.Index == list.Items.Last().Index + 1)
+                {
+                    list.Items.Add(item);
+                }
+                else if (item.HasEnding)
+                {
+                    list = new EnumeratedList(item);
+                    Elements.Add(list);
+                }
+                else
+                {
+                    Elements.Add(new Paragraph(item.Lines));
+                }
             }
         }
         
@@ -95,9 +119,18 @@ namespace ReStructuredText
                         }
                         else
                         {
-                            if (Elements.LastOrDefault() is BulletList list)
+                            if (Elements.LastOrDefault() is BulletList bullet)
                             {
                                 if (current.Lines[0].Indentation == 2)
+                                {
+                                    bullet.Add(current);
+                                    continue;
+                                }
+                            }
+                            
+                            if (Elements.LastOrDefault() is EnumeratedList list)
+                            {
+                                if (current.Lines[0].Indentation == 3)
                                 {
                                     list.Add(current);
                                     continue;

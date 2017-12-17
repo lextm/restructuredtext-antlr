@@ -45,6 +45,7 @@
     <Compile Include="Comment.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="ElementType.cs" />
+    <Compile Include="EnumeratedList.cs" />
     <Compile Include="IElement.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="Line.cs" />

@@ -9,6 +9,7 @@
         BulletList,
         LineBlock,
         ListItem,
-        LiteralBlock
+        LiteralBlock,
+        EnumeratedList
     }
 }

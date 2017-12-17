@@ -15,7 +15,7 @@ element
   ;
   
 sectionElement
-  :  comment | listItem | paragraph | lineBlock
+  :  comment | listItemBullet | paragraph | listItemEnumerated | lineBlock
   ;
 
 comment
@@ -27,7 +27,7 @@ paragraph
   ;
   
 section
-  :  (Section LineBreak)? line Section (LineBreak)+ sectionElement*
+  :  (Section LineBreak)? title Section (LineBreak)+ sectionElement*
   ;
   
 lineBlock
@@ -49,6 +49,10 @@ indentation
 text
   : text_fragment_start text_fragment* LineBreak
   ;
+  
+title
+  : text_fragment+ LineBreak
+  ;
  
 text_fragment_start
   :  styledText
@@ -61,15 +65,17 @@ text_fragment_start
   |  Plus
   |  Minus
   |  EscapeSequence
+  |  Number
   |  Any
   ;
 
 text_fragment
-  : text_fragment_start
-  | Space
-  | Block
-  | Bullet
-  | Literal
+  :  text_fragment_start
+  |  Space
+  |  Block
+  |  Bullet
+  |  Literal
+  |  Enumerated
   ;
 
 styledText
@@ -124,34 +130,42 @@ hyperlinkTarget
   :  UnderScore Any+
   ;
   
-listItem
-  : Bullet (paragraph+)?
+listItemBullet
+  :  Bullet (paragraph+)?
+  ;
+
+listItemEnumerated
+  :  Enumerated paragraph+ ending=LineBreak? 
   ;
   
 Literal
-  : ':' LineBreak LineBreak* '::'
+  :  ':' LineBreak LineBreak* '::'
   ;
 
 Section
-  : ('-' | '=' | '+') ('-' | '=' | '+')+
+  :  ('-' | '=' | '+') ('-' | '=' | '+')+
   ;
   
 Bullet
-  : StarSpace 
-  | Plus Space 
-  | Minus Space
+  :  StarSpace 
+  |  Plus Space 
+  |  Minus Space
+  ;
+  
+Enumerated
+  :  (Number+ '.' Space)
   ;
 
 StarSpace
-  : Star Space
+  :  Star Space
   ;
 
 Plus
-  : '+'
+  :  '+'
   ;
 
 Minus
-  : '-'
+  :  '-'
   ;
 
 Block
@@ -185,6 +199,10 @@ EscapeSequence
 
 LineBreak
   :  '\r'? '\n'
+  ;
+
+Number
+  : [0-9]
   ;
 
 Any

@@ -44,6 +44,7 @@
     <Compile Include="BlockQuoteTest.cs" />
     <Compile Include="BulletListTest.cs" />
     <Compile Include="CommentTest.cs" />
+    <Compile Include="EnumeratedListTest.cs" />
     <Compile Include="LineBlockTest.cs" />
     <Compile Include="LiteralBlockTest.cs" />
     <Compile Include="ParagraphTest.cs" />
@@ -130,6 +131,27 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Input\comment_twolinescommentandparagraph">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_different">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_empty">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_multiplebody">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_noblanklines">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_nonordinal">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_scrambled">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\enumeratedlist_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Input\lineblock_indentation">

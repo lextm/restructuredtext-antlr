@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace ReStructuredText
 {
@@ -7,16 +6,25 @@ namespace ReStructuredText
     {
         public IList<Paragraph> Elements { get; }
 
-        public ListItem(char start, IList<Paragraph> element)
+        public ListItem(string start, string enumerator, IList<Paragraph> element)
         {
-            Start = start;
+            Start = start?[0] ?? char.MinValue;
+            Enumerator = enumerator;
+            if (enumerator != null)
+            {
+                Index = int.Parse(Enumerator.TrimEnd('.', ' '));
+            }
+            
             Elements = element;
         }
         
         public char Start { get; }
+        public string Enumerator { get; }
+        public int Index { get; }
 
         public ElementType TypeCode => ElementType.ListItem;
         public IList<Line> Lines => Elements[0].Lines;
         public IParent Parent { get; set; }
+        public bool HasEnding { get; set; }
     }
 }

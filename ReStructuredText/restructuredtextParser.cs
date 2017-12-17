@@ -100,11 +100,19 @@ namespace ReStructuredText
                     return lineBlock;
                 }
 
-                var listItemContext = context.listItem();
+                var listItemContext = context.listItemBullet();
                 if (listItemContext != null)
                 {
                     var listItemVisitor = new ListItemVisitor();
-                    var listItem = listItemVisitor.VisitListItem(listItemContext);
+                    var listItem = listItemVisitor.VisitListItemBullet(listItemContext);
+                    return listItem;
+                }
+                
+                var listItemContext2 = context.listItemEnumerated();
+                if (listItemContext2 != null)
+                {
+                    var listItemVisitor = new ListItemVisitor();
+                    var listItem = listItemVisitor.VisitListItemEnumerated(listItemContext2);
                     return listItem;
                 }
 
@@ -118,7 +126,7 @@ namespace ReStructuredText
         {
             public override Section VisitSection(SectionContext context)
             {
-                var title = context.line().GetText();
+                var title = context.title().GetText();
                 var separator = context.Section()[0].GetText();
                 var level = SectionTracker.Instance.Track(separator[0]);
                 var list = new List<IElement>();
@@ -154,9 +162,9 @@ namespace ReStructuredText
         
         class ListItemVisitor : ReStructuredTextBaseVisitor<ListItem>
         {
-            public override ListItem VisitListItem(ListItemContext context)
+            public override ListItem VisitListItemBullet(ListItemBulletContext context)
             {
-                var start = context.Bullet().GetText();
+                var start = context.Bullet()?.GetText();
                 var list = new List<Paragraph>();
                 var paragraphVisitor = new ParagraphVisitor();
                 var paragraph = context.paragraph();
@@ -168,7 +176,25 @@ namespace ReStructuredText
                     }
                 }
 
-                return new ListItem(start[0], list);
+                return new ListItem(start, null, list);
+            }
+            
+            public override ListItem VisitListItemEnumerated(ListItemEnumeratedContext context)
+            {
+                var enumerator = context.Enumerated()?.GetText();
+                var list = new List<Paragraph>();
+                var paragraphVisitor = new ParagraphVisitor();
+                var paragraph = context.paragraph();
+                if (paragraph != null)
+                {
+                    foreach (var item in paragraph)
+                    {
+                        list.Add(paragraphVisitor.VisitParagraph(item));
+                    }
+                }
+
+                var ending = context.ending;
+                return new ListItem(null, enumerator, list) {HasEnding = ending != null};
             }
         }
         
