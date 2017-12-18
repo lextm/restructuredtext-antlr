@@ -19,7 +19,7 @@ sectionElement
   ;
 
 comment
-  :  Comment line+
+  :  Space* Comment Space* LineBreak? (line+)?
   ;
 
 paragraph
@@ -60,12 +60,32 @@ text_fragment_start
   |  inlineLiteral
   |  reference
   |  hyperlinkTarget
+  |  hyperlink
+  |  hyperlinkToc
+  |  hyperlinkDoc
+  |  url
   |  Section
   |  Star
   |  Plus
   |  Minus
+  |  Colon
   |  EscapeSequence
-  |  Number
+  |  UnderScore
+  |  DIGITS
+  |  STRING
+  |  '/'
+  |  '.'
+  |  '#'
+  |  '['
+  |  ']'
+  |  '('
+  |  ')'
+  |  ';'
+  |  '='
+  |  '?'
+  |  '<'
+  |  '>'
+  |  '&'
   |  Any
   ;
 
@@ -106,7 +126,7 @@ interpretedText
   ;
 
 interpretedTextAtoms
-  :  ~BackTick+
+  :  ~(BackTick | '<' | '>')+
   ;
 
 inlineLiteral
@@ -130,16 +150,122 @@ hyperlinkTarget
   :  UnderScore Any+
   ;
   
+hyperlink
+  :  BackTick hyperlinkAtom+ Space '<' url '>' BackTick UnderScore
+  ;
+  
+hyperlinkToc
+  :  hyperlinkAtom+ Space '<' url '>'
+  ;
+  
+hyperlinkDoc
+  :  ':doc:' BackTick hyperlinkAtom+ Space '<' url '>' BackTick
+  |  ':doc:' BackTick url BackTick
+  ;
+  
+hyperlinkAtom
+  :  ~( LineBreak | '<' | '>' | '`' | '*' )
+  ;
+
 listItemBullet
-  :  Bullet (paragraph+)?
+  :  Space* Bullet (paragraph+)?
   ;
 
 listItemEnumerated
   :  Enumerated paragraph+ ending=LineBreak? 
   ;
   
+url
+   : relativeUri
+   | absoluteUri
+   ;
+
+relativeUri
+   : '/'? path '/' path
+   ;
+
+absoluteUri
+   : scheme '://' login? host (':' port)? ('/' path )? '/'? query? frag?
+   ;
+
+scheme
+   : string
+   ;
+
+host
+   : '/'? (hostname | hostnumber)
+   ;
+
+hostname
+   : string ('.' string)*
+   ;
+
+hostnumber
+   : DIGITS '.' DIGITS '.' DIGITS '.' DIGITS
+   ;
+
+port
+   : DIGITS
+   ;
+
+path
+   : string ('/' string)*
+   ;
+
+user
+   : string
+   ;
+
+login
+   : user ':' password '@'
+   ;
+
+password
+   : string
+   ;
+
+frag
+   : ('#' string)
+   ;
+
+query
+   : ('?' search)
+   ;
+
+search
+   : searchparameter ('&' searchparameter)*
+   ;
+
+searchparameter
+   : string ('=' (string | DIGITS | HEX))?
+   ;
+
+string
+   : STRING | DIGITS
+   ;
+
+DIGITS
+   : [0-9] +
+   ;
+
+
+HEX
+   : ('%' [a-fA-F0-9] [a-fA-F0-9]) +
+   ;
+
+
+STRING
+   : ([a-zA-Z~0-9] | HEX) ([a-zA-Z0-9.-] | HEX | '_' | '+')*
+   ;
+
+
+Colon
+  :  ':'
+  ;
+
+
 Literal
-  :  ':' LineBreak LineBreak* '::'
+  :  Colon LineBreak LineBreak* Colon Colon
   ;
 
 Section
@@ -153,7 +279,7 @@ Bullet
   ;
   
 Enumerated
-  :  (Number+ '.' Space)
+  :  (DIGITS '.' Space)
   ;
 
 StarSpace
@@ -199,10 +325,6 @@ EscapeSequence
 
 LineBreak
   :  '\r'? '\n'
-  ;
-
-Number
-  : [0-9]
   ;
 
 Any
