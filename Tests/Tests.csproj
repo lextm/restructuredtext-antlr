@@ -49,6 +49,7 @@
     <Compile Include="LiteralBlockTest.cs" />
     <Compile Include="ParagraphTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealTest.cs" />
     <Compile Include="TestUtils.cs" />
     <Compile Include="SectionTest.cs" />
   </ItemGroup>
