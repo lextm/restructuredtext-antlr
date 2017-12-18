@@ -1,33 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReStructuredText</RootNamespace>
-    <AssemblyName>ReStructuredText</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <Authors>Lex Li</Authors>
+    <Company />
+    <AssemblyTitle>reStructuredText for .NET</AssemblyTitle>
+    <Product>reStructuredText for .NET</Product>
+    <PackageId>Lextm.ReStructuredText</PackageId>
+    <Description>reStructuredText parser for .NET.</Description>
+    <PackageTags>restructuredtext rst parser</PackageTags>
+    <PackageProjectUrl>https://github.com/lextm/restructuredtext-antlr</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/lextm/restructuredtext-antlr</RepositoryUrl>
+    <NeutralLanguage>en-us</NeutralLanguage>
+    <PackageReleaseNotes>https://github.com/lextm/restructuredtext-antlr/releases</PackageReleaseNotes>
+    <Copyright>Copyright (C) 2011 Bart Kiers. Copyright (C) 2017 Lex Li</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -40,25 +32,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockQuote.cs" />
-    <Compile Include="BulletList.cs" />
-    <Compile Include="Comment.cs" />
-    <Compile Include="Document.cs" />
-    <Compile Include="ElementType.cs" />
-    <Compile Include="EnumeratedList.cs" />
-    <Compile Include="IElement.cs" />
-    <Compile Include="IParent.cs" />
-    <Compile Include="Line.cs" />
-    <Compile Include="LineBlock.cs" />
-    <Compile Include="ListItem.cs" />
-    <Compile Include="LiteralBlock.cs" />
-    <Compile Include="Paragraph.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReStructuredTextParser.cs" />
-    <Compile Include="Text.cs" />
-    <Compile Include="Section.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Antlr4">
       <Version>4.6.4</Version>
     </PackageReference>
@@ -69,5 +42,4 @@
   <ItemGroup>
     <Antlr4 Include="ReStructuredText.g4" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
