@@ -81,16 +81,14 @@ text_fragment_start
   |  hyperlink
   |  hyperlinkToc
   |  hyperlinkDoc
-  |  url
   |  Section
   |  Star
   |  Plus
   |  Minus
-  |  Colon
+  |  SemiColon
   |  EscapeSequence
   |  UnderScore
-  |  DIGITS
-  |  STRING
+  |  Numbers
   |  '/'
   |  '.'
   |  '#'
@@ -98,7 +96,7 @@ text_fragment_start
   |  ']'
   |  '('
   |  ')'
-  |  ';'
+  |  Colon
   |  Equal
   |  '?'
   |  '<'
@@ -185,6 +183,14 @@ hyperlinkDoc
   :  ':doc:' BackTick hyperlinkAtom+ Space '<' url '>' BackTick
   |  ':doc:' BackTick url BackTick
   ;
+
+url
+  :  urlAtom+
+  ;
+  
+urlAtom
+  :  ~( LineBreak | BackTick )
+  ;
   
 hyperlinkAtom
   :  ~( LineBreak | '<' | '>' | '`' | '*' )
@@ -198,96 +204,6 @@ listItemEnumerated
   :  Enumerated paragraph+ ending=LineBreak? 
   ;
   
-url
-   : relativeUri
-   | absoluteUri
-   | 'mailto:' string '@' string
-   ;
-
-relativeUri
-   : '/'? path '/' path
-   ;
-
-absoluteUri
-   : scheme '://' login? host (':' port)? ('/' path )? '/'? query? frag?
-   ;
-
-scheme
-   : string
-   ;
-
-host
-   : '/'? (hostname | hostnumber)
-   ;
-
-hostname
-   : string ('.' string)*
-   ;
-
-hostnumber
-   : DIGITS '.' DIGITS '.' DIGITS '.' DIGITS
-   ;
-
-port
-   : DIGITS
-   ;
-
-path
-   : string ('/' string)*
-   ;
-
-user
-   : string
-   ;
-
-login
-   : user ':' password '@'
-   ;
-
-password
-   : string
-   ;
-
-frag
-   : ('#' string)
-   ;
-
-query
-   : ('?' search)
-   ;
-
-search
-   : searchparameter ('&' searchparameter)*
-   ;
-
-searchparameter
-   : string (Equal (string | DIGITS | HEX))
-   ;
-
-string
-   : '_'? STRING | DIGITS | EscapeSequence
-   ;
-
-DIGITS
-   : [0-9] +
-   ;
-
-
-HEX
-   : ('%' [a-fA-F0-9] [a-fA-F0-9]) +
-   ;
-
-
-STRING
-   : ([a-zA-Z~0-9] | HEX | '(' | ')') ([a-zA-Z0-9.-] | HEX | '(' | ')' | '=' | '_' | '+')*
-   ;
-
-
-Colon
-  :  ':'
-  ;
-
-
 Literal
   :  Colon LineBreak LineBreak* Colon Colon
   ;
@@ -303,11 +219,23 @@ Bullet
   ;
   
 Enumerated
-  :  (DIGITS '.' Space)
+  :  (Numbers '.' Space)
   ;
 
 StarSpace
   :  Star Space
+  ;
+  
+Numbers
+  : [0-9]+
+  ;
+  
+SemiColon
+  :  ';'
+  ;
+  
+Colon
+  :  ':'
   ;
 
 Equal
