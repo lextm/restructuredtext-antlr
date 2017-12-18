@@ -88,7 +88,10 @@ text_fragment_start
   |  SemiColon
   |  EscapeSequence
   |  UnderScore
+  |  BackTick
   |  Numbers
+  |  '.'
+  |  Comment
   |  '/'
   |  '.'
   |  '#'

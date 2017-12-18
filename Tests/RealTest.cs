@@ -9,7 +9,6 @@ namespace ReStructuredText.Tests
         [Fact]
         public void TestDockPanelSuite()
         {
-            //*
             var path = "/Users/lextm/dockpanelsuite_docs";
             if (Directory.Exists(path))
             {
@@ -22,21 +21,15 @@ namespace ReStructuredText.Tests
                     }
                     catch (Exception ex)
                     {
-                        Assert.Equal("", file);
+                        Assert.Equal(path, file);
                     }
                 }
-                //*/
-
-                /*
-                var result = ReStructuredTextParser.ParseDocument("/Users/lextm/dockpanelsuite_docs/contribute/index.rst");
-                // */
             }
         }
 
         [Fact]
         public void TestJexus()
         {
-            //*
             var path = "/Users/lextm/jexus_docs";
             if (Directory.Exists(path))
             {
@@ -49,14 +42,30 @@ namespace ReStructuredText.Tests
                     }
                     catch (Exception ex)
                     {
-                        Assert.Equal("", file);
+                        Assert.Equal(path, file);
                     }
                 }
-                //*/
-
-                /*
-                var result = ReStructuredTextParser.ParseDocument("/Users/lextm/dockpanelsuite_docs/contribute/index.rst");
-                // */
+            }
+        }
+        
+        [Fact]
+        public void TestObfuscar()
+        {
+            var path = "/Users/lextm/obfuscar_docs";
+            if (Directory.Exists(path))
+            {
+                foreach (string file in Directory.EnumerateFiles(
+                    path, "*.rst", SearchOption.AllDirectories))
+                {
+                    try
+                    {
+                        var result = ReStructuredTextParser.ParseDocument(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        Assert.Equal(path, file);
+                    }
+                }
             }
         }
     }
