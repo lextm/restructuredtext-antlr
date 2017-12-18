@@ -19,7 +19,7 @@ sectionElement
   ;
 
 comment
-  :  Space* Comment Space* LineBreak? (line+)?
+  :  Space* Comment (line+)?
   ;
 
 paragraph
@@ -59,6 +59,7 @@ text_fragment_start
   |  interpretedText
   |  inlineLiteral
   |  reference
+  |  referenceIn
   |  hyperlinkTarget
   |  hyperlink
   |  hyperlinkToc
@@ -81,11 +82,12 @@ text_fragment_start
   |  '('
   |  ')'
   |  ';'
-  |  '='
+  |  Equal
   |  '?'
   |  '<'
   |  '>'
   |  '&'
+  |  '"'
   |  Any
   ;
 
@@ -146,6 +148,10 @@ reference
   :  Any+ UnderScore
   ;
 
+referenceIn
+  :  UnderScore hyperlinkAtom+ ':' Space url
+  ;
+
 hyperlinkTarget
   :  UnderScore Any+
   ;
@@ -178,6 +184,7 @@ listItemEnumerated
 url
    : relativeUri
    | absoluteUri
+   | 'mailto:' string '@' string
    ;
 
 relativeUri
@@ -237,11 +244,11 @@ search
    ;
 
 searchparameter
-   : string ('=' (string | DIGITS | HEX))?
+   : string (Equal (string | DIGITS | HEX))
    ;
 
 string
-   : STRING | DIGITS
+   : '_'? STRING | DIGITS | EscapeSequence
    ;
 
 DIGITS
@@ -255,7 +262,7 @@ HEX
 
 
 STRING
-   : ([a-zA-Z~0-9] | HEX) ([a-zA-Z0-9.-] | HEX | '_' | '+')*
+   : ([a-zA-Z~0-9] | HEX | '(' | ')') ([a-zA-Z0-9.-] | HEX | '(' | ')' | '=' | '_' | '+')*
    ;
 
 
@@ -269,7 +276,7 @@ Literal
   ;
 
 Section
-  :  ('-' | '=' | '+') ('-' | '=' | '+')+
+  :  ('-' | '=' | '+') ('-' | '=' | '+') ('-' | '=' | '+')+
   ;
   
 Bullet
@@ -286,6 +293,10 @@ StarSpace
   :  Star Space
   ;
 
+Equal
+  :  '='
+  ;
+
 Plus
   :  '+'
   ;
@@ -299,7 +310,8 @@ Block
   ;
 
 Comment
-  :  '..'
+  :  ('.. ' LineBreak?)
+  |  ('..' LineBreak)
   ;
 
 UnderScore
