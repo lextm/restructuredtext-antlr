@@ -31,7 +31,7 @@ namespace ReStructuredText
         }
 
         public ElementType TypeCode => ElementType.EnumeratedList;
-        public IList<Line> Lines => Items[0].Lines;
+        public IList<ITextArea> TextAreas => Items[0].TextAreas;
         public IParent Parent { get; set; }
 
         public void Add(IElement current)

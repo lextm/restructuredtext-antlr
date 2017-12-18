@@ -23,13 +23,13 @@ namespace ReStructuredText
     public class BlockQuote : IElement, IParent
     {
         public int Level { get; }
-        public IList<IElement> Content { get; }
+        public IList<IElement> Elements { get; }
 
         public BlockQuote(int level, params IElement[] content)
         {
             Level = level;
-            Content = new List<IElement>(content);
-            foreach (var item in Content)
+            Elements = new List<IElement>(content);
+            foreach (var item in Elements)
             {
                 item.Parent = this;
             }
@@ -38,7 +38,7 @@ namespace ReStructuredText
         public ElementType TypeCode => ElementType.BlockQuote;
 
         // TODO:
-        public IList<Line> Lines => Content[0].Lines;
+        public IList<ITextArea> TextAreas => Elements[0].TextAreas;
 
         public IParent Parent { get; set; }
 
@@ -46,7 +46,7 @@ namespace ReStructuredText
         {
             if (level == Level)
             {
-                Content.Add(current);
+                Elements.Add(current);
                 current.Parent = this;
                 return;
             }
@@ -64,7 +64,7 @@ namespace ReStructuredText
                 level--;
             }
 
-            Content.Add(current);
+            Elements.Add(current);
             current.Parent = this;
         }
     }

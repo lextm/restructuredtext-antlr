@@ -22,15 +22,15 @@ namespace ReStructuredText
 {
     public class Comment : IElement
     {
-        public IList<Line> Lines { get; }
+        public IList<ITextArea> TextAreas { get; }
 
-        public Comment(IList<Line> lines)
+        public Comment(IList<ITextArea> lines)
         {
-            Lines = new List<Line>();
+            TextAreas = new List<ITextArea>();
             bool skip = true;
             foreach (var line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line.Text.Content))
+                if (string.IsNullOrWhiteSpace(line.Content.Text))
                 {
                     if (skip)
                     {
@@ -39,7 +39,7 @@ namespace ReStructuredText
                 }
 
                 skip = false;
-                Lines.Add(line);
+                TextAreas.Add(line);
             }
         }
 

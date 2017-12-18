@@ -22,31 +22,31 @@ namespace ReStructuredText
 {
     public class LiteralBlock : IElement
     {
-        public LiteralBlock(IList<Line> lines)
+        public LiteralBlock(IList<ITextArea> lines)
         {
-            Lines = lines;
+            TextAreas = lines;
             var minimal = lines[0].Indentation;
-            foreach (var line in Lines)
+            foreach (var line in TextAreas)
             {
-                line.Text.RemoveEnd();
+                line.Content.RemoveEnd();
                 if (line.Indentation < minimal)
                 {
                     minimal = line.Indentation;
                 }
             }
 
-            foreach (var line in Lines)
+            foreach (var line in TextAreas)
             {
                 if (line.Indentation > minimal)
                 {
-                    line.Text.Append(line.Indentation - minimal);
+                    line.Content.Append(line.Indentation - minimal);
                     line.Indentation = minimal;
                 }
             }
         }
 
         public ElementType TypeCode => ElementType.LiteralBlock;
-        public IList<Line> Lines { get; }
+        public IList<ITextArea> TextAreas { get; }
         public IParent Parent { get; set; }
     }
 }

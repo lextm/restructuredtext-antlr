@@ -22,14 +22,14 @@ namespace ReStructuredText
 {
     public class Paragraph : IElement
     {
-        public IList<Line> Lines { get; }
+        public IList<ITextArea> TextAreas { get; }
 
-        public Paragraph(IList<Line> lines)
+        public Paragraph(IList<ITextArea> textAreas)
         {
-            Lines = lines;
+            TextAreas = textAreas;
         }
 
-        public bool IsBlockQuote => Lines.Count > 0 && Lines[0].IsIndented;
+        public bool IsBlockQuote => TextAreas.Count > 0 && TextAreas[0].IsIndented;
 
         public ElementType TypeCode => ElementType.Paragraph;
 
@@ -37,7 +37,7 @@ namespace ReStructuredText
 
         public override string ToString()
         {
-            return Lines[0].Text.Content;
+            return TextAreas[0].Content.Text;
         }
     }
 }

@@ -14,9 +14,9 @@ namespace ReStructuredText.Tests
             var list = (EnumeratedList) document.Elements[0];
             Assert.Equal(3, list.Items.Count);
 
-            Assert.Equal("Item one.\n", list.Items[0].Lines[0].Text.Content);
-            Assert.Equal("Item two.\n", list.Items[1].Lines[0].Text.Content);
-            Assert.Equal("Item three.\n", list.Items[2].Lines[0].Text.Content);
+            Assert.Equal("Item one.\n", list.Items[0].TextAreas[0].Content.Text);
+            Assert.Equal("Item two.\n", list.Items[1].TextAreas[0].Content.Text);
+            Assert.Equal("Item three.\n", list.Items[2].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -29,9 +29,9 @@ namespace ReStructuredText.Tests
             var list = (EnumeratedList) document.Elements[1];
             Assert.Equal(3, list.Items.Count);
 
-            Assert.Equal("Item one.\n", list.Items[0].Lines[0].Text.Content);
-            Assert.Equal("Item two.\n", list.Items[1].Lines[0].Text.Content);
-            Assert.Equal("Item three.\n", list.Items[2].Lines[0].Text.Content);
+            Assert.Equal("Item one.\n", list.Items[0].TextAreas[0].Content.Text);
+            Assert.Equal("Item two.\n", list.Items[1].TextAreas[0].Content.Text);
+            Assert.Equal("Item three.\n", list.Items[2].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -40,8 +40,8 @@ namespace ReStructuredText.Tests
             var document = TestUtils.Test("enumeratedlist_empty");
             Assert.Equal(1, document.Elements.Count);
             Assert.Equal(ElementType.Paragraph, document.Elements[0].TypeCode);
-            Assert.Equal("1.\n", document.Elements[0].Lines[0].Text.Content);
-            Assert.Equal("empty item above, no blank line\n", document.Elements[0].Lines[1].Text.Content);
+            Assert.Equal("1.\n", document.Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("empty item above, no blank line\n", document.Elements[0].TextAreas[1].Content.Text);
         }
         
         [Fact]
@@ -60,15 +60,15 @@ namespace ReStructuredText.Tests
             var list = (EnumeratedList) document.Elements[1];
             Assert.Equal(1, list.Items.Count);
 
-            Assert.Equal("Item three.\n", list.Items[0].Lines[0].Text.Content);
+            Assert.Equal("Item three.\n", list.Items[0].TextAreas[0].Content.Text);
             
             var list2 = (EnumeratedList) document.Elements[2];
             Assert.Equal(1, list2.Items.Count);
-            Assert.Equal("Item two.\n", list2.Items[0].Lines[0].Text.Content);
+            Assert.Equal("Item two.\n", list2.Items[0].TextAreas[0].Content.Text);
             
             var list3 = (EnumeratedList) document.Elements[3];
             Assert.Equal(1, list3.Items.Count);
-            Assert.Equal("Item one.\n", list3.Items[0].Lines[0].Text.Content);
+            Assert.Equal("Item one.\n", list3.Items[0].TextAreas[0].Content.Text);
             
             //TODO: test the rest.
         }
@@ -86,11 +86,11 @@ namespace ReStructuredText.Tests
             var list = (EnumeratedList) document.Elements[1];
             Assert.Equal(4, list.Items.Count);
 
-            Assert.Equal("Item zero.\n", list.Items[0].Lines[0].Text.Content);
+            Assert.Equal("Item zero.\n", list.Items[0].TextAreas[0].Content.Text);
             
             var list2 = (EnumeratedList) document.Elements[3];
             Assert.Equal(2, list2.Items.Count);
-            Assert.Equal("Item two.\n", list2.Items[0].Lines[0].Text.Content);
+            Assert.Equal("Item two.\n", list2.Items[0].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -103,16 +103,16 @@ namespace ReStructuredText.Tests
             var list = (EnumeratedList) document.Elements[0];
             Assert.Equal(3, list.Items.Count);
 
-            Assert.Equal("Item one: line 1,\n", list.Items[0].Lines[0].Text.Content);
-            Assert.Equal("line 2.\n", list.Items[0].Lines[1].Text.Content);
+            Assert.Equal("Item one: line 1,\n", list.Items[0].TextAreas[0].Content.Text);
+            Assert.Equal("line 2.\n", list.Items[0].TextAreas[1].Content.Text);
             
-            Assert.Equal("Item two: line 1,\n", list.Items[1].Lines[0].Text.Content);
-            Assert.Equal("line 2.\n", list.Items[1].Lines[1].Text.Content);
+            Assert.Equal("Item two: line 1,\n", list.Items[1].TextAreas[0].Content.Text);
+            Assert.Equal("line 2.\n", list.Items[1].TextAreas[1].Content.Text);
 
             var item = list.Items[2];
             Assert.Equal(2, item.Elements.Count);
             
-            Assert.Equal("Paragraph 2.\n", item.Elements[1].Lines[0].Text.Content);
+            Assert.Equal("Paragraph 2.\n", item.Elements[1].TextAreas[0].Content.Text);
         }
         
         [Fact]

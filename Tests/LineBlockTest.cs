@@ -10,7 +10,7 @@ namespace ReStructuredText.Tests
             var document = TestUtils.Test("lineblock_simple");
             Assert.Equal(1, document.Elements.Count);
             var block = (LineBlock) document.Elements[0];
-            Assert.Equal("This is a line block.", block.Lines[0].Text.Content);
+            Assert.Equal("This is a line block.", block.TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -19,11 +19,11 @@ namespace ReStructuredText.Tests
             var document = TestUtils.Test("lineblock_multiple");
             Assert.Equal(3, document.Elements.Count);
             var block = (LineBlock) document.Elements[0];
-            Assert.Equal("This is a line block.", block.Lines[0].Text.Content);
-            Assert.Equal("Line breaks are *preserved*.", block.Lines[1].Text.Content);
+            Assert.Equal("This is a line block.", block.TextAreas[0].Content.Text);
+            Assert.Equal("Line breaks are *preserved*.", block.TextAreas[1].Content.Text);
             
-            Assert.Equal("This is a second line block.", document.Elements[1].Lines[0].Text.Content);
-            Assert.Equal("This is a third.", document.Elements[2].Lines[0].Text.Content);
+            Assert.Equal("This is a second line block.", document.Elements[1].TextAreas[0].Content.Text);
+            Assert.Equal("This is a third.", document.Elements[2].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -32,10 +32,10 @@ namespace ReStructuredText.Tests
             var document = TestUtils.Test("lineblock_indentation");
             Assert.Equal(1, document.Elements.Count);
             var block = (LineBlock) document.Elements[0];
-            Assert.Equal("In line blocks,", block.Lines[0].Text.Content);
-            var block1 = (LineBlock) block.Content[0];
+            Assert.Equal("In line blocks,", block.TextAreas[0].Content.Text);
+            var block1 = (LineBlock) block.Elements[0];
             // TODO:
-            Assert.Equal("Initial indentation is also *preserved*.", block1.Lines[0].Text.Content);
+            Assert.Equal("Initial indentation is also *preserved*.", block1.TextAreas[0].Content.Text);
         }
     }
 }

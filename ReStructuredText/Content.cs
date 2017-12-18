@@ -17,39 +17,54 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ReStructuredText
 {
-    public class Text
+    public class Content
     {
-        public Text(string text)
+        public Content(string text)
         {
-            Content = text;
+            Text = text;
+            Unescape();
         }
 
-        public string Content { get; private set; }
+        public string Text { get; private set; }
 
         public void RemoveEnd()
         {
-            Content = Content.TrimEnd();
+            Text = Text.TrimEnd();
         }
 
         public void RemoveLiteral()
         {
             RemoveEnd();
-            Content = Content.TrimEnd(':');
+            Text = Text.TrimEnd(':');
         }
 
         public void Append(int indentation)
         {
-            var builder = new StringBuilder(Content.Length + indentation);
+            var builder = new StringBuilder(Text.Length + indentation);
             for (int i = 0; i < indentation; i++)
             {
                 builder.Append(' ');
             }
 
-            Content = builder.Append(Content).ToString();
+            Text = builder.Append(Text).ToString();
+        }
+
+        public void Append(string text)
+        {
+            Text = Text + text;
+        }
+
+        public void Unescape()
+        {
+            Regex regex = new Regex (@"\\U([0-9A-F]{4})", RegexOptions.IgnoreCase);
+            Text = regex.Replace (Text, match => ((char)int.Parse (match.Groups[1].Value,
+                NumberStyles.HexNumber)).ToString ());
         }
     }
 }

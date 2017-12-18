@@ -24,26 +24,26 @@ namespace ReStructuredText
     public class LineBlock : IElement
     {
         public ElementType TypeCode => ElementType.LineBlock;
-        public IList<Line> Lines { get; }
+        public IList<ITextArea> TextAreas { get; }
         public IParent Parent { get; set; }
-        public IList<IElement> Content { get; }
+        public IList<IElement> Elements { get; }
 
-        public LineBlock(IList<Line> lines)
+        public LineBlock(IList<ITextArea> lines)
         {
-            Content = new List<IElement>();
-            Lines = new List<Line>();
+            Elements = new List<IElement>();
+            TextAreas = new List<ITextArea>();
             // TODO: improve indentation parsing.
             foreach (var line in lines)
             {
-                line.Text.RemoveEnd();
+                line.Content.RemoveEnd();
                 if (line.IsIndented)
                 {
                     line.Indentation = 0;
-                    Content.Add(new LineBlock(new[] {line}));
+                    Elements.Add(new LineBlock(new[] {line}));
                     continue;
                 }
                 
-                Lines.Add(line);
+                TextAreas.Add(line);
             }
         }
     }

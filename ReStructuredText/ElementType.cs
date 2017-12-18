@@ -28,6 +28,8 @@ namespace ReStructuredText
         LineBlock,
         ListItem,
         LiteralBlock,
-        EnumeratedList
+        EnumeratedList,
+        Literal,
+        Text
     }
 }

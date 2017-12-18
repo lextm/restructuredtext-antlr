@@ -52,7 +52,20 @@ lineBlock
   ;  
 
 line
-  :  indentation? text
+  :  indentation? lineStart lineEnd LineBreak
+  ;
+  
+lineStart
+  :  span
+  |  textStart
+  ;
+
+lineEnd
+  :  lineAtom*
+  ;
+
+lineAtom
+  :  span | textEnd
   ;
 
 empty_line
@@ -63,35 +76,43 @@ indentation
   :  Space+
   ;
 
-text
-  : text_fragment_start text_fragment* LineBreak
+textStart
+  : text_fragment_start text_fragment*
+  ;
+
+textEnd
+  : textAtoms
+  ;
+  
+textAtoms
+  : text_fragment+
   ;
   
 title
   : text_fragment+ LineBreak
   ;
  
-text_fragment_start
+span
   :  styledText
-  |  interpretedText
-  |  inlineLiteral
   |  reference
   |  referenceIn
+  |  inlineLiteral
+  |  interpretedText
   |  hyperlinkTarget
   |  hyperlink
-  |  hyperlinkToc
   |  hyperlinkDoc
-  |  Section
+  ;
+ 
+text_fragment_start
+  :  Section
   |  Star
   |  Plus
   |  Minus
   |  SemiColon
   |  EscapeSequence
   |  UnderScore
-  |  BackTick
   |  Numbers
   |  '.'
-  |  Comment
   |  '/'
   |  '.'
   |  '#'
@@ -111,11 +132,12 @@ text_fragment_start
 
 text_fragment
   :  text_fragment_start
-  |  Space
   |  Block
   |  Bullet
   |  Literal
   |  Enumerated
+  |  Comment
+  |  Space
   ;
 
 styledText
@@ -146,7 +168,7 @@ interpretedText
   ;
 
 interpretedTextAtoms
-  :  ~(BackTick | '<' | '>')+
+  :  ~(BackTick | '<' | '>' )+
   ;
 
 inlineLiteral
@@ -177,11 +199,7 @@ hyperlinkTarget
 hyperlink
   :  BackTick hyperlinkAtom+ Space '<' url '>' BackTick UnderScore
   ;
-  
-hyperlinkToc
-  :  hyperlinkAtom+ Space '<' url '>'
-  ;
-  
+ 
 hyperlinkDoc
   :  ':doc:' BackTick hyperlinkAtom+ Space '<' url '>' BackTick
   |  ':doc:' BackTick url BackTick

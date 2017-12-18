@@ -45,6 +45,7 @@
     <Compile Include="BulletListTest.cs" />
     <Compile Include="CommentTest.cs" />
     <Compile Include="EnumeratedListTest.cs" />
+    <Compile Include="InlineMarkupLiteralTest.cs" />
     <Compile Include="LineBlockTest.cs" />
     <Compile Include="LiteralBlockTest.cs" />
     <Compile Include="ParagraphTest.cs" />
@@ -153,6 +154,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Input\enumeratedlist_simple">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupliteral_apostrophe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupliteral_backslash">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupliteral_backslash_end">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupliteral_backslash_inside">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupliteral_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Input\lineblock_indentation">

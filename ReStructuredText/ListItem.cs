@@ -41,7 +41,7 @@ namespace ReStructuredText
         public int Index { get; }
 
         public ElementType TypeCode => ElementType.ListItem;
-        public IList<Line> Lines => Elements[0].Lines;
+        public IList<ITextArea> TextAreas => Elements[0].TextAreas;
         public IParent Parent { get; set; }
         public bool HasEnding { get; set; }
     }

@@ -24,7 +24,7 @@ namespace ReStructuredText
     {
         ElementType TypeCode { get; }
 
-        IList<Line> Lines { get; }
+        IList<ITextArea> TextAreas { get; }
 
         IParent Parent { get; set; }
     }

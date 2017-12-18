@@ -12,7 +12,7 @@ namespace ReStructuredText.Tests
 
             var list = (BulletList) document.Elements[0];
             Assert.Equal(1, list.Items.Count);
-            Assert.Equal("item\n", list.Items[0].Elements[0].Lines[0].Text.Content);
+            Assert.Equal("item\n", list.Items[0].Elements[0].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -24,8 +24,8 @@ namespace ReStructuredText.Tests
             var list = (BulletList) document.Elements[0];
             Assert.Equal(2, list.Items.Count);
             Assert.Equal('*', list.Start);
-            Assert.Equal("item 1\n", list.Items[0].Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 2\n", list.Items[1].Elements[0].Lines[0].Text.Content);
+            Assert.Equal("item 1\n", list.Items[0].Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 2\n", list.Items[1].Elements[0].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -33,13 +33,13 @@ namespace ReStructuredText.Tests
         {
             var document = TestUtils.Test("bulletlist_multiple_noblankline");
             Assert.Equal(2, document.Elements.Count);
-            Assert.Equal("No blank line between:\n", document.Elements[0].Lines[0].Text.Content);
+            Assert.Equal("No blank line between:\n", document.Elements[0].TextAreas[0].Content.Text);
 
             var list = (BulletList) document.Elements[1];
             Assert.Equal(2, list.Items.Count);
             Assert.Equal('+', list.Start);
-            Assert.Equal("item 1\n", list.Items[0].Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 2\n", list.Items[1].Elements[0].Lines[0].Text.Content);
+            Assert.Equal("item 1\n", list.Items[0].Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 2\n", list.Items[1].Elements[0].TextAreas[0].Content.Text);
         }
 
         [Fact]
@@ -54,10 +54,10 @@ namespace ReStructuredText.Tests
             var item = list.Items[0];
             Assert.Equal(2, item.Elements.Count);
             
-            Assert.Equal("item 1, para 1.\n", item.Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 1, para 2.\n", item.Elements[1].Lines[0].Text.Content);
+            Assert.Equal("item 1, para 1.\n", item.Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 1, para 2.\n", item.Elements[1].TextAreas[0].Content.Text);
             
-            Assert.Equal("item 2\n", list.Items[1].Elements[0].Lines[0].Text.Content);
+            Assert.Equal("item 2\n", list.Items[1].Elements[0].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -72,10 +72,10 @@ namespace ReStructuredText.Tests
             var item = list.Items[0];
             Assert.Equal(1, item.Elements.Count);
             
-            Assert.Equal("item 1, para 1.\n", item.Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 1, para 2.\n", item.Elements[0].Lines[1].Text.Content);
+            Assert.Equal("item 1, para 1.\n", item.Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 1, para 2.\n", item.Elements[0].TextAreas[1].Content.Text);
             
-            Assert.Equal("item 2\n", list.Items[1].Elements[0].Lines[0].Text.Content);
+            Assert.Equal("item 2\n", list.Items[1].Elements[0].TextAreas[0].Content.Text);
         }
         
         [Fact]
@@ -84,10 +84,10 @@ namespace ReStructuredText.Tests
             var document = TestUtils.Test("bulletlist_differentmarker");
             Assert.Equal(5, document.Elements.Count);
 
-            Assert.Equal("item 1\n", ((BulletList)document.Elements[1]).Items[0].Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 2\n", ((BulletList)document.Elements[2]).Items[0].Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 3\n", ((BulletList)document.Elements[3]).Items[0].Elements[0].Lines[0].Text.Content);
-            Assert.Equal("item 4\n", ((BulletList)document.Elements[4]).Items[0].Elements[0].Lines[0].Text.Content);
+            Assert.Equal("item 1\n", ((BulletList)document.Elements[1]).Items[0].Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 2\n", ((BulletList)document.Elements[2]).Items[0].Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 3\n", ((BulletList)document.Elements[3]).Items[0].Elements[0].TextAreas[0].Content.Text);
+            Assert.Equal("item 4\n", ((BulletList)document.Elements[4]).Items[0].Elements[0].TextAreas[0].Content.Text);
         }
         
         [Fact]

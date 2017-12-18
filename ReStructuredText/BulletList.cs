@@ -32,7 +32,7 @@ namespace ReStructuredText
         }
 
         public ElementType TypeCode => ElementType.BulletList;
-        public IList<Line> Lines { get; }
+        public IList<ITextArea> TextAreas { get; }
         public IParent Parent { get; set; }
         public char Start { get; }
 

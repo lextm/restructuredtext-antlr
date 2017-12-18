@@ -20,18 +20,18 @@ using System;
 
 namespace ReStructuredText
 {
-    public class Line
+    public class TextArea : ITextArea
     {
-        public Text Text { get; }
+        public Content Content { get; }
 
         public bool IsIndented => Indentation > 0;
 
-        public int Indentation { get; internal set; }
+        public int Indentation { get; set; }
         
         public bool IsSection 
         { 
             get {
-                var clean = Text.Content.TrimEnd();
+                var clean = Content.Text.TrimEnd();
                 var start = clean[0];
                 for (int i = 1; i < clean.Length; i++)
                 {
@@ -45,16 +45,17 @@ namespace ReStructuredText
             }
         }
 
-        public bool IsQuoted => Text.Content.StartsWith("> ");
+        public bool IsQuoted => Content.Text.StartsWith("> ");
+        public ElementType ElementType => ElementType.Text;
 
-        public Line(Text text)
+        public TextArea(Content content)
         {
-            Text = text;
+            Content = content;
         }
 
         public override string ToString()
         {
-            return Text.Content;
+            return Content.Text;
         }
     }
 }

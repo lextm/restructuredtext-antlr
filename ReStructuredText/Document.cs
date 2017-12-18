@@ -70,7 +70,7 @@ namespace ReStructuredText
                 }
                 else
                 {
-                    Elements.Add(new Paragraph(item.Lines));
+                    Elements.Add(new Paragraph(item.TextAreas));
                 }
             }
         }
@@ -127,19 +127,19 @@ namespace ReStructuredText
 
                 if (!(Elements.LastOrDefault() is BlockQuote block))
                 {
-                    if (current.Lines[0].IsIndented || current.Lines[0].IsQuoted)
+                    if (current.TextAreas[0].IsIndented || current.TextAreas[0].IsQuoted)
                     {
-                        var last = Elements.LastOrDefault()?.Lines?.LastOrDefault()?.Text.Content.TrimEnd();
+                        var last = Elements.LastOrDefault()?.TextAreas?.LastOrDefault()?.Content.Text.TrimEnd();
                         if (last != null && last.EndsWith("::"))
                         {
-                            current = new LiteralBlock(current.Lines);
-                            Elements.Last().Lines.Last().Text.RemoveLiteral();
+                            current = new LiteralBlock(current.TextAreas);
+                            Elements.Last().TextAreas.Last().Content.RemoveLiteral();
                         }
                         else
                         {
                             if (Elements.LastOrDefault() is BulletList bullet)
                             {
-                                if (current.Lines[0].Indentation == 2)
+                                if (current.TextAreas[0].Indentation == 2)
                                 {
                                     bullet.Add(current);
                                     continue;
@@ -148,14 +148,14 @@ namespace ReStructuredText
                             
                             if (Elements.LastOrDefault() is EnumeratedList list)
                             {
-                                if (current.Lines[0].Indentation == 3)
+                                if (current.TextAreas[0].Indentation == 3)
                                 {
                                     list.Add(current);
                                     continue;
                                 }
                             }
 
-                            var level = current.Lines[0].Indentation / indentation;
+                            var level = current.TextAreas[0].Indentation / indentation;
                             while (level > 0)
                             {
                                 current = new BlockQuote(level, current);
@@ -176,9 +176,9 @@ namespace ReStructuredText
                     continue;
                 }
 
-                if (current.Lines[0].IsIndented)
+                if (current.TextAreas[0].IsIndented)
                 {
-                    var level = current.Lines[0].Indentation / indentation;
+                    var level = current.TextAreas[0].Indentation / indentation;
                     block.Add(current, level);
                 }
                 else

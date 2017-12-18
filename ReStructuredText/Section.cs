@@ -24,30 +24,30 @@ namespace ReStructuredText
     public class Section : IElement, IParent
     {
         public int Level { get; }
-        public IList<IElement> Content { get; }
+        public IList<IElement> Elements { get; }
         public string Title { get; set; }
 
         public Section(int level, string title, IList<IElement> content)
         {
             Title = title.Trim();
             Level = level;
-            Content = new List<IElement>();
+            Elements = new List<IElement>();
             foreach (var item in content)
             {
                 item.Parent = this;
-                if (item.Lines.Count == 0)
+                if (item.TextAreas.Count == 0)
                 {
                     continue;
                 }
 
-                Content.Add(item);
+                Elements.Add(item);
             }
         }
 
         public ElementType TypeCode => ElementType.Section;
 
         // TODO:
-        public IList<Line> Lines => Content[0].Lines;
+        public IList<ITextArea> TextAreas => Elements[0].TextAreas;
 
         public IParent Parent { get; set; }
 
@@ -55,7 +55,7 @@ namespace ReStructuredText
         {
             if (!(current is Section section) || section.Level == Level + 1)
             {
-                Content.Add(current);
+                Elements.Add(current);
                 current.Parent = this;
                 return;
             }
@@ -66,7 +66,7 @@ namespace ReStructuredText
             }
             else
             {
-                var child = Content.LastOrDefault() as Section;
+                var child = Elements.LastOrDefault() as Section;
                 child?.Add(current);
             }
         }
