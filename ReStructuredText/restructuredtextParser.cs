@@ -355,7 +355,7 @@ namespace ReStructuredText
 
             public override ITextArea VisitBackTickText([NotNull] BackTickTextContext context)
             {
-                return new BackTickText(new TextArea(new Content(context.GetText())));
+                return new BackTickText(context.titled == null ? null : context.titled.GetText(), new TextArea(new Content(context.body().GetText())));
             }
 
             public override ITextArea VisitTextStart([NotNull] TextStartContext context)

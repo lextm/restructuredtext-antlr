@@ -34,6 +34,7 @@ namespace ReStructuredText
         /// <summary>
         /// Reserved. Used only for parsing process.
         /// </summary>
-        BackTickText
+        BackTickText,
+        InterpretedText
     }
 }

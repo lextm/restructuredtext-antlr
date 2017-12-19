@@ -66,5 +66,20 @@ namespace ReStructuredText
             Text = regex.Replace (Text, match => ((char)int.Parse (match.Groups[1].Value,
                 NumberStyles.HexNumber)).ToString ());
         }
+
+        public string RemoveTitle()
+        {
+            string title = null; 
+            var regex = new Regex(":(?<title>.*):$");
+            var match = regex.Match(Text);
+            if (!match.Success)
+            {
+                return title;
+            }
+            
+            title = match.Groups["title"].Value;
+            Text = regex.Replace(Text, string.Empty);
+            return title;
+        }
     }
 }

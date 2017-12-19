@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ReStructuredText
 {
     public class BackTickText : ITextArea
     {
+        public string Title { get; set; }
         private readonly TextArea _textArea;
 
-        public BackTickText(TextArea textArea)
+        public BackTickText(string title, TextArea textArea)
         {
+            Title = title;
             _textArea = textArea;
         }
 
@@ -54,18 +58,46 @@ namespace ReStructuredText
                     {
                         list.Add(new Literal(new TextArea(part)));
                     }
+                    else if (maxLevel == 1)
+                    {
+                        var title = Title;
+                        if (title == null)
+                        {
+                            var last = list.LastOrDefault();
+                            if (last is TextArea text)
+                            {
+                                title = text.Content.RemoveTitle();
+                            }
+                        }
+                        else
+                        {
+                            Title = null;
+                        }
+
+                        list.Add(new InterpretedText(title, new TextArea(part)));
+                    }
+                    else if (maxLevel == 0)
+                    {
+                        list.Add(new TextArea(part));
+                    }
                     else
                     {
                         list.Add(new Literal(new TextArea($"`{part}`")));
                     }
 
                     maxLevel = 0;
+                    if (level < 0)
+                    {
+                        // restart
+                        maxLevel = level = 1;
+                    }
+
                     length = 0;
+                    start = i;
                     continue;
                 }
 
                 length++;
-                continue;
             }
         }
     }

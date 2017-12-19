@@ -163,6 +163,10 @@ italicAtom
   ;
 
 backTickText
+  :  (':' titled=backTickAtoms ':')? body
+  ;
+
+body
   :  (BackTick backTickText BackTick)
   |  (BackTick backTickAtoms BackTick+)
   ;
