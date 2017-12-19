@@ -349,7 +349,8 @@ namespace ReStructuredText
                     return VisitInlineLiteral(inline);
                 }
 
-                throw new NotImplementedException();
+                // TODO:
+                return new TextArea(new Content(context.GetText()));
             }
 
             public override ITextArea VisitInlineLiteral([NotNull] InlineLiteralContext context)
