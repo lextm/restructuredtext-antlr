@@ -26,7 +26,18 @@ namespace ReStructuredText
 
         public Paragraph(IList<ITextArea> textAreas)
         {
-            TextAreas = textAreas;
+            TextAreas = new List<ITextArea>();
+            foreach (var area in textAreas)
+            {
+                if (area.TypeCode == ElementType.BackTickText)
+                {
+                    ((BackTickText)area).Process(TextAreas);
+                }
+                else
+                {
+                    TextAreas.Add(area);
+                }
+            }
         }
 
         public bool IsBlockQuote => TextAreas.Count > 0 && TextAreas[0].IsIndented;

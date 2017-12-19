@@ -9,6 +9,6 @@
         Content Content { get; }
         int Indentation { get; set; }
         bool IsQuoted { get; }
-        ElementType ElementType { get; }
+        ElementType TypeCode { get; }
     }
 }

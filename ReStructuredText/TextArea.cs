@@ -46,13 +46,18 @@ namespace ReStructuredText
         }
 
         public bool IsQuoted => Content.Text.StartsWith("> ");
-        public ElementType ElementType => ElementType.Text;
+        public ElementType TypeCode => ElementType.Text;
 
+        public TextArea(string content)
+        {
+            Content = new Content(content);
+        }
+        
         public TextArea(Content content)
         {
             Content = content;
         }
-
+        
         public override string ToString()
         {
             return Content.Text;

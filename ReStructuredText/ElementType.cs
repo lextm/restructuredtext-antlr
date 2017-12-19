@@ -30,6 +30,10 @@ namespace ReStructuredText
         LiteralBlock,
         EnumeratedList,
         Literal,
-        Text
+        Text,
+        /// <summary>
+        /// Reserved. Used only for parsing process.
+        /// </summary>
+        BackTickText
     }
 }

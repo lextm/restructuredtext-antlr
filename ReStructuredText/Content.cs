@@ -62,7 +62,7 @@ namespace ReStructuredText
 
         public void Unescape()
         {
-            Regex regex = new Regex (@"\\U([0-9A-F]{4})", RegexOptions.IgnoreCase);
+            Regex regex = new Regex (@"\\[Ux]([0-9A-F]{2,4})", RegexOptions.IgnoreCase);
             Text = regex.Replace (Text, match => ((char)int.Parse (match.Groups[1].Value,
                 NumberStyles.HexNumber)).ToString ());
         }

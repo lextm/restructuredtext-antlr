@@ -280,7 +280,7 @@ namespace ReStructuredText
 
                 result.First().Indentation = length;
                 var lineBreak = context.LineBreak();
-                if (result.Last().ElementType == ElementType.Text)
+                if (result.Last().TypeCode == ElementType.Text)
                 {
                     result.Last().Content.Append(lineBreak.GetText());
                 }
@@ -343,32 +343,29 @@ namespace ReStructuredText
             
             public override ITextArea VisitSpan([NotNull] SpanContext context)
             {
-                var inline = context.inlineLiteral();
+                var inline = context.backTickText();
                 if (inline != null)
                 {
-                    return VisitInlineLiteral(inline);
+                    return VisitBackTickText(inline);
                 }
 
                 // TODO:
                 return new TextArea(new Content(context.GetText()));
             }
 
-            public override ITextArea VisitInlineLiteral([NotNull] InlineLiteralContext context)
+            public override ITextArea VisitBackTickText([NotNull] BackTickTextContext context)
             {
-                var textContext = context.inlineLiteralAtoms();
-                return new Literal(new TextArea(new Content(textContext.GetText())));
+                return new BackTickText(new TextArea(new Content(context.GetText())));
             }
 
             public override ITextArea VisitTextStart([NotNull] TextStartContext context)
             {
-                var text = context.GetText();
-                return new TextArea(new Content(text));
+                return new TextArea(new Content(context.GetText()));
             }
             
             public override ITextArea VisitTextEnd([NotNull] TextEndContext context)
             {
-                var text = context.GetText();
-                return new TextArea(new Content(text));
+                return new TextArea(new Content(context.GetText()));
             }
         }
 

@@ -18,6 +18,6 @@
         }
 
         public bool IsQuoted => _textArea.IsQuoted;
-        public ElementType ElementType => ElementType.Literal;
+        public ElementType TypeCode => ElementType.Literal;
     }
 }

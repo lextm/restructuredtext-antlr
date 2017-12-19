@@ -96,11 +96,10 @@ span
   :  styledText
   |  reference
   |  referenceIn
-  |  inlineLiteral
-  |  interpretedText
   |  hyperlinkTarget
   |  hyperlink
   |  hyperlinkDoc
+  |  backTickText
   ;
  
 text_fragment_start
@@ -163,23 +162,16 @@ italicAtom
   |  bold
   ;
 
-interpretedText
-  :  BackTick interpretedTextAtoms BackTick
+backTickText
+  :  (BackTick backTickText BackTick)
+  |  (BackTick backTickAtoms BackTick+)
   ;
 
-interpretedTextAtoms
-  :  ~(BackTick | '<' | '>' )+
+backTickAtoms
+  :  backTickAtom+
   ;
 
-inlineLiteral
-  :  BackTick BackTick inlineLiteralAtoms BackTick BackTick
-  ;
-
-inlineLiteralAtoms
-  :  inlineLiteralAtom+
-  ;
-
-inlineLiteralAtom
+backTickAtom
   :  ~BackTick
   |  BackTick ~BackTick
   ;
