@@ -29,9 +29,30 @@ namespace ReStructuredText
 
         public Section(int level, IList<ITextArea> title, IList<IElement> content)
         {
-            Title = title;
+            Title = new List<ITextArea>();
+            foreach (var area in title)
+            {
+                if (area.TypeCode == ElementType.BackTickText)
+                {
+                    ((BackTickText)area).Process(TextAreas);
+                }
+                else if (area.TypeCode == ElementType.StarText)
+                {
+                    ((StarText)area).Process(Title);
+                }
+                else
+                {
+                    Title.Add(area);
+                }
+            }
+            
             Title.First().Content.RemoveStart();
             Title.Last().Content.RemoveEnd();
+            if (title.Last().Content.Text.Length == 0)
+            {
+                Title.Remove(title.Last());
+            }
+            
             Level = level;
             Elements = new List<IElement>();
             foreach (var item in content)
@@ -48,8 +69,7 @@ namespace ReStructuredText
 
         public ElementType TypeCode => ElementType.Section;
 
-        // TODO:
-        public IList<ITextArea> TextAreas => Elements[0].TextAreas;
+        public IList<ITextArea> TextAreas => Title;
 
         public IParent Parent { get; set; }
 

@@ -63,7 +63,7 @@ namespace ReStructuredText
                 {
                     list.Items.Add(item);
                 }
-                else if (item.HasEnding)
+                else if (item.CreateNewList)
                 {
                     list = new EnumeratedList(item);
                     Elements.Add(list);
@@ -97,6 +97,17 @@ namespace ReStructuredText
                 var current = raw[i];
                 if (current.TypeCode == ElementType.Comment || current.TypeCode == ElementType.ListItem)
                 {
+                    if (current is ListItem item && item.Enumerator != null)
+                    {
+                        if (i < raw.Count - 1)
+                        {
+                            if (raw[i + 1] is ListItem next)
+                            {
+                                item.Analyze(next);
+                            }
+                        }
+                    }
+                    
                     if (section == null)
                     {
                         Add(current);
@@ -107,19 +118,6 @@ namespace ReStructuredText
                     }
 
                     continue;
-                }
-
-                if (current is Paragraph paragraph)
-                {
-                    if (paragraph.Level > 0)
-                    {
-                        current = new Section(paragraph.Level, paragraph.TextAreas, new List<IElement>(0));
-                    }
-
-                    if (paragraph.ConvertToBulletList)
-                    {
-                        current = new ListItem("*", null, new[] { paragraph });
-                    }
                 }
 
                 if (current.TypeCode == ElementType.Section)

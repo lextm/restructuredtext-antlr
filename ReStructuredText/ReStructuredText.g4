@@ -48,12 +48,13 @@ paragraph
   ;
 
 section
-  :  (LineBreak Section)? LineBreak title LineBreak Section (LineBreak)* sectionElement*
+  :  (LineBreak Section)? title LineBreak Section (LineBreak)* sectionElement*
   ;
 
 title
-  : textStart
-  | enumerated=Numbers '.' Space+ (paragraphNoBreak paragraph*)?
+  : LineBreak textStart
+  | LineBreak lineSpecial Space+ (paragraphNoBreak)?
+  | line
   ;
 
 lineBlock
@@ -65,7 +66,8 @@ lineBlockAtom
   ;
 
 listItemBullet
-  :  LineBreak Space* bullet (Space+ paragraph+)?
+  :  LineBreak Space* bullet Space+ (paragraph+)?
+  |  LineBreak Space* special=(Minus | Plus)
   ;
 
 bullet
@@ -147,7 +149,7 @@ quotedLiteral
   ;
 
 text_fragment_firstTwo
-  :  (Star ~Space)
+  :  (Star ~(Space | LineBreak))
   |  (Minus ~Space)
   |  (Plus ~Space)
   |  (Numbers Dot ~(Space | LineBreak))
@@ -190,8 +192,8 @@ text_fragment
   ;
 
 starText
-  :  Star Star+ starAtoms Star+
-  |  Star starNoSpace starAtoms Star*
+  :  Star Star* starAtoms Star+
+  |  Star starNoSpace starAtoms LineBreak? Space* starNoSpace starAtoms Star*
   |  Star Star
   ;
 
@@ -230,7 +232,7 @@ reference
   ;
 
 referenceIn
-  :  UnderScore hyperlinkAtom+ ':' Space url
+  :  UnderScore hyperlinkAtom+ Colon Space url
   ;
 
 hyperlinkTarget
@@ -255,7 +257,7 @@ urlAtom
   ;
   
 hyperlinkAtom
-  :  ~( LineBreak | '<' | '>' | '`' | '*' )
+  :  ~( LineBreak | '<' | '>' | BackTick | Star )
   ;
 
 Literal
@@ -263,7 +265,7 @@ Literal
   ;
 
 Section
-  :  ('-' | '=' | '+') ('-' | '=' | '+') ('-' | '=' | '+')+
+  :  (Minus | Equal | Plus) (Minus | Equal | Plus) (Minus | Equal | Plus)+
   ;
 
 Alphabet

@@ -24,11 +24,8 @@ namespace ReStructuredText
     {
         public IList<ITextArea> TextAreas { get; }
 
-        public int Level { get; }
-
-        public Paragraph(IList<ITextArea> textAreas, int level = 0)
+        public Paragraph(IList<ITextArea> textAreas)
         {
-            Level = level;
             TextAreas = new List<ITextArea>();
             foreach (var area in textAreas)
             {
@@ -38,18 +35,11 @@ namespace ReStructuredText
                 }
                 else if (area.TypeCode == ElementType.StarText)
                 {
-                    ((StarText)area).Process(this);
+                    ((StarText)area).Process(TextAreas);
                 }
                 else
                 {
-                    if (ConvertToBulletList && TextAreas.Count == 1)
-                    {
-                        TextAreas[0].Content.Append(area.Content.Text);
-                    }
-                    else
-                    {
-                        TextAreas.Add(area);
-                    }
+                    TextAreas.Add(area);
                 }
             }
         }
@@ -59,7 +49,6 @@ namespace ReStructuredText
         public ElementType TypeCode => ElementType.Paragraph;
 
         public IParent Parent { get; set; }
-        public bool ConvertToBulletList { get; internal set; }
 
         public override string ToString()
         {

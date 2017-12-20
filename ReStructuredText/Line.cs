@@ -17,7 +17,7 @@ namespace ReStructuredText
                 }
                 else if (area.TypeCode == ElementType.StarText)
                 {
-                    ((StarText)area).Process(this);
+                    ((StarText)area).Process(TextAreas);
                 }
                 else
                 {

@@ -43,6 +43,27 @@ namespace ReStructuredText
         public ElementType TypeCode => ElementType.ListItem;
         public IList<ITextArea> TextAreas => Elements[0].TextAreas;
         public IParent Parent { get; set; }
-        public bool HasEnding { get; set; }
+        
+        internal int LineNumber { get; set; }
+
+        internal bool CreateNewList { get; set; } = true;
+
+        public void Analyze(ListItem next)
+        {
+            if (next.LineNumber == LineNumber + 1)
+            {
+                if (next.Index < Index)
+                {
+                    CreateNewList = false;
+                }
+                else if (next.Index == Index + 1)
+                {
+                }
+                else
+                {
+                    CreateNewList = false;
+                }
+            }
+        }
     }
 }

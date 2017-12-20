@@ -150,7 +150,8 @@ namespace ReStructuredText
         {
             public override Section VisitSection(SectionContext context)
             {
-                var title = context.title().GetText();
+                var titleVisitor = new TextAreasVisitor().Inherit(this);
+                var title = titleVisitor.VisitTitle(context.title());
                 var separator = context.Section()[0].GetText();
                 var level = SectionTracker.Track(separator[0]);
                 var list = new List<IElement>();
@@ -164,7 +165,7 @@ namespace ReStructuredText
                     }
                 }
 
-                return new Section(level, new List<ITextArea>{new TextArea(title)}, list);
+                return new Section(level, title, list);
             }
         }
         
@@ -172,6 +173,11 @@ namespace ReStructuredText
         {
             public override ListItem VisitListItemBullet(ListItemBulletContext context)
             {
+                if (context.special != null)
+                {
+                    return new ListItem(context.special.Text, null, new List<Paragraph>(0));
+                }
+
                 var start = context.bullet().GetText();
                 var list = new List<Paragraph>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
@@ -206,7 +212,7 @@ namespace ReStructuredText
                     }
                 }
 
-                return new ListItem(null, enumerator, list);
+                return new ListItem(null, enumerator, list) { LineNumber = context.LineBreak().Symbol.Line };
             }
         }
         
@@ -260,27 +266,12 @@ namespace ReStructuredText
                 var lineVisitor = new TextAreasVisitor().Inherit(this);
                 var lines = new List<ITextArea>();
                 var children = context.line();
-                var level = 0;
-                for (int i = 0; i < children.Length; i++)
+                foreach (var child in children)
                 {
-                    var line = children[i];
-                    var items = lineVisitor.VisitLine(line);
-                    if (children.Length == 2 && i == children.Length - 1 && items.Length == 1 && items[0].Content.IsSection && !lines.First().IsIndented)
-                    {
-                        level = SectionTracker.Track(items[0].Content.Text[0]);
-                        lines.Last().Content.RemoveEnd();
-                        if (lines.Last().Content.Text.Length == 0)
-                        {
-                            lines.RemoveAt(lines.Count - 1);
-                        }
-                        
-                        continue;
-                    }
-                    
-                    lines.AddRange(items);
+                    lines.AddRange(lineVisitor.VisitLine(child));
                 }
 
-                return new Paragraph(lines, level);
+                return new Paragraph(lines);
             }
 
             public override Paragraph VisitParagraphNoBreak([NotNull] ParagraphNoBreakContext context)
@@ -292,33 +283,30 @@ namespace ReStructuredText
                 {
                     lines.AddRange(lineVisitor.VisitLineNoBreak(noBreak));
                 }
+
                 var children = context.line();
-                var level = 0;
-                for (int i = 0; i < children.Length; i++)
+                foreach (var child in children)
                 {
-                    var line = children[i];
-                    var items = lineVisitor.VisitLine(line);
-                    if (children.Length == 2 && i == children.Length - 1 && items.Length == 1 && items[0].Content.IsSection && !lines.First().IsIndented)
-                    {
-                        level = SectionTracker.Track(items[0].Content.Text[0]);
-                        lines.Last().Content.RemoveEnd();
-                        if (lines.Last().Content.Text.Length == 0)
-                        {
-                            lines.RemoveAt(lines.Count - 1);
-                        }
-
-                        continue;
-                    }
-
-                    lines.AddRange(items);
+                    lines.AddRange(lineVisitor.VisitLine(child));
                 }
 
-                return new Paragraph(lines, level);
+                return new Paragraph(lines);
             }
         }
 
         class TextAreasVisitor : TrackedBaseVisitor<ITextArea[]>
         {
+            public override ITextArea[] VisitTitle([NotNull] TitleContext context)
+            {
+                var lineContext = context.line();
+                if (lineContext != null)
+                {
+                    return VisitLine(lineContext);
+                }
+
+                return new ITextArea[] { new TextArea(context.GetText()) };
+            }
+
             public override ITextArea[] VisitLineNoBreak([NotNull] LineNoBreakContext context)
             {
                 var result = new List<ITextArea>();
