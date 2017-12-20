@@ -32,27 +32,62 @@ element
   ;
   
 sectionElement
-  :  comment | listItemBullet | paragraph | listItemEnumerated | lineBlock
+  :  comment | listItemBullet | listItemEnumerated | paragraph | lineBlock
   ;
 
 comment
-  :  Space* Comment (line+)?
+  :  Space* Comment Space* (commentLine line*)?
+  ;
+
+commentLine
+  :  LineBreak? lineStart lineEnd
   ;
 
 paragraph
   :  line+
   ;
-  
+
 section
-  :  (Section LineBreak)? title Section (LineBreak)+ sectionElement*
+  :  (LineBreak Section)? LineBreak title LineBreak Section (LineBreak)* sectionElement*
+  ;
+
+title
+  : textStart
+  | enumerated=Numbers '.' Space+ (paragraphNoBreak paragraph*)?
+  ;
+
+lineBlock
+  :  lineBlockAtom+
+  ;
+
+lineBlockAtom
+  :  LineBreak Block Space indentation? lineStart lineEnd
+  ;
+
+listItemBullet
+  :  LineBreak Space* bullet (Space+ paragraph+)?
+  ;
+
+bullet
+  :  Star 
+  |  Minus 
+  |  Plus
+  ;
+
+listItemEnumerated
+  :  LineBreak enumerated=Numbers Dot Space+ (paragraphNoBreak paragraph*)?
   ;
   
-lineBlock
-  :  (Block line)+
-  ;  
+paragraphNoBreak
+  :  lineNoBreak line*
+  ;
 
+lineNoBreak
+  :  lineStart lineEnd
+  ;
+  
 line
-  :  indentation? lineStart lineEnd LineBreak
+  :  (LineBreak indentation?)? lineStart lineEnd
   ;
   
 lineStart
@@ -69,7 +104,7 @@ lineAtom
   ;
 
 empty_line
-  :  Space* LineBreak
+  :  LineBreak Space*
   ;
 
 indentation
@@ -77,7 +112,9 @@ indentation
   ;
 
 textStart
-  : text_fragment_start text_fragment*
+  : text_fragment_firstTwo text_fragment*
+  | '=='
+  | 'A' text_fragment*
   ;
 
 textEnd
@@ -86,10 +123,6 @@ textEnd
   
 textAtoms
   : text_fragment+
-  ;
-  
-title
-  : text_fragment+ LineBreak
   ;
  
 span
@@ -100,19 +133,29 @@ span
   |  hyperlink
   |  hyperlinkDoc
   |  backTickText
+  |  quotedLiteral
   ;
- 
+
+quotedLiteral
+  : '>' Space lineNoBreak
+  ;
+
+text_fragment_firstTwo
+  :  (Star ~Space)
+  |  (Minus ~Space)
+  |  (Plus ~Space)
+  |  (Numbers Dot ~(Space | LineBreak))
+  |  (Block ~Space)
+  |  text_fragment_start text_fragment_start text_fragment
+  ;
+  
 text_fragment_start
   :  Section
-  |  Plus
-  |  Minus
   |  SemiColon
   |  EscapeSequence
   |  UnderScore
   |  Numbers
-  |  '.'
   |  '/'
-  |  '.'
   |  '#'
   |  '['
   |  ']'
@@ -131,29 +174,34 @@ text_fragment_start
 text_fragment
   :  text_fragment_start
   |  Block
-  |  Bullet
   |  Literal
-  |  Enumerated
   |  Comment
   |  Space
+  |  Dot
+  |  Minus
+  |  Quote
   ;
 
 starText
-  :  Star+ starAtoms Star+
+  :  Star Star+ starAtoms Star+
+  |  Star starNoSpace starAtoms Star*
   |  Star Star
-  |  Star Space+ starAtoms
   ;
 
 starAtoms
   :  starAtom+ (Star* starAtom)*
   ;
-  
+
+starNoSpace
+  :  ~(Star | LineBreak | Space)
+  ;
+
 starAtom
   :  ~(Star | LineBreak)
   ;
 
 backTickText
-  :  (':' titled=backTickAtoms ':')? body
+  :  (Colon titled=backTickAtoms Colon)? body
   ;
 
 body
@@ -203,14 +251,6 @@ hyperlinkAtom
   :  ~( LineBreak | '<' | '>' | '`' | '*' )
   ;
 
-listItemBullet
-  :  Space* Bullet (paragraph+)?
-  ;
-
-listItemEnumerated
-  :  Enumerated paragraph+ ending=LineBreak? 
-  ;
-  
 Literal
   :  Colon LineBreak LineBreak* Colon Colon
   ;
@@ -219,18 +259,16 @@ Section
   :  ('-' | '=' | '+') ('-' | '=' | '+') ('-' | '=' | '+')+
   ;
   
-Bullet
-  :  Plus Space 
-  |  Minus Space
-  ;
-  
-Enumerated
-  :  (Numbers '.' Space)
-  ;
-
- 
 Numbers
   : [0-9]+
+  ;
+
+Quote
+  :  Colon Colon
+  ;
+
+Dot
+  :  '.'
   ;
   
 SemiColon
@@ -254,7 +292,7 @@ Minus
   ;
 
 Block
-  :  '| '
+  :  '|'
   ;
 
 Comment

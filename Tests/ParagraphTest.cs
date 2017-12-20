@@ -16,8 +16,9 @@ namespace ReStructuredText.Tests
         [Fact]
         public void SingleLine()
         {
-            // TODO: see how to resolve this.
-            Assert.Throws<InvalidOperationException>(() => TestUtils.Test("paragraph_single"));
+            var document = TestUtils.Test("paragraph_single");
+            Assert.Equal(1, document.Elements.Count);
+            Assert.Equal("A paragraph.\n", document.Elements[0].TextAreas[0].Content.Text);
         }
 
         [Fact]

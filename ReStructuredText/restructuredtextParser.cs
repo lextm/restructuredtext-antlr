@@ -102,7 +102,6 @@ namespace ReStructuredText
                     return element;
                 }
                 
-                
                 //TODO: throw a better exception.
                 throw new InvalidOperationException();
             }
@@ -173,7 +172,7 @@ namespace ReStructuredText
         {
             public override ListItem VisitListItemBullet(ListItemBulletContext context)
             {
-                var start = context.Bullet()?.GetText();
+                var start = context.bullet().GetText();
                 var list = new List<Paragraph>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var paragraph = context.paragraph();
@@ -190,9 +189,14 @@ namespace ReStructuredText
             
             public override ListItem VisitListItemEnumerated(ListItemEnumeratedContext context)
             {
-                var enumerator = context.Enumerated()?.GetText();
+                var enumerator = context.enumerated.Text;
                 var list = new List<Paragraph>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
+                var start = context.paragraphNoBreak();
+                if (start != null)
+                {
+                    list.Add(paragraphVisitor.VisitParagraphNoBreak(start));
+                }
                 var paragraph = context.paragraph();
                 if (paragraph != null)
                 {
@@ -202,8 +206,7 @@ namespace ReStructuredText
                     }
                 }
 
-                var ending = context.ending;
-                return new ListItem(null, enumerator, list) {HasEnding = ending != null};
+                return new ListItem(null, enumerator, list);
             }
         }
         
@@ -213,9 +216,9 @@ namespace ReStructuredText
             {
                 var lineVisitor = new TextAreasVisitor().Inherit(this);
                 var lines = new List<Line>();
-                foreach (var line in context.line())
+                foreach (var line in context.lineBlockAtom())
                 {
-                    lines.Add(new Line(lineVisitor.VisitLine(line)));
+                    lines.Add(new Line(lineVisitor.VisitLineBlockAtom(line)));
                 }
                 
                 return new LineBlock(lines);
@@ -227,11 +230,21 @@ namespace ReStructuredText
             public override Comment VisitComment([NotNull] CommentContext context)
             {
                 InComment = true;
-                var lineVisitor = new TextAreasVisitor().Inherit(this);
                 var lines = new List<ITextArea>();
-                foreach (var line in context.line())
+                var lineVisitor = new TextAreasVisitor().Inherit(this);
+                var commentLineContext = context.commentLine();
+                if (commentLineContext != null)
                 {
-                    lines.AddRange(lineVisitor.VisitLine(line));
+                    lines.AddRange(lineVisitor.VisitCommentLine(commentLineContext));
+                }
+
+                var lineContext = context.line();
+                if (lineContext != null)
+                {
+                    foreach (var line in lineContext)
+                    {
+                        lines.AddRange(lineVisitor.VisitLine(line));
+                    }
                 }
 
                 InComment = false;
@@ -269,17 +282,110 @@ namespace ReStructuredText
 
                 return new Paragraph(lines, level);
             }
+
+            public override Paragraph VisitParagraphNoBreak([NotNull] ParagraphNoBreakContext context)
+            {
+                var lineVisitor = new TextAreasVisitor().Inherit(this);
+                var lines = new List<ITextArea>();
+                var noBreak = context.lineNoBreak();
+                if (noBreak != null)
+                {
+                    lines.AddRange(lineVisitor.VisitLineNoBreak(noBreak));
+                }
+                var children = context.line();
+                var level = 0;
+                for (int i = 0; i < children.Length; i++)
+                {
+                    var line = children[i];
+                    var items = lineVisitor.VisitLine(line);
+                    if (children.Length == 2 && i == children.Length - 1 && items.Length == 1 && items[0].Content.IsSection && !lines.First().IsIndented)
+                    {
+                        level = SectionTracker.Track(items[0].Content.Text[0]);
+                        lines.Last().Content.RemoveEnd();
+                        if (lines.Last().Content.Text.Length == 0)
+                        {
+                            lines.RemoveAt(lines.Count - 1);
+                        }
+
+                        continue;
+                    }
+
+                    lines.AddRange(items);
+                }
+
+                return new Paragraph(lines, level);
+            }
         }
 
         class TextAreasVisitor : TrackedBaseVisitor<ITextArea[]>
         {
+            public override ITextArea[] VisitLineNoBreak([NotNull] LineNoBreakContext context)
+            {
+                var result = new List<ITextArea>();
+                var bodyContext = context.lineStart();
+                result.AddRange(VisitLineStart(bodyContext));
+
+                var endContext = context.lineEnd();
+                if (endContext != null)
+                {
+                    result.AddRange(VisitLineEnd(endContext));
+                }
+
+                if (result.Last().TypeCode == ElementType.Text)
+                {
+                    result.Last().Content.Append("\n");
+                }
+                else
+                {
+                    result.Add(new TextArea("\n"));
+                }
+
+                return result.ToArray();
+            }
+
+            public override ITextArea[] VisitCommentLine([NotNull] CommentLineContext context)
+            {
+                var text = context.GetText().TrimStart() + "\n";
+                return new ITextArea[] { new TextArea(text) };
+            }
+
             public override ITextArea[] VisitLine([NotNull] LineContext context)
             {
                 if (InComment)
                 {
-                    return new ITextArea[] {new TextArea(context.GetText().TrimStart())};
+                    var text = context.GetText().TrimStart() + "\n";
+                    return new ITextArea[] {new TextArea(text)};
                 }
-                
+
+                var result = new List<ITextArea>();
+                var indentation = context.indentation();
+                int length = indentation == null ? 0 : indentation.GetText().Length;
+                IndentationTracker.Track(length);
+
+                var bodyContext = context.lineStart();
+                result.AddRange(VisitLineStart(bodyContext));
+
+                var endContext = context.lineEnd();
+                if (endContext != null)
+                {
+                    result.AddRange(VisitLineEnd(endContext));
+                }
+
+                result.First().Indentation = length;
+                if (result.Last().TypeCode == ElementType.Text)
+                {
+                    result.Last().Content.Append("\n");
+                }
+                else
+                {
+                    result.Add(new TextArea("\n"));
+                }
+
+                return result.ToArray();
+            }
+            
+            public override ITextArea[] VisitLineBlockAtom([NotNull] LineBlockAtomContext context)
+            {
                 var indentation = context.indentation();
                 var result = new List<ITextArea>();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
@@ -295,19 +401,10 @@ namespace ReStructuredText
                 }
 
                 result.First().Indentation = length;
-                var lineBreak = context.LineBreak();
-                if (result.Last().TypeCode == ElementType.Text)
-                {
-                    result.Last().Content.Append(lineBreak.GetText());
-                }
-                else
-                {
-                    result.Add(new TextArea(lineBreak.GetText()));
-                }
-
                 return result.ToArray();
             }
 
+            
             public override ITextArea[] VisitLineStart([NotNull] LineStartContext context)
             {
                 var span = context.span();
