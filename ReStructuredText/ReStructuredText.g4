@@ -93,7 +93,7 @@ title
   ;
  
 span
-  :  styledText
+  :  starText
   |  reference
   |  referenceIn
   |  hyperlinkTarget
@@ -104,7 +104,6 @@ span
  
 text_fragment_start
   :  Section
-  |  Star
   |  Plus
   |  Minus
   |  SemiColon
@@ -139,27 +138,18 @@ text_fragment
   |  Space
   ;
 
-styledText
-  :  bold
-  |  italic
+starText
+  :  (Star starText Star)
+  |  (Star starAtoms Star+)
   ;
 
-bold
-  :  Star Star boldAtom+ Star Star
-  ;  
-
-italic
-  :  Star italicAtom+ (Star | StarSpace)
+starAtoms
+  :  starAtom+
   ;
-
-boldAtom
-  :  ~Star | ~LineBreak
-  |  italic
-  ;
-
-italicAtom
-  :  ~Star | ~LineBreak
-  |  bold
+  
+starAtom
+  :  ~Star
+  | Star ~Star
   ;
 
 backTickText

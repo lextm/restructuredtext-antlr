@@ -32,16 +32,31 @@ namespace ReStructuredText
         }
 
         public string Text { get; private set; }
+        public bool IsSection
+        {
+            get
+            {
+                var pure = Text.TrimEnd();
+                foreach (var item in pure)
+                {
+                    if (item != Text[0])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
 
         public void RemoveEnd()
         {
-            Text = Text.TrimEnd();
+            Text = Text.TrimEnd('\r', '\n');
         }
 
         public void RemoveLiteral()
         {
-            RemoveEnd();
-            Text = Text.TrimEnd(':');
+            Text = Text.TrimEnd().TrimEnd(':');
         }
 
         public void Append(int indentation)

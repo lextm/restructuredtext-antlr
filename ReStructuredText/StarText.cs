@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace ReStructuredText
 {
-    public class BackTickText : ITextArea
+    public class StarText : ITextArea
     {
-        public string Title { get; set; }
         private readonly TextArea _textArea;
 
-        public BackTickText(string title, TextArea textArea)
+        public StarText(TextArea textArea)
         {
-            Title = title;
             _textArea = textArea;
         }
 
@@ -23,7 +20,7 @@ namespace ReStructuredText
         }
 
         public bool IsQuoted => _textArea.IsQuoted;
-        public ElementType TypeCode => ElementType.BackTickText;
+        public ElementType TypeCode => ElementType.StarText;
 
         public void Process(IList<ITextArea> list)
         {
@@ -34,7 +31,7 @@ namespace ReStructuredText
             var maxLevel = 0;
             for (int i = 0; i < content.Length; i++)
             {
-                if (content[i] == '`')
+                if (content[i] == '*')
                 {
                     if (length == 0)
                     {
@@ -55,33 +52,22 @@ namespace ReStructuredText
                     var part = content.Substring(start + 1, length);
                     if (maxLevel == 2)
                     {
-                        list.Add(new Literal(new TextArea(part)));
+                        list.Add(new Strong(TextArea.Parse(part)));
                     }
                     else if (maxLevel == 1)
                     {
-                        var title = Title;
-                        if (title == null)
-                        {
-                            var last = list.LastOrDefault();
-                            if (last is TextArea text)
-                            {
-                                title = text.Content.RemoveTitle();
-                            }
-                        }
-                        else
-                        {
-                            Title = null;
-                        }
-
-                        list.Add(new InterpretedText(title, new TextArea(part)));
+                        list.Add(new Emphasis(TextArea.Parse(part)));
                     }
                     else if (maxLevel == 0)
                     {
-                        list.Add(new TextArea(part));
+                        foreach (var item in TextArea.Parse(part))
+                        {
+                            list.Add(item);
+                        }
                     }
                     else
                     {
-                        list.Add(new Literal(new TextArea($"`{part}`")));
+                        list.Add(new Strong(TextArea.Parse($"*{part}*")));
                     }
 
                     maxLevel = 0;

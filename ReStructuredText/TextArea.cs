@@ -17,6 +17,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace ReStructuredText
 {
@@ -61,6 +62,27 @@ namespace ReStructuredText
         public override string ToString()
         {
             return Content.Text;
+        }
+
+        public static IList<ITextArea> Parse(string part)
+        {
+            var result = new List<ITextArea>();
+            var lines = part.Split('\n');
+            if (lines.Length == 1)
+            {
+                result.Add(new TextArea(part));
+            }
+            else
+            {
+                for (int j = 0; j < lines.Length; j++)
+                {
+                    result.Add(j == lines.Length - 1
+                        ? new TextArea(lines[j])
+                        : new TextArea(lines[j] + '\n'));
+                }
+            }
+
+            return result;
         }
     }
 }

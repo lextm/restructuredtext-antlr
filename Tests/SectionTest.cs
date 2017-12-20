@@ -14,7 +14,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title", section.Title);
+            Assert.Equal("Title", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -29,7 +29,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title", section.Title);
+            Assert.Equal("Title", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -45,7 +45,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[1].TypeCode);
             var section = (Section)document.Elements[1];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title", section.Title);
+            Assert.Equal("Title", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -60,7 +60,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title", section.Title);
+            Assert.Equal("Title", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -75,7 +75,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title", section.Title);
+            Assert.Equal("Title", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -91,7 +91,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title 1", section.Title);
+            Assert.Equal("Title 1", section.Title[0].Content.Text);
             Assert.Equal(2, section.Elements.Count);
             
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
@@ -101,7 +101,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section.Elements[1].TypeCode);
             var section1 = (Section) section.Elements[1];
             Assert.Equal(2, section1.Level);
-            Assert.Equal("Title 2", section1.Title);
+            Assert.Equal("Title 2", section1.Title[0].Content.Text);
             Assert.Equal(1, section1.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section1.Elements[0].TypeCode);
             Assert.Equal("Paragraph 2.\n", section1. Elements[0].TextAreas[0].Content.Text);
@@ -109,7 +109,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[1].TypeCode);
             var section2 = (Section)document.Elements[1];
             Assert.Equal(1, section2.Level);
-            Assert.Equal("Title 3", section2.Title);
+            Assert.Equal("Title 3", section2.Title[0].Content.Text);
             Assert.Equal(2, section2.Elements.Count);
 
             Assert.Equal(ElementType.Paragraph, section2.Elements[0].TypeCode);
@@ -119,7 +119,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section2.Elements[1].TypeCode);
             var section3 = (Section)section2.Elements[1];
             Assert.Equal(2, section3.Level);
-            Assert.Equal("Title 4", section3.Title);
+            Assert.Equal("Title 4", section3.Title[0].Content.Text);
             Assert.Equal(1, section3.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section3.Elements[0].TypeCode);
             Assert.Equal("Paragraph 4.\n", section3.Elements[0].TextAreas[0].Content.Text);
@@ -137,7 +137,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[1].TypeCode);
             var section = (Section)document.Elements[1];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title 1", section.Title);
+            Assert.Equal("Title 1", section.Title[0].Content.Text);
             Assert.Equal(2, section.Elements.Count);
             
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
@@ -147,7 +147,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section.Elements[1].TypeCode);
             var section1 = (Section) section.Elements[1];
             Assert.Equal(2, section1.Level);
-            Assert.Equal("Title 2", section1.Title);
+            Assert.Equal("Title 2", section1.Title[0].Content.Text);
             Assert.Equal(1, section1.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section1.Elements[0].TypeCode);
             Assert.Equal("Paragraph 2.\n", section1. Elements[0].TextAreas[0].Content.Text);
@@ -155,7 +155,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[2].TypeCode);
             var section2 = (Section)document.Elements[2];
             Assert.Equal(1, section2.Level);
-            Assert.Equal("Title 3", section2.Title);
+            Assert.Equal("Title 3", section2.Title[0].Content.Text);
             Assert.Equal(2, section2.Elements.Count);
 
             Assert.Equal(ElementType.Paragraph, section2.Elements[0].TypeCode);
@@ -165,7 +165,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section2.Elements[1].TypeCode);
             var section3 = (Section)section2.Elements[1];
             Assert.Equal(2, section3.Level);
-            Assert.Equal("Title 4", section3.Title);
+            Assert.Equal("Title 4", section3.Title[0].Content.Text);
             Assert.Equal(1, section3.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section3.Elements[0].TypeCode);
             Assert.Equal("Paragraph 4.\n", section3.Elements[0].TextAreas[0].Content.Text);
@@ -180,7 +180,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Title 1", section.Title);
+            Assert.Equal("Title 1", section.Title[0].Content.Text);
             Assert.Equal(3, section.Elements.Count);
             
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
@@ -190,7 +190,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section.Elements[1].TypeCode);
             var section1 = (Section) section.Elements[1];
             Assert.Equal(2, section1.Level);
-            Assert.Equal("Title 2", section1.Title);
+            Assert.Equal("Title 2", section1.Title[0].Content.Text);
             Assert.Equal(2, section1.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section1.Elements[0].TypeCode);
             Assert.Equal("Paragraph 2.\n", section1. Elements[0].TextAreas[0].Content.Text);
@@ -198,7 +198,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section1.Elements[1].TypeCode);
             var section2 = (Section)section1.Elements[1];
             Assert.Equal(3, section2.Level);
-            Assert.Equal("Title 3", section2.Title);
+            Assert.Equal("Title 3", section2.Title[0].Content.Text);
             Assert.Equal(1, section2.Elements.Count);
 
             Assert.Equal(ElementType.Paragraph, section2.Elements[0].TypeCode);
@@ -208,7 +208,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, section.Elements[2].TypeCode);
             var section3 = (Section)section.Elements[2];
             Assert.Equal(2, section3.Level);
-            Assert.Equal("Title 4", section3.Title);
+            Assert.Equal("Title 4", section3.Title[0].Content.Text);
             Assert.Equal(1, section3.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section3.Elements[0].TypeCode);
             Assert.Equal("Paragraph 4.\n", section3.Elements[0].TextAreas[0].Content.Text);
@@ -221,8 +221,12 @@ namespace ReStructuredText.Tests
                 TestUtils.Test("section_inlinemarkup");
             Assert.Equal(1, document.Elements.Count);
             var section = (Section) document.Elements[0];
-            // TODO:
-            Assert.Equal("Title containing *inline* **markup**", section.Title);
+
+            Assert.Equal(4, section.Title.Count);
+            Assert.Equal("Title containing ", section.Title[0].Content.Text);
+            Assert.Equal("inline", section.Title[1].Content.Text);
+            Assert.Equal(" ", section.Title[2].Content.Text);
+            Assert.Equal("markup", section.Title[3].Content.Text);
         }
         
         [Fact]
@@ -233,7 +237,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("1. Numbered Title", section.Title);
+            Assert.Equal("1. Numbered Title", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -248,7 +252,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("ABC", section.Title);
+            Assert.Equal("ABC", section.Title[0].Content.Text);
             Assert.Equal(1, section.Elements.Count);
             Assert.Equal(ElementType.Paragraph, section.Elements[0].TypeCode);
             var paragraph = (Paragraph)section.Elements[0];
@@ -277,7 +281,7 @@ namespace ReStructuredText.Tests
             Assert.Equal(ElementType.Section, document.Elements[0].TypeCode);
             var section = (Section)document.Elements[0];
             Assert.Equal(1, section.Level);
-            Assert.Equal("Empty Section", section.Title);
+            Assert.Equal("Empty Section", section.Title[0].Content.Text);
             Assert.Equal(0, section.Elements.Count);
         }
 
@@ -288,9 +292,9 @@ namespace ReStructuredText.Tests
                 "section_shorts");
             Assert.Equal(2, document.Elements.Count);
             var section = (Section)document.Elements[0];
-            Assert.Equal("One", section.Title);
+            Assert.Equal("One", section.Title[0].Content.Text);
             var section2 = (Section) document.Elements[1];
-            Assert.Equal("Two", section2.Title);
+            Assert.Equal("Two", section2.Title[0].Content.Text);
         }
     }
 }

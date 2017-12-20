@@ -24,14 +24,21 @@ namespace ReStructuredText
     {
         public IList<ITextArea> TextAreas { get; }
 
-        public Paragraph(IList<ITextArea> textAreas)
+        public int Level { get; }
+
+        public Paragraph(IList<ITextArea> textAreas, int level = 0)
         {
+            Level = level;
             TextAreas = new List<ITextArea>();
             foreach (var area in textAreas)
             {
                 if (area.TypeCode == ElementType.BackTickText)
                 {
                     ((BackTickText)area).Process(TextAreas);
+                }
+                else if (area.TypeCode == ElementType.StarText)
+                {
+                    ((StarText)area).Process(TextAreas);
                 }
                 else
                 {

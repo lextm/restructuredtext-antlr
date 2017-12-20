@@ -37,7 +37,7 @@ namespace ReStructuredText
                 Add(item);
             }
         }
-        
+
         private void Add(ListItem item)
         {
             if (item.Enumerator == null)
@@ -74,7 +74,7 @@ namespace ReStructuredText
                 }
             }
         }
-        
+
         public void Add(IElement element, int level = 0)
         {
             if (element is ListItem listItem)
@@ -82,7 +82,7 @@ namespace ReStructuredText
                 Add(listItem);
                 return;
             }
-            
+
             Elements.Add(element);
             element.Parent = this;
         }
@@ -109,9 +109,17 @@ namespace ReStructuredText
                     continue;
                 }
 
+                if (current is Paragraph paragraph)
+                {
+                    if (paragraph.Level > 0)
+                    {
+                        current = new Section(paragraph.Level, paragraph.TextAreas, new List<IElement>(0));
+                    }
+                }
+
                 if (current.TypeCode == ElementType.Section)
                 {
-                    var newSection = current as Section;  
+                    var newSection = current as Section;
                     if (section == null)
                     {
                         Add(current);
@@ -120,7 +128,7 @@ namespace ReStructuredText
                     {
                         section.Add(current);
                     }
-                    
+
                     section = newSection ?? section;
                     continue;
                 }
@@ -145,7 +153,7 @@ namespace ReStructuredText
                                     continue;
                                 }
                             }
-                            
+
                             if (Elements.LastOrDefault() is EnumeratedList list)
                             {
                                 if (current.TextAreas[0].Indentation == 3)

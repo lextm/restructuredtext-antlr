@@ -45,6 +45,7 @@
     <Compile Include="BulletListTest.cs" />
     <Compile Include="CommentTest.cs" />
     <Compile Include="EnumeratedListTest.cs" />
+    <Compile Include="InlineMarkupEmphasisTest.cs" />
     <Compile Include="InlineMarkupInterpretedTextTest.cs" />
     <Compile Include="InlineMarkupLiteralTest.cs" />
     <Compile Include="LineBlockTest.cs" />
@@ -155,6 +156,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Input\enumeratedlist_simple">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupemphasis_crossline">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupemphasis_multiple">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Input\inlinemarkupemphasis_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Input\inlinemarkupinterpretedtext_multiple">

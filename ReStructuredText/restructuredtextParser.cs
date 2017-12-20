@@ -165,7 +165,7 @@ namespace ReStructuredText
                     }
                 }
 
-                return new Section(level, title, list);
+                return new Section(level, new List<ITextArea>{new TextArea(title)}, list);
             }
         }
         
@@ -212,10 +212,10 @@ namespace ReStructuredText
             public override LineBlock VisitLineBlock(LineBlockContext context)
             {
                 var lineVisitor = new TextAreasVisitor().Inherit(this);
-                var lines = new List<ITextArea>();
+                var lines = new List<Line>();
                 foreach (var line in context.line())
                 {
-                    lines.AddRange(lineVisitor.VisitLine(line));
+                    lines.Add(new Line(lineVisitor.VisitLine(line)));
                 }
                 
                 return new LineBlock(lines);
@@ -246,12 +246,22 @@ namespace ReStructuredText
             {
                 var lineVisitor = new TextAreasVisitor().Inherit(this);
                 var lines = new List<ITextArea>();
-                foreach (var line in context.line())
+                var children = context.line();
+                var level = 0;
+                for (int i = 0; i < children.Length; i++)
                 {
-                    lines.AddRange(lineVisitor.VisitLine(line));
+                    var line = children[i];
+                    var items = lineVisitor.VisitLine(line);
+                    if (children.Length == 2 && i == children.Length - 1 && items.Length == 1 && items[0].Content.IsSection)
+                    {
+                        level = SectionTracker.Track(items[0].Content.Text[0]);
+                        continue;
+                    }
+                    
+                    lines.AddRange(items);
                 }
 
-                return new Paragraph(lines);
+                return new Paragraph(lines, level);
             }
         }
 
@@ -349,6 +359,12 @@ namespace ReStructuredText
                     return VisitBackTickText(inline);
                 }
 
+                var star = context.starText();
+                if (star != null)
+                {
+                    return VisitStarText(star);
+                }
+
                 // TODO:
                 return new TextArea(new Content(context.GetText()));
             }
@@ -358,6 +374,11 @@ namespace ReStructuredText
                 return new BackTickText(context.titled == null ? null : context.titled.GetText(), new TextArea(new Content(context.body().GetText())));
             }
 
+            public override ITextArea VisitStarText([NotNull] StarTextContext context)
+            {
+                return new StarText(new TextArea(new Content(context.GetText())));
+            }
+            
             public override ITextArea VisitTextStart([NotNull] TextStartContext context)
             {
                 return new TextArea(new Content(context.GetText()));

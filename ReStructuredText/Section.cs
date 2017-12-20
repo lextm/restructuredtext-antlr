@@ -25,11 +25,12 @@ namespace ReStructuredText
     {
         public int Level { get; }
         public IList<IElement> Elements { get; }
-        public string Title { get; set; }
+        public IList<ITextArea> Title { get; set; }
 
-        public Section(int level, string title, IList<IElement> content)
+        public Section(int level, IList<ITextArea> title, IList<IElement> content)
         {
-            Title = title.Trim();
+            Title = title;
+            Title.Last().Content.RemoveEnd();
             Level = level;
             Elements = new List<IElement>();
             foreach (var item in content)
