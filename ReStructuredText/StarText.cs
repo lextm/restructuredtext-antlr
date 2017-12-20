@@ -22,10 +22,22 @@ namespace ReStructuredText
         public bool IsQuoted => _textArea.IsQuoted;
         public ElementType TypeCode => ElementType.StarText;
 
-        public void Process(IList<ITextArea> list)
+        public void Process(IElement element)
         {
-            int level = 0;
+            IList<ITextArea> list = element.TextAreas;
             var content = _textArea.Content.Text;
+            if (content.StartsWith("* ") && element.TextAreas.Count == 0)
+            {
+                list.Add(new TextArea(content.Substring(2)));
+                if (element is Paragraph paragraph)
+                {
+                    paragraph.ConvertToBulletList = true;
+                }
+
+                return;
+            }
+
+            int level = 0;
             var start = 0;
             var length = 0;
             var maxLevel = 0;

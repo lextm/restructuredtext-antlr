@@ -139,7 +139,9 @@ text_fragment
   ;
 
 starText
-  :  Star starAtoms Star+
+  :  Star+ starAtoms Star+
+  |  Star Star
+  |  Star Space+ starAtoms
   ;
 
 starAtoms
@@ -148,7 +150,6 @@ starAtoms
   
 starAtom
   :  ~(Star | LineBreak)
-  | Star ~(Star | LineBreak)
   ;
 
 backTickText
@@ -219,8 +220,7 @@ Section
   ;
   
 Bullet
-  :  StarSpace 
-  |  Plus Space 
+  :  Plus Space 
   |  Minus Space
   ;
   
@@ -228,10 +228,7 @@ Enumerated
   :  (Numbers '.' Space)
   ;
 
-StarSpace
-  :  Star Space
-  ;
-  
+ 
 Numbers
   : [0-9]+
   ;

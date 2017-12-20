@@ -38,11 +38,18 @@ namespace ReStructuredText
                 }
                 else if (area.TypeCode == ElementType.StarText)
                 {
-                    ((StarText)area).Process(TextAreas);
+                    ((StarText)area).Process(this);
                 }
                 else
                 {
-                    TextAreas.Add(area);
+                    if (ConvertToBulletList && TextAreas.Count == 1)
+                    {
+                        TextAreas[0].Content.Append(area.Content.Text);
+                    }
+                    else
+                    {
+                        TextAreas.Add(area);
+                    }
                 }
             }
         }
@@ -52,6 +59,7 @@ namespace ReStructuredText
         public ElementType TypeCode => ElementType.Paragraph;
 
         public IParent Parent { get; set; }
+        public bool ConvertToBulletList { get; internal set; }
 
         public override string ToString()
         {

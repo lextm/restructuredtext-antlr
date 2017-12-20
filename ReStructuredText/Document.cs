@@ -115,6 +115,11 @@ namespace ReStructuredText
                     {
                         current = new Section(paragraph.Level, paragraph.TextAreas, new List<IElement>(0));
                     }
+
+                    if (paragraph.ConvertToBulletList)
+                    {
+                        current = new ListItem("*", null, new[] { paragraph });
+                    }
                 }
 
                 if (current.TypeCode == ElementType.Section)
