@@ -189,7 +189,7 @@ namespace ReStructuredText
             
             public override ListItem VisitListItemEnumerated(ListItemEnumeratedContext context)
             {
-                var enumerator = context.enumerated.Text;
+                var enumerator = context.enumerated.GetText();
                 var list = new List<Paragraph>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var start = context.paragraphNoBreak();
@@ -358,6 +358,13 @@ namespace ReStructuredText
                 }
 
                 var result = new List<ITextArea>();
+                var special = context.lineSpecial();
+                if (special != null)
+                {
+                    var text = context.GetText().TrimStart() + "\n";
+                    return new ITextArea[] {new TextArea(text)};
+                }
+                
                 var indentation = context.indentation();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
                 IndentationTracker.Track(length);

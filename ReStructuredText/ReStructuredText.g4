@@ -75,7 +75,7 @@ bullet
   ;
 
 listItemEnumerated
-  :  LineBreak enumerated=Numbers Dot Space+ (paragraphNoBreak paragraph*)?
+  :  LineBreak enumerated=lineSpecial Space+ (paragraphNoBreak paragraph*)?
   ;
   
 paragraphNoBreak
@@ -88,6 +88,12 @@ lineNoBreak
   
 line
   :  (LineBreak indentation?)? lineStart lineEnd
+  |  (LineBreak) lineSpecial
+  ;
+
+lineSpecial
+  :  Numbers Dot
+  //|  Alphabet Dot
   ;
   
 lineStart
@@ -113,8 +119,8 @@ indentation
 
 textStart
   : text_fragment_firstTwo text_fragment*
-  | '=='
-  | 'A' text_fragment*
+  | Equal Equal
+  | Alphabet text_fragment*
   ;
 
 textEnd
@@ -124,7 +130,7 @@ textEnd
 textAtoms
   : text_fragment+
   ;
- 
+
 span
   :  starText
   |  reference
@@ -155,6 +161,7 @@ text_fragment_start
   |  EscapeSequence
   |  UnderScore
   |  Numbers
+  |  Alphabet
   |  '/'
   |  '#'
   |  '['
@@ -257,6 +264,10 @@ Literal
 
 Section
   :  ('-' | '=' | '+') ('-' | '=' | '+') ('-' | '=' | '+')+
+  ;
+
+Alphabet
+  : [A-Za-z]+
   ;
   
 Numbers
