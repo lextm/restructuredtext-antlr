@@ -222,13 +222,15 @@ namespace ReStructuredText.Tests
             Assert.Equal(1, document.Elements.Count);
             var section = (Section) document.Elements[0];
 
-            // TODO: should be 4.
-            // Assert.Equal(4, section.Title.Count);
-            Assert.Equal(5, section.Title.Count);
-//            Assert.Equal("Title containing ", section.Title[0].Content.Text);
-//            Assert.Equal("inline", section.Title[1].Content.Text);
-//            Assert.Equal(" ", section.Title[2].Content.Text);
-//            Assert.Equal("markup", section.Title[3].Content.Text);
+            Assert.Equal(4, section.Title.Count);
+            Assert.Equal(ElementType.Text, section.Title[0].TypeCode);
+            Assert.Equal("Title containing ", section.Title[0].Content.Text);
+            Assert.Equal(ElementType.Emphasis, section.Title[1].TypeCode);
+            Assert.Equal("inline", section.Title[1].Content.Text);
+            Assert.Equal(ElementType.Text, section.Title[2].TypeCode);
+            Assert.Equal(" ", section.Title[2].Content.Text);
+            Assert.Equal(ElementType.Strong, section.Title[3].TypeCode);
+            Assert.Equal("markup", section.Title[3].Content.Text);
         }
         
         [Fact]

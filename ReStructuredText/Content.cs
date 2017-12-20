@@ -49,9 +49,14 @@ namespace ReStructuredText
             }
         }
 
+        public void RemoveStart()
+        {
+            Text = Text.TrimStart();
+        }
+        
         public void RemoveEnd()
         {
-            Text = Text.TrimEnd('\r', '\n');
+            Text = Text.TrimEnd(' ', '\r', '\n');
         }
 
         public void RemoveLiteral()

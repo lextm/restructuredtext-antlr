@@ -252,9 +252,15 @@ namespace ReStructuredText
                 {
                     var line = children[i];
                     var items = lineVisitor.VisitLine(line);
-                    if (children.Length == 2 && i == children.Length - 1 && items.Length == 1 && items[0].Content.IsSection)
+                    if (children.Length == 2 && i == children.Length - 1 && items.Length == 1 && items[0].Content.IsSection && !lines.First().IsIndented)
                     {
                         level = SectionTracker.Track(items[0].Content.Text[0]);
+                        lines.Last().Content.RemoveEnd();
+                        if (lines.Last().Content.Text.Length == 0)
+                        {
+                            lines.RemoveAt(lines.Count - 1);
+                        }
+                        
                         continue;
                     }
                     
@@ -271,7 +277,7 @@ namespace ReStructuredText
             {
                 if (InComment)
                 {
-                    return new ITextArea[] {new TextArea(new Content(context.GetText().TrimStart()))};
+                    return new ITextArea[] {new TextArea(context.GetText().TrimStart())};
                 }
                 
                 var indentation = context.indentation();
@@ -296,7 +302,7 @@ namespace ReStructuredText
                 }
                 else
                 {
-                    result.Add(new TextArea(new Content(lineBreak.GetText())));
+                    result.Add(new TextArea(lineBreak.GetText()));
                 }
 
                 return result.ToArray();
@@ -366,27 +372,27 @@ namespace ReStructuredText
                 }
 
                 // TODO:
-                return new TextArea(new Content(context.GetText()));
+                return new TextArea(context.GetText());
             }
 
             public override ITextArea VisitBackTickText([NotNull] BackTickTextContext context)
             {
-                return new BackTickText(context.titled == null ? null : context.titled.GetText(), new TextArea(new Content(context.body().GetText())));
+                return new BackTickText(context.titled == null ? null : context.titled.GetText(), new TextArea(context.body().GetText()));
             }
 
             public override ITextArea VisitStarText([NotNull] StarTextContext context)
             {
-                return new StarText(new TextArea(new Content(context.GetText())));
+                return new StarText(new TextArea(context.GetText()));
             }
             
             public override ITextArea VisitTextStart([NotNull] TextStartContext context)
             {
-                return new TextArea(new Content(context.GetText()));
+                return new TextArea(context.GetText());
             }
             
             public override ITextArea VisitTextEnd([NotNull] TextEndContext context)
             {
-                return new TextArea(new Content(context.GetText()));
+                return new TextArea(context.GetText());
             }
         }
 

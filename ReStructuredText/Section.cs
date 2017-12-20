@@ -30,6 +30,7 @@ namespace ReStructuredText
         public Section(int level, IList<ITextArea> title, IList<IElement> content)
         {
             Title = title;
+            Title.First().Content.RemoveStart();
             Title.Last().Content.RemoveEnd();
             Level = level;
             Elements = new List<IElement>();

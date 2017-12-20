@@ -54,11 +54,6 @@ namespace ReStructuredText
             Content = new Content(content);
         }
         
-        public TextArea(Content content)
-        {
-            Content = content;
-        }
-        
         public override string ToString()
         {
             return Content.Text;

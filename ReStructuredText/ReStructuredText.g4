@@ -139,17 +139,16 @@ text_fragment
   ;
 
 starText
-  :  (Star starText Star)
-  |  (Star starAtoms Star+)
+  :  Star starAtoms Star+
   ;
 
 starAtoms
-  :  starAtom+
+  :  starAtom+ (Star* starAtom)*
   ;
   
 starAtom
-  :  ~Star
-  | Star ~Star
+  :  ~(Star | LineBreak)
+  | Star ~(Star | LineBreak)
   ;
 
 backTickText
