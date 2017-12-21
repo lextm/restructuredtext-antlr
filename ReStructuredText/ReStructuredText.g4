@@ -36,11 +36,7 @@ sectionElement
   ;
 
 comment
-  :  Space* Comment Space* (commentLine line*)?
-  ;
-
-commentLine
-  :  lineAtom+
+  :  Space* Comment Space* (lineNoBreak line*)?
   ;
 
 paragraph

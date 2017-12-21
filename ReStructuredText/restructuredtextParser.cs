@@ -238,10 +238,10 @@ namespace ReStructuredText
                 InComment = true;
                 var lines = new List<ITextArea>();
                 var lineVisitor = new TextAreasVisitor().Inherit(this);
-                var commentLineContext = context.commentLine();
+                var commentLineContext = context.lineNoBreak();
                 if (commentLineContext != null)
                 {
-                    lines.AddRange(lineVisitor.VisitCommentLine(commentLineContext));
+                    lines.AddRange(lineVisitor.VisitLineNoBreak(commentLineContext));
                 }
 
                 var lineContext = context.line();
@@ -326,12 +326,6 @@ namespace ReStructuredText
                 }
 
                 return result.ToArray();
-            }
-
-            public override ITextArea[] VisitCommentLine([NotNull] CommentLineContext context)
-            {
-                var text = context.GetText().TrimStart() + "\n";
-                return new ITextArea[] { new TextArea(text) };
             }
 
             public override ITextArea[] VisitLine([NotNull] LineContext context)
