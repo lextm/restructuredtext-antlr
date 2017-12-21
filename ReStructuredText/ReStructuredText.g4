@@ -103,6 +103,7 @@ text
   |  ':' textEnd?
   |  '}' textEnd?
   |  ')' textEnd?
+  |  '\\' textEnd?
   |  Space textEnd
   ;
 
@@ -120,14 +121,22 @@ indentation
   ;
 
 textStart
-  : text_fragment_firstTwo text_fragment*
-  | '/'
-  | Equal Equal
-  | Alphabet text_fragment*
+  :  forcedText (text_fragment forcedText*)*
+  |  text_fragment_firstTwo text_fragment*
+  |  '/'
+  |  Equal Equal
+  |  Alphabet text_fragment*
   ;
 
+forcedText 
+  :  '(*)' 
+  |  '[*]' 
+  |  '\'*\'' 
+  |  '\'"*"\''
+  ; 
+
 textEnd
-  : textAtoms
+  :  textAtoms
   ;
   
 textAtoms
@@ -155,6 +164,7 @@ text_fragment_firstTwo
   |  (Plus ~Space)
   |  (Numbers Dot ~(Space | LineBreak))
   |  (Block ~Space)
+  |  ('\\' '"' Star '"' ~'\\')
   |  text_fragment_start text_fragment_start text_fragment
   ;
   
