@@ -81,7 +81,7 @@ namespace ReStructuredText.Tests
         {
             var document = TestUtils.Test("inlinemarkupemphasis_punctuation");
 
-            Assert.Equal(1, document.Elements.Count);
+            Assert.Equal(2, document.Elements.Count);
             var paragraph = (Paragraph) document.Elements[0];
             Assert.Equal(25, paragraph.TextAreas.Count);
             
@@ -143,6 +143,12 @@ namespace ReStructuredText.Tests
             Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[23]).TextAreas[0].Content.Text);
             
             Assert.Equal(" (closing delimiters),\n", paragraph.TextAreas[24].Content.Text);
+            
+            var paragraph2 = (Paragraph) document.Elements[1];
+            Assert.Equal(2, paragraph2.TextAreas.Count);
+            
+            Assert.Equal("but not\n", paragraph2.TextAreas[0].Content.Text);
+            Assert.Equal(")*emphasis*(, ]*emphasis*[, >*emphasis*>, }*emphasis*{ (close/open pairs),\n", paragraph2.TextAreas[1].Content.Text);
         }
     }
 }

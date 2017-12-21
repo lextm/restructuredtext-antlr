@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net452</TargetFrameworks>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <DebugType>full</DebugType>
     <Version>1.0.0</Version>
@@ -19,16 +19,16 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
-  <ItemGroup Condition=" $(TargetFramework) == 'net45' ">
+  <ItemGroup Condition=" $(TargetFramework) == 'net452' ">
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4">
-      <Version>4.6.4</Version>
+      <Version>4.6.5-beta001</Version>
     </PackageReference>
     <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.4</Version>
+      <Version>4.6.5-beta001</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

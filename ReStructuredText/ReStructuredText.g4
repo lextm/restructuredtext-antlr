@@ -101,33 +101,16 @@ text
   |  Any textEnd?
   |  '(' textEnd?
   |  ':' textEnd?
+  |  '}' textEnd?
+  |  ')' textEnd?
   |  Space textEnd
   ;
-
-//line
-//  :  (LineBreak indentation?)? lineStart lineEnd
-//  |  (LineBreak) lineSpecial
-//  ;
 
 lineSpecial
   :  Numbers Dot
   //|  Alphabet Dot
   ;
   
-  
-//lineStart
-//  :  span
-//  |  textStart
-//  ;
-//
-//lineEnd
-//  :  lineAtom*
-//  ;
-//
-//lineAtom
-//  :  span | textEnd
-//  ;
-
 empty_line
   :  LineBreak Space*
   ;

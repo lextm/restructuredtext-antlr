@@ -1,316 +1,261 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{24301766-26F9-40E6-90DB-77A7C92739EE}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>ReStructuredText.Tests</RootNamespace>
-    <AssemblyName>Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <TargetFramework>net452</TargetFramework>
+    <OutputType Condition="'$(TargetFramework)'!='net452'">Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.4</Version>
-    </PackageReference>
     <PackageReference Include="xunit">
       <Version>2.3.1</Version>
     </PackageReference>
     <PackageReference Include="xunit.runner.visualstudio">
       <Version>2.3.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockQuoteTest.cs" />
-    <Compile Include="BulletListTest.cs" />
-    <Compile Include="CommentTest.cs" />
-    <Compile Include="EnumeratedListTest.cs" />
-    <Compile Include="InlineMarkupEmphasisTest.cs" />
-    <Compile Include="InlineMarkupInterpretedTextTest.cs" />
-    <Compile Include="InlineMarkupLiteralTest.cs" />
-    <Compile Include="LineBlockTest.cs" />
-    <Compile Include="LiteralBlockTest.cs" />
-    <Compile Include="ParagraphTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealTest.cs" />
-    <Compile Include="TestUtils.cs" />
-    <Compile Include="SectionTest.cs" />
+    <ProjectReference Include="..\ReStructuredText\ReStructuredText.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Input\blockquote_nested2">
+    <None Update="Input\blockquote_nested">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="xunit.runner.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ReStructuredText\ReStructuredText.csproj">
-      <Project>{A7E5AD0B-65F6-4C42-AF05-B243FF5C4876}</Project>
-      <Name>ReStructuredText</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Input\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Input\blockquote_simple">
+    </None>
+    <None Update="Input\blockquote_nested2">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\blockquote_nested">
+    <None Update="Input\blockquote_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_beginwithnewline">
+    <None Update="Input\bulletlist_beginwithnewline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_differentmarker">
+    <None Update="Input\bulletlist_differentmarker">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_emptyitemabove">
+    <None Update="Input\bulletlist_emptyitemabove">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_multilinebody">
+    <None Update="Input\bulletlist_multilinebody">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_multilinebody_noblankline">
+    <None Update="Input\bulletlist_multilinebody_noblankline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_multiple">
+    <None Update="Input\bulletlist_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_multiple_noblankline">
+    <None Update="Input\bulletlist_multiple_noblankline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_single">
+    <None Update="Input\bulletlist_single">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\bulletlist_unicode">
+    <None Update="Input\bulletlist_unicode">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_citation">
+    <None Update="Input\comment_citation">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_commentandparagraph">
+    <None Update="Input\comment_commentandparagraph">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_directive">
+    <None Update="Input\comment_directive">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_doublecolons">
+    <None Update="Input\comment_doublecolons">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_followedbyempty">
+    <None Update="Input\comment_followedbyempty">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_hyperlinktarget">
+    <None Update="Input\comment_hyperlinktarget">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_multiple">
+    <None Update="Input\comment_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_multiplelines">
+    <None Update="Input\comment_multiplelines">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_substitution">
+    <None Update="Input\comment_substitution">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\comment_twolinescommentandparagraph">
+    <None Update="Input\comment_twolinescommentandparagraph">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_different">
+    <None Update="Input\enumeratedlist_different">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_empty">
+    <None Update="Input\enumeratedlist_empty">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_multiplebody">
+    <None Update="Input\enumeratedlist_multiplebody">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_noblanklines">
+    <None Update="Input\enumeratedlist_noblanklines">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_nonordinal">
+    <None Update="Input\enumeratedlist_nonordinal">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_scrambled">
+    <None Update="Input\enumeratedlist_scrambled">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\enumeratedlist_simple">
+    <None Update="Input\enumeratedlist_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupemphasis_crossline">
+    <None Update="Input\inlinemarkupemphasis_crossline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupemphasis_multiple">
+    <None Update="Input\inlinemarkupemphasis_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupemphasis_punctuation">
+    <None Update="Input\inlinemarkupemphasis_punctuation">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupemphasis_simple">
+    <None Update="Input\inlinemarkupemphasis_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupinterpretedtext_multiple">
+    <None Update="Input\inlinemarkupinterpretedtext_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupinterpretedtext_simple">
+    <None Update="Input\inlinemarkupinterpretedtext_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupinterpretedtext_titled">
+    <None Update="Input\inlinemarkupinterpretedtext_titled">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_apostrophe">
+    <None Update="Input\inlinemarkupliteral_apostrophe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_backslash">
+    <None Update="Input\inlinemarkupliteral_backslash">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_backslash_end">
+    <None Update="Input\inlinemarkupliteral_backslash_end">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_backslash_inside">
+    <None Update="Input\inlinemarkupliteral_backslash_inside">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_endswithbackslash">
+    <None Update="Input\inlinemarkupliteral_endswithbackslash">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_interpretedtext">
+    <None Update="Input\inlinemarkupliteral_interpretedtext">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_quote">
+    <None Update="Input\inlinemarkupliteral_quote">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_quoted">
+    <None Update="Input\inlinemarkupliteral_quoted">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\inlinemarkupliteral_simple">
+    <None Update="Input\inlinemarkupliteral_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\lineblock_indentation">
+    <None Update="Input\lineblock_indentation">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\lineblock_multiple">
+    <None Update="Input\lineblock_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\lineblock_simple">
+    <None Update="Input\lineblock_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_expanded">
+    <None Update="Input\literalblock_expanded">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_minimized">
+    <None Update="Input\literalblock_minimized">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_minimized_space">
+    <None Update="Input\literalblock_minimized_space">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_multiline">
+    <None Update="Input\literalblock_multiline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_partial">
+    <None Update="Input\literalblock_partial">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_quoted_multiline">
+    <None Update="Input\literalblock_quoted">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_quoted_twoblanklines">
+    <None Update="Input\literalblock_quoted_multiline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_two">
+    <None Update="Input\literalblock_quoted_twoblanklines">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_wonky">
+    <None Update="Input\literalblock_two">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\literalblock_quoted">
+    <None Update="Input\literalblock_wonky">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_empty">
+    <None Update="Input\paragraph_empty">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_multiline">
+    <None Update="Input\paragraph_multiline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_multilines">
+    <None Update="Input\paragraph_multilines">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_multiple">
+    <None Update="Input\paragraph_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_multiplesinglelines">
+    <None Update="Input\paragraph_multiplesinglelines">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_simple">
+    <None Update="Input\paragraph_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_single">
+    <None Update="Input\paragraph_single">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\paragraph_single_newline">
+    <None Update="Input\paragraph_single_newline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_blockquote">
+    <None Update="Input\section_blockquote">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_empty">
+    <None Update="Input\section_empty">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_inlinemarkup">
+    <None Update="Input\section_inlinemarkup">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_nested">
+    <None Update="Input\section_nested">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_nested_overline">
+    <None Update="Input\section_nested_overline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_nested_overline_level3">
+    <None Update="Input\section_nested_overline_level3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_numbered">
+    <None Update="Input\section_numbered">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_overline">
+    <None Update="Input\section_overline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_overline_inset">
+    <None Update="Input\section_overline_inset">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_paragraph">
+    <None Update="Input\section_paragraph">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_paragraph_noblankline">
+    <None Update="Input\section_paragraph_noblankline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_paragraph_surrounded">
+    <None Update="Input\section_paragraph_surrounded">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_short">
+    <None Update="Input\section_short">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Input\section_shorts">
+    <None Update="Input\section_shorts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
 </Project>
