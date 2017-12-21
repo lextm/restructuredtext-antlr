@@ -175,6 +175,7 @@ text_fragment_start
   |  UnderScore
   |  Numbers
   |  Alphabet
+  |  TimeStar
   |  '/'
   |  '#'
   |  '['
@@ -200,6 +201,7 @@ text_fragment
   |  Dot
   |  Minus
   |  Quote
+  |  (Star Space)
   ;
 
 starText
@@ -285,6 +287,11 @@ Literal
 
 Section
   :  (Minus | Equal | Plus) (Minus | Equal | Plus) (Minus | Equal | Plus)+
+  ;
+  
+TimeStar
+  : Numbers Star
+  | 'x' Star
   ;
 
 Alphabet

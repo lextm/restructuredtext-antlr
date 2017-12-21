@@ -7,3 +7,5 @@ some punctuation is allowed around inline markup, e.g.
 but not
 )*emphasis*(, ]*emphasis*[, >*emphasis*>, }*emphasis*{ (close/open pairs),
 (*), [*], '*' or '"*"' ("quoted" star-string),
+x*2* or 2*x* (alphanumeric char before),
+\*args or * (escaped, whitespace behind start-string),
