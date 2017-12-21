@@ -43,7 +43,7 @@ namespace ReStructuredText
                 }
             }
 
-            Emphasis.Deemphasize(TextAreas);
+            StarText.Deemphasize(TextAreas);
         }
 
         public bool IsBlockQuote => TextAreas.Count > 0 && TextAreas[0].IsIndented;

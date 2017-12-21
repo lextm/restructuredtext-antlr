@@ -9,3 +9,6 @@ but not
 (*), [*], '*' or '"*"' ("quoted" star-string),
 x*2* or 2*x* (alphanumeric char before),
 \*args or * (escaped, whitespace behind start-string),
+or *the\* *stars\* *inside* (escaped, whitespace before end-string).
+
+what about *this**?

@@ -124,6 +124,7 @@ textStart
   :  forcedText (text_fragment forcedText*)*
   |  text_fragment_firstTwo text_fragment*
   |  '/'
+  |  '?'
   |  Equal Equal
   |  Alphabet text_fragment*
   ;

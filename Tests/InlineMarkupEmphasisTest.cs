@@ -80,8 +80,8 @@ namespace ReStructuredText.Tests
         public void Punctuation()
         {
             var document = TestUtils.Test("inlinemarkupemphasis_punctuation");
-
-            Assert.Equal(2, document.Elements.Count);
+            Assert.Equal(3, document.Elements.Count);
+            
             var paragraph = (Paragraph) document.Elements[0];
             Assert.Equal(25, paragraph.TextAreas.Count);
             
@@ -145,13 +145,26 @@ namespace ReStructuredText.Tests
             Assert.Equal(" (closing delimiters),\n", paragraph.TextAreas[24].Content.Text);
             
             var paragraph2 = (Paragraph) document.Elements[1];
-            Assert.Equal(5, paragraph2.TextAreas.Count);
+            Assert.Equal(8, paragraph2.TextAreas.Count);
             
             Assert.Equal("but not\n", paragraph2.TextAreas[0].Content.Text);
             Assert.Equal(")*emphasis*(, ]*emphasis*[, >*emphasis*>, }*emphasis*{ (close/open pairs),\n", paragraph2.TextAreas[1].Content.Text);
             Assert.Equal("(*), [*], '*' or '\"*\"' (\"quoted\" star-string),\n", paragraph2.TextAreas[2].Content.Text);
             Assert.Equal("x*2* or 2*x* (alphanumeric char before),\n", paragraph2.TextAreas[3].Content.Text);
             Assert.Equal("\\*args or * (escaped, whitespace behind start-string),\n", paragraph2.TextAreas[4].Content.Text);
+
+            Assert.Equal("or ", paragraph2.TextAreas[5].Content.Text);
+            Assert.Equal(ElementType.Emphasis, paragraph2.TextAreas[6].TypeCode);
+            Assert.Equal("the\\* *stars\\* *inside", paragraph2.TextAreas[6].Content.Text);
+            Assert.Equal(" (escaped, whitespace before end-string).\n", paragraph2.TextAreas[7].Content.Text);
+
+            var paragraph3 = (Paragraph) document.Elements[2];
+            Assert.Equal(3, paragraph3.TextAreas.Count);
+            
+            Assert.Equal("what about ", paragraph3.TextAreas[0].Content.Text);
+            Assert.Equal(ElementType.Emphasis, paragraph3.TextAreas[1].TypeCode);
+            Assert.Equal("this*", paragraph3.TextAreas[1].Content.Text);
+            Assert.Equal("?\n", paragraph3.TextAreas[2].Content.Text);
         }
     }
 }
