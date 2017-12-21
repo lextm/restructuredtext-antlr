@@ -166,5 +166,44 @@ namespace ReStructuredText.Tests
             Assert.Equal("this*", paragraph3.TextAreas[1].Content.Text);
             Assert.Equal("?\n", paragraph3.TextAreas[2].Content.Text);
         }
+        
+        [Fact]
+        public void Quotes()
+        {
+            var document = TestUtils.Test("inlinemarkupemphasis_quotes");
+
+            Assert.Equal(2, document.Elements.Count);
+            var paragraph = (Paragraph) document.Elements[0];
+            Assert.Equal(1, paragraph.TextAreas.Count);
+            Assert.Equal("Quotes around inline markup:\n", paragraph.TextAreas[0].Content.Text);
+            
+            var paragraph2 = (Paragraph) document.Elements[1];
+            Assert.Equal(5, paragraph2.TextAreas.Count);
+            Assert.Equal(ElementType.Text, paragraph2.TextAreas[0].TypeCode);
+            Assert.Equal("'", paragraph2.TextAreas[0].Content.Text);
+            Assert.Equal(ElementType.Text, paragraph2.TextAreas[2].TypeCode);
+            Assert.Equal("' \"", paragraph2.TextAreas[2].Content.Text);
+            Assert.Equal(ElementType.Text, paragraph2.TextAreas[4].TypeCode);
+            Assert.Equal("\" Straight,\n", paragraph2.TextAreas[4].Content.Text);
+        }
+        
+        [Fact]
+        public void Asterisk()
+        {
+            var document = TestUtils.Test("inlinemarkupemphasis_asterisk");
+
+            Assert.Equal(2, document.Elements.Count);
+            var paragraph = (Paragraph) document.Elements[0];
+            Assert.Equal(3, paragraph.TextAreas.Count);
+            Assert.Equal("Emphasized asterisk: ", paragraph.TextAreas[0].Content.Text);
+            Assert.Equal("\\*", paragraph.TextAreas[1].Content.Text);
+            Assert.Equal("\n", paragraph.TextAreas[2].Content.Text);
+            
+            var paragraph2 = (Paragraph) document.Elements[1];
+            Assert.Equal(3, paragraph2.TextAreas.Count);
+            Assert.Equal("Emphasized double asterisk: ", paragraph2.TextAreas[0].Content.Text);
+            Assert.Equal("\\**", paragraph2.TextAreas[1].Content.Text);
+            Assert.Equal("\n", paragraph2.TextAreas[2].Content.Text);
+        }
     }
 }
