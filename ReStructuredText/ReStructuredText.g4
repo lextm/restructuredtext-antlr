@@ -99,6 +99,8 @@ text
   |  Dot
   |  '"' textEnd?
   |  Any textEnd?
+  |  '(' textEnd?
+  |  ':' textEnd?
   |  Space textEnd
   ;
 

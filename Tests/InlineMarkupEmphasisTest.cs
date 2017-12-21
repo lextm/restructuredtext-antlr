@@ -76,22 +76,73 @@ namespace ReStructuredText.Tests
             Assert.Equal("\n", paragraph.TextAreas[1].Content.Text);
         }
         
-        //[Fact]
+        [Fact]
         public void Punctuation()
         {
             var document = TestUtils.Test("inlinemarkupemphasis_punctuation");
 
             Assert.Equal(1, document.Elements.Count);
             var paragraph = (Paragraph) document.Elements[0];
-            Assert.Equal(2, paragraph.TextAreas.Count);
+            Assert.Equal(25, paragraph.TextAreas.Count);
             
-            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[0].TypeCode);
-            var emphasis = (Emphasis) paragraph.TextAreas[0];
-            Assert.Equal("emphasized sentence\n", emphasis.TextAreas[0].Content.Text);
-            Assert.Equal("across lines", emphasis.TextAreas[1].Content.Text);
+            Assert.Equal("some punctuation is allowed around inline markup, e.g.\n", paragraph.TextAreas[0].Content.Text);
+            Assert.Equal("/", paragraph.TextAreas[1].Content.Text);
             
-            Assert.Equal(ElementType.Text, paragraph.TextAreas[1].TypeCode);
-            Assert.Equal("\n", paragraph.TextAreas[1].Content.Text);
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[2].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[2]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("/, -", paragraph.TextAreas[3].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[4].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[4]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("-, and :", paragraph.TextAreas[5].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[6].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[6]).TextAreas[0].Content.Text);
+            
+            Assert.Equal(": (delimiters),\n", paragraph.TextAreas[7].Content.Text);
+            Assert.Equal("(", paragraph.TextAreas[8].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[9].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[9]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("), [", paragraph.TextAreas[10].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[11].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[11]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("], <", paragraph.TextAreas[12].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[13].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[13]).TextAreas[0].Content.Text);
+            
+            Assert.Equal(">, {", paragraph.TextAreas[14].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[15].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[15]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("} (open/close pairs)\n", paragraph.TextAreas[16].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[17].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[17]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("., ", paragraph.TextAreas[18].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[19].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[19]).TextAreas[0].Content.Text);
+            
+            Assert.Equal(",, ", paragraph.TextAreas[20].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[21].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[21]).TextAreas[0].Content.Text);
+            
+            Assert.Equal("!, and ", paragraph.TextAreas[22].Content.Text);
+            
+            Assert.Equal(ElementType.Emphasis, paragraph.TextAreas[23].TypeCode);
+            Assert.Equal("emphasis", ((Emphasis)paragraph.TextAreas[23]).TextAreas[0].Content.Text);
+            
+            Assert.Equal(" (closing delimiters),\n", paragraph.TextAreas[24].Content.Text);
         }
     }
 }
