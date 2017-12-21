@@ -164,6 +164,9 @@
     <None Include="Input\inlinemarkupemphasis_multiple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Input\inlinemarkupemphasis_punctuation">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Input\inlinemarkupemphasis_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

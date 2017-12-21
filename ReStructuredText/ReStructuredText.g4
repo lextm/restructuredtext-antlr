@@ -40,7 +40,7 @@ comment
   ;
 
 commentLine
-  :  LineBreak? lineStart lineEnd
+  :  lineAtom+
   ;
 
 paragraph
@@ -62,11 +62,11 @@ lineBlock
   ;
 
 lineBlockAtom
-  :  LineBreak Block Space indentation? lineStart lineEnd
+  :  LineBreak Block Space indentation? lineAtom+
   ;
 
 listItemBullet
-  :  LineBreak Space* bullet Space+ (paragraph+)?
+  :  LineBreak Space* bullet Space* (paragraph+)?
   |  LineBreak Space* special=(Minus | Plus)
   ;
 
@@ -85,31 +85,50 @@ paragraphNoBreak
   ;
 
 lineNoBreak
-  :  lineStart lineEnd
+  :  lineAtom+
   ;
   
 line
-  :  (LineBreak indentation?)? lineStart lineEnd
-  |  (LineBreak) lineSpecial
+  :  (LineBreak indentation?)? lineAtom+
+  |  lineSpecial
   ;
+  
+lineAtom
+  :  span
+  |  text
+  ;
+  
+text
+  :  textStart textEnd?
+  |  Dot
+  |  '"' textEnd?
+  |  Any textEnd?
+  |  Space textEnd
+  ;
+
+//line
+//  :  (LineBreak indentation?)? lineStart lineEnd
+//  |  (LineBreak) lineSpecial
+//  ;
 
 lineSpecial
   :  Numbers Dot
   //|  Alphabet Dot
   ;
   
-lineStart
-  :  span
-  |  textStart
-  ;
-
-lineEnd
-  :  lineAtom*
-  ;
-
-lineAtom
-  :  span | textEnd
-  ;
+  
+//lineStart
+//  :  span
+//  |  textStart
+//  ;
+//
+//lineEnd
+//  :  lineAtom*
+//  ;
+//
+//lineAtom
+//  :  span | textEnd
+//  ;
 
 empty_line
   :  LineBreak Space*
@@ -121,6 +140,7 @@ indentation
 
 textStart
   : text_fragment_firstTwo text_fragment*
+  | '/'
   | Equal Equal
   | Alphabet text_fragment*
   ;
@@ -150,7 +170,7 @@ quotedLiteral
 
 text_fragment_firstTwo
   :  (Star ~(Space | LineBreak))
-  |  (Minus ~Space)
+  |  (Minus ~(Space | LineBreak))
   |  (Plus ~Space)
   |  (Numbers Dot ~(Space | LineBreak))
   |  (Block ~Space)
@@ -210,16 +230,24 @@ starAtom
   ;
 
 backTickText
-  :  (Colon titled=backTickAtoms Colon)? body
+  :  (Colon titled=Alphabet Colon)? body
   ;
 
 body
-  :  (BackTick backTickText BackTick)
-  |  (BackTick backTickAtoms BackTick+)
+//  :  (BackTick backTickText BackTick)
+//  |  (BackTick backTickAtoms BackTick+)
+  :  BackTick BackTick* backTickAtoms BackTick+
+//  |  BackTick backTickNoSpace backTickAtoms LineBreak? Space* backTickNoSpace backTickAtoms BackTick*
+  |  BackTick backTickNoSpace backTickAtoms BackTick*
+  |  BackTick BackTick
   ;
 
 backTickAtoms
   :  backTickAtom+
+  ;
+
+backTickNoSpace
+  :  ~(BackTick | LineBreak | Space)
   ;
 
 backTickAtom
@@ -331,7 +359,7 @@ Space
   ;
 
 EscapeSequence
-  :  '\\' ('\\' | '*')
+  :  '\\' ('\\' | Star)
   ;
 
 LineBreak

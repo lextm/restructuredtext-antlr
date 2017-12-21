@@ -310,13 +310,10 @@ namespace ReStructuredText
             public override ITextArea[] VisitLineNoBreak([NotNull] LineNoBreakContext context)
             {
                 var result = new List<ITextArea>();
-                var bodyContext = context.lineStart();
-                result.AddRange(VisitLineStart(bodyContext));
-
-                var endContext = context.lineEnd();
-                if (endContext != null)
+                var bodyContext = context.lineAtom();
+                foreach (var atom in bodyContext)
                 {
-                    result.AddRange(VisitLineEnd(endContext));
+                    result.AddRange(VisitLineAtom(atom));
                 }
 
                 if (result.Last().TypeCode == ElementType.Text)
@@ -357,13 +354,10 @@ namespace ReStructuredText
                 int length = indentation == null ? 0 : indentation.GetText().Length;
                 IndentationTracker.Track(length);
 
-                var bodyContext = context.lineStart();
-                result.AddRange(VisitLineStart(bodyContext));
-
-                var endContext = context.lineEnd();
-                if (endContext != null)
+                var bodyContext = context.lineAtom();
+                foreach (var atom in bodyContext)
                 {
-                    result.AddRange(VisitLineEnd(endContext));
+                    result.AddRange(VisitLineAtom(atom));
                 }
 
                 result.First().Indentation = length;
@@ -386,13 +380,10 @@ namespace ReStructuredText
                 int length = indentation == null ? 0 : indentation.GetText().Length;
                 IndentationTracker.Track(length);
 
-                var bodyContext = context.lineStart();
-                result.AddRange(VisitLineStart(bodyContext));
-
-                var endContext = context.lineEnd();
-                if (endContext != null)
+                var bodyContext = context.lineAtom();
+                foreach (var atom in bodyContext)
                 {
-                    result.AddRange(VisitLineEnd(endContext));
+                    result.AddRange(VisitLineAtom(atom));
                 }
 
                 result.First().Indentation = length;
@@ -400,7 +391,7 @@ namespace ReStructuredText
             }
 
             
-            public override ITextArea[] VisitLineStart([NotNull] LineStartContext context)
+            public override ITextArea[] VisitLineAtom([NotNull] LineAtomContext context)
             {
                 var span = context.span();
                 if (span != null)
@@ -411,42 +402,19 @@ namespace ReStructuredText
                 }
 
                 var textVisitor = new TextAreaVisitor().Inherit(this);
-                var text = context.textStart();
+                var text = context.text();
                 return new ITextArea[]
                 {
-                    textVisitor.VisitTextStart(text)
+                    textVisitor.VisitText(text)
                 };
-            }
-            
-            public override ITextArea[] VisitLineEnd([NotNull] LineEndContext context)
-            {
-                var result = new List<ITextArea>();
-                var line = context.lineAtom();
-                if (line != null)
-                {
-                    foreach (var item in line)
-                    {
-                        var lineAtomVisitor = new TextAreaVisitor().Inherit(this);
-                        var area = lineAtomVisitor.VisitLineAtom(item);
-                        result.Add(area);
-                    }
-                }
-
-                return result.ToArray();
             }
         }
 
         class TextAreaVisitor : TrackedBaseVisitor<ITextArea>
         {
-            public override ITextArea VisitLineAtom([NotNull] LineAtomContext context)
+            public override ITextArea VisitText([NotNull] TextContext context)
             {
-                var child = context.span();
-                if (child != null)
-                {
-                    return VisitSpan(child);
-                }
-
-                return VisitTextEnd(context.textEnd());
+                return new TextArea(context.GetText());
             }
             
             public override ITextArea VisitSpan([NotNull] SpanContext context)
@@ -469,7 +437,7 @@ namespace ReStructuredText
 
             public override ITextArea VisitBackTickText([NotNull] BackTickTextContext context)
             {
-                return new BackTickText(context.titled == null ? null : context.titled.GetText(), new TextArea(context.body().GetText()));
+                return new BackTickText(context.titled == null ? null : context.titled.Text, new TextArea(context.body().GetText()));
             }
 
             public override ITextArea VisitStarText([NotNull] StarTextContext context)
