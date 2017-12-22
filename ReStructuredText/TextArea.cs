@@ -62,7 +62,7 @@ namespace ReStructuredText
         public static IList<ITextArea> Parse(string part)
         {
             var result = new List<ITextArea>();
-            var lines = part.Split('\n');
+            var lines = part.TrimEnd('\n').Split('\n');
             if (lines.Length == 1)
             {
                 result.Add(new TextArea(part));

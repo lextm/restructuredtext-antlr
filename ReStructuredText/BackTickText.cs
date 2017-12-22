@@ -70,6 +70,7 @@ namespace ReStructuredText
                         }
                         else
                         {
+                            // pick up title.
                             Title = null;
                         }
 

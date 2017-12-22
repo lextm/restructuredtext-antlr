@@ -48,9 +48,9 @@ namespace ReStructuredText
             
             Title.First().Content.RemoveStart();
             Title.Last().Content.RemoveEnd();
-            if (title.Last().Content.Text.Length == 0)
+            if (Title.Last().Content.Text.Length == 0)
             {
-                Title.Remove(title.Last());
+                Title.Remove(Title.Last());
             }
             
             Level = level;

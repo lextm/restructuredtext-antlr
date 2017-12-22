@@ -157,6 +157,9 @@
     <None Update="Input\inlinemarkupliteral_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Input\inlinemarkupstrongemphasis_quoted">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Input\lineblock_indentation">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

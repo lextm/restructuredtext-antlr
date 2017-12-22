@@ -24,7 +24,7 @@ options {
 }
 
 parse
-  :  (element | empty_line) + EOF
+  :  (element | empty_line)+? EOF
   ;
 
 element
@@ -36,34 +36,45 @@ sectionElement
   ;
 
 comment
-  :  Space* Comment Space* (lineNoBreak line*)?
+  :  Space* Comment Space* (lineNoBreak lines*)?
   ;
 
 paragraph
-  :  line+
+  :  lines
   ;
 
 section
-  :  (LineBreak Section)? title LineBreak Section (LineBreak)* sectionElement*
+  :  (LineBreak Section)? title LineBreak? Section (LineBreak)* sectionElement*
   ;
 
 title
-  : LineBreak textStart
-  | LineBreak lineSpecial Space+ (paragraphNoBreak)?
-  | line
+  :  LineBreak textStart
+  |  LineBreak lineSpecial Space+ (paragraphNoBreak)?
+  |  lineNormal
+  |  lineStar
   ;
 
 lineBlock
-  :  lineBlockAtom+
+  :  LineBreak lineBlockLine LineBreak? lineBlockLine*
   ;
 
-lineBlockAtom
-  :  LineBreak Block Space indentation? lineAtom+
+lineBlockLine
+  :  Block Space indentation? span*? starText
+  |  Block Space indentation? span+
   ;
 
 listItemBullet
-  :  LineBreak Space* bullet Space* (paragraph+)?
+  :  bulletCrossLine
+  |  bulletSimple
   |  LineBreak Space* special=(Minus | Plus)
+  ;
+
+bulletCrossLine
+  : LineBreak Space* bullet Space* (paragraph+)? 
+  ;
+
+bulletSimple 
+  :  LineBreak Space* bullet Space+ paragraphNoBreak paragraph* 
   ;
 
 bullet
@@ -77,23 +88,37 @@ listItemEnumerated
   ;
   
 paragraphNoBreak
-  :  lineNoBreak line*
+  :  lineNoBreak lines*
   ;
 
 lineNoBreak
-  :  lineAtom+
+  :  indentation? spanNoStar span*?
   ;
   
-line
-  :  (LineBreak indentation?)? lineAtom+
+lines
+  :  linesStar
+  |  linesNormal
+  ;
+
+linesNormal
+  :  lineNormal (linesStar | linesNormal?)
+  ;
+  
+linesStar
+  :  lineStar
+  |  lineStar lineNoBreak linesNormal??  
+  |  lineStar lineNoBreak linesStar
+  ;
+
+lineNormal
+  :  LineBreak indentation? span*? spanNoStar
   |  lineSpecial
   ;
   
-lineAtom
-  :  span
-  |  text
+lineStar
+  :  LineBreak indentation? span*? starText
   ;
-  
+ 
 text
   :  textStart textEnd?
   |  Dot
@@ -144,6 +169,17 @@ textAtoms
   : text_fragment+
   ;
 
+spanNoStar
+  :  reference
+  |  referenceIn
+  |  hyperlinkTarget
+  |  hyperlink
+  |  hyperlinkDoc
+  |  backTickText
+  |  quotedLiteral
+  |  text
+  ;
+
 span
   :  starText
   |  reference
@@ -153,6 +189,7 @@ span
   |  hyperlinkDoc
   |  backTickText
   |  quotedLiteral
+  |  text
   ;
 
 quotedLiteral
@@ -160,8 +197,7 @@ quotedLiteral
   ;
 
 text_fragment_firstTwo
-  :  (Star ~(Space | LineBreak))
-  |  (Minus ~(Space | LineBreak))
+  :  (Minus ~(Space | LineBreak))
   |  (Plus ~Space)
   |  (Numbers Dot ~(Space | LineBreak))
   |  (Block ~Space)
@@ -206,17 +242,17 @@ text_fragment
   ;
 
 starText
-  :  Star Star* starAtoms Star+
-  |  Star starNoSpace starAtoms LineBreak? Space* starNoSpace starAtoms Star*
-  |  Star Star
+  :  Star+ starNoSpace starAtoms (LineBreak Star* starNoSpace starAtoms)* Star* LineBreak
+  |  Star+ starNoSpace starAtoms Star* LineBreak
+//  |  Star ~(Star | LineBreak)
   ;
 
 starAtoms
-  :  starAtom+ (Star* starAtom)*
+  :  starAtom* (Star* starAtom)*
   ;
 
 starNoSpace
-  :  ~(Star | LineBreak | Space)
+  :  ~(Star | LineBreak | Space | Section)
   ;
 
 starAtom
@@ -228,11 +264,8 @@ backTickText
   ;
 
 body
-//  :  (BackTick backTickText BackTick)
-//  |  (BackTick backTickAtoms BackTick+)
   :  BackTick BackTick* backTickAtoms BackTick+
-//  |  BackTick backTickNoSpace backTickAtoms LineBreak? Space* backTickNoSpace backTickAtoms BackTick*
-  |  BackTick backTickNoSpace backTickAtoms BackTick*
+  |  BackTick backTickNoSpace backTickAtoms BackTick+
   |  BackTick BackTick
   ;
 
