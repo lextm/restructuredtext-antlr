@@ -32,34 +32,18 @@ namespace ReStructuredText
         {
             var content = _textArea.Content.Text;
             int level = 0;
-            var start = 0;
             var length = 0;
             var maxLevel = 0;
-            var lastStar = 0;
-            TextArea lastText = null;
-            for (int i = 0; i < content.Length; i++)
-            {
-                int previous = i - 1;
-                var previousChar = previous >= 0 ? content[previous] : char.MinValue;
-                if (content[i] == '*' && previousChar != '\\')
-                {
-                    lastStar = i;
-                }
-            }
-
-            if (lastStar != content.Length - 1)
-            {
-                lastText = new TextArea(content.Substring(lastStar + 1));
-            }
-
             var list = new List<ITextArea>();
             var balanced = true;
             var lastLineStart = 0;
             var count = 0;
-            for (int j = 0; j <= lastStar; j++)
+            ITextArea lastText = null;
+            for (int j = 0; j < content.Length; j++)
             {
                 if (content[j] == '*')
                 {
+                    var fragment = content.Substring(j - length - (maxLevel == 0 ? 0 : maxLevel - 1), length);
                     var escaped = IsEscaped(j, content, level > 0, ref balanced);
                     if (escaped)
                     {
@@ -68,7 +52,6 @@ namespace ReStructuredText
                     else
                     {
                         count++;
-                        var fragment = content.Substring(j - length - (maxLevel == 0 ? 0 : maxLevel - 1), length);
                         if (length > 0 && maxLevel == 0)
                         {
                             foreach (var item in TextArea.Parse(fragment))
@@ -114,7 +97,7 @@ namespace ReStructuredText
                     length++;
                 }
 
-                if (content[j] == '\n')
+                if (content[j] == '\n' && j != content.Length - 1)
                 {
                     lastLineStart = j + 1;
                     foreach (var item in list)
@@ -135,12 +118,20 @@ namespace ReStructuredText
                 }
 
                 list.Clear();
+                
+                if (length > 0)
+                {
+                    var fragment = content.Substring(content.Length - length, length);
+                    lastText = TextArea.Parse(fragment)[0];
+                }
             }
             else
             {
                 level = 0;
+                length = 0;
+                maxLevel = 0;
                 // rework last line.
-                for (int j = lastLineStart == 0 ? 0 : lastLineStart + 1; j <= lastStar; j++)
+                for (int j = lastLineStart == 0 ? 0 : lastLineStart + 1; j < content.Length; j++)
                 {
                     if (content[j] == '*')
                     {
@@ -198,6 +189,12 @@ namespace ReStructuredText
                         length++;
                     }
                 }
+                
+                if (length > 0)
+                {
+                    var fragment = content.Substring(content.Length - length, length);
+                    lastText = TextArea.Parse(fragment)[0];
+                }
             }
             
             if (lastText != null)
@@ -208,26 +205,37 @@ namespace ReStructuredText
 
         private static bool IsEscaped(int index, string content, bool inStar, ref bool balanced)
         {
-            int previous1 = index - 1;
-            var previousChar1 = previous1 >= 0 ? content[previous1] : char.MinValue;
-            int previous2 = index - 2;
-            var previousChar2 = previous2 >= 0 ? content[previous2] : char.MinValue;
-            var nextChar = content[index + 1];
-            int next2 = index + 2;
-            var nextChar2 = next2 < content.Length ? content[next2] : char.MinValue;
-            var debug = $"{previousChar2}{previousChar1}*{nextChar}{nextChar2}";
-            
+            var previousChar2 = index - 2 >= 0 ? content[index - 2] : char.MinValue;
+            var previousChar1 = index - 1 >= 0 ? content[index - 1] : char.MinValue;
+            var nextChar1 = content[index + 1];
+            var nextChar2 = index + 2 < content.Length ? content[index + 2] : char.MinValue;
+
             if (previousChar1 == '\\')
             {
                 return true;
             }
-            
+
+            if (previousChar2 == '\\' && previousChar1 == '*' && (nextChar1 != '\n' && nextChar2 != '*'))
+            {
+                return true;
+            }
+
             if (char.IsDigit(previousChar1) || previousChar1 == 'x')
             {
                 return true;
             }
             
-            if (!inStar && nextChar == ' ')
+            if (!inStar && nextChar1 == ' ')
+            {
+                return true;
+            }
+
+            if (!inStar && previousChar1 == ' ' && nextChar1 == '*' && (nextChar2 == '\n' || nextChar2 == '\r'))
+            {
+                return true;
+            }
+
+            if (!inStar && previousChar2 == ' ' && (nextChar1 == '\n' || nextChar1 == '\r'))
             {
                 return true;
             }
@@ -237,23 +245,44 @@ namespace ReStructuredText
                 return true;
             }
 
-            if (previousChar1 == '[' && nextChar == ']')
+            if (previousChar1 == '[' && nextChar1 == ']') 
+            {   
+                // [*]
+                return true;
+            }
+
+            if (previousChar1 == '(' && nextChar1 == ')')
+            {   
+                // (*)
+                return true;
+            }
+
+            if (previousChar1 == '(' && nextChar1 == '*')
+            {
+                // (**
+                return true;
+            }
+
+            if (previousChar2 == '(' && previousChar1 == '*' && (nextChar1 == ')' || nextChar1 == ' '))
+            {
+                // (**) or (** 
+                return true;
+            }
+
+            if (previousChar1 == '*' && char.IsDigit(nextChar1))
             {
                 return true;
             }
 
-            if (previousChar1 == '(' && nextChar == ')')
+            if (previousChar1 == '\'' && nextChar1 == '\'')
             {
+                // '*'
                 return true;
             }
 
-            if (previousChar1 == '\'' && nextChar == '\'')
+            if (previousChar1 == '"' && previousChar2 == '\'' && nextChar1 == '"' && nextChar2 == '\'')
             {
-                return true;
-            }
-
-            if (previousChar1 == '"' && previousChar2 == '\'' && nextChar == '"' && nextChar2 == '\'')
-            {
+                // '"*"'
                 return true;
             }
             

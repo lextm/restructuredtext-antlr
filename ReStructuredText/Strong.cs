@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ReStructuredText
 {
@@ -21,5 +23,17 @@ namespace ReStructuredText
 
         public bool IsQuoted => TextAreas[0].IsQuoted;
         public ElementType TypeCode => ElementType.Strong;
+
+        internal static ITextArea ParseStars(string stars)
+        {
+            var length = stars.Length;
+            var builder = new StringBuilder(length - 4);
+            for (int i = 0; i < length - 4; i++)
+            {
+                builder.Append("*");
+            }
+
+            return new Strong(new ITextArea[] { new TextArea(builder.ToString()) });
+        }
     }
 }

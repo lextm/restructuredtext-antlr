@@ -530,30 +530,23 @@ namespace ReStructuredText
 
             public override ITextArea VisitSpan([NotNull] SpanContext context)
             {
-                var inline = context.backTickText();
-                if (inline != null)
-                {
-                    return VisitBackTickText(inline);
-                }
-
                 var star = context.starText();
                 if (star != null)
                 {
                     return VisitStarText(star);
                 }
 
-                var text = context.text();
-                if (text != null)
-                {
-                    return VisitText(text);
-                }
-
-                // TODO:
-                return new TextArea(context.GetText());
+                return VisitSpanNoStar(context.spanNoStar());
             }
 
             public override ITextArea VisitSpanNoStar([NotNull] SpanNoStarContext context)
             {
+                var stars = context.stars();
+                if (stars != null)
+                {
+                    return Strong.ParseStars(stars.GetText());
+                }
+
                 var inline = context.backTickText();
                 if (inline != null)
                 {

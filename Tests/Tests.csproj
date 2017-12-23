@@ -157,6 +157,15 @@
     <None Update="Input\inlinemarkupliteral_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Input\inlinemarkupstrongemphasis_apostrophe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Input\inlinemarkupstrongemphasis_asterisk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Input\inlinemarkupstrongemphasis_notstrong">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Input\inlinemarkupstrongemphasis_quoted">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

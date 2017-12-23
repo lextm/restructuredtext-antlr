@@ -178,18 +178,16 @@ spanNoStar
   |  backTickText
   |  quotedLiteral
   |  text
+  |  stars
   ;
 
 span
   :  starText
-  |  reference
-  |  referenceIn
-  |  hyperlinkTarget
-  |  hyperlink
-  |  hyperlinkDoc
-  |  backTickText
-  |  quotedLiteral
-  |  text
+  |  spanNoStar
+  ;
+  
+stars
+  :  Star Star Star Star Star+
   ;
 
 quotedLiteral
