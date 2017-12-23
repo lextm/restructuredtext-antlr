@@ -129,7 +129,7 @@ text
   |  '}' textEnd?
   |  ')' textEnd?
   |  '\\' textEnd?
-  |  Space textEnd
+  |  Space text
   ;
 
 lineSpecial
