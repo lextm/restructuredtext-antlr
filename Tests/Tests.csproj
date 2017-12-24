@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
     <OutputType Condition="'$(TargetFramework)'!='net452'">Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>

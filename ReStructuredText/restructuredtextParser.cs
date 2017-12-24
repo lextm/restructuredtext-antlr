@@ -40,18 +40,17 @@ namespace ReStructuredText
 
         public static Document ParseDocument(string fileName)
         {
-            var lexer = new ReStructuredTextLexer(new AntlrInputStream(File.OpenRead(fileName)));
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new ReStructuredTextParser(tokens);
-
-            DocumentVisitor visitor = new DocumentVisitor()
-            {
-                IndentationTracker = new IndentationTracker(),
-                SectionTracker = new SectionTracker()
-            };
-
             try
             {
+                var text = File.ReadAllText(fileName);
+                var lexer = new ReStructuredTextLexer(new AntlrInputStream('\n' + text));
+                var tokens = new CommonTokenStream(lexer);
+                var parser = new ReStructuredTextParser(tokens);
+                DocumentVisitor visitor = new DocumentVisitor
+                {
+                    IndentationTracker = new IndentationTracker(),
+                    SectionTracker = new SectionTracker()
+                };
                 return visitor.Visit(parser.parse());
             }
             catch (RecognitionException ex)
@@ -574,11 +573,6 @@ namespace ReStructuredText
             }
 
             public override ITextArea VisitTextStart([NotNull] TextStartContext context)
-            {
-                return new TextArea(context.GetText());
-            }
-
-            public override ITextArea VisitTextEnd([NotNull] TextEndContext context)
             {
                 return new TextArea(context.GetText());
             }

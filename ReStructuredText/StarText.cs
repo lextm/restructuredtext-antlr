@@ -1,10 +1,5 @@
-﻿using System.CodeDom;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace ReStructuredText
 {

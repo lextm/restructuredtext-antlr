@@ -32,7 +32,7 @@ element
   ;
   
 sectionElement
-  :  comment | listItemBullet | listItemEnumerated | paragraph | lineBlock
+  :  listItemBullet | listItemEnumerated | paragraph | lineBlock | comment
   ;
 
 comment
@@ -120,21 +120,12 @@ lineStar
   ;
  
 text
-  :  textStart textEnd?
-  |  Dot
-  |  '"' textEnd?
-  |  Any textEnd?
-  |  '(' textEnd?
-  |  ':' textEnd?
-  |  '}' textEnd?
-  |  ')' textEnd?
-  |  '\\' textEnd?
-  |  Space text
-  ;
+  : textStart+ text_fragment* text*
+  ; 
 
 lineSpecial
   :  Numbers Dot
-  //|  Alphabet Dot
+  |  Alphabet Dot
   ;
   
 empty_line
@@ -146,12 +137,23 @@ indentation
   ;
 
 textStart
-  :  forcedText (text_fragment forcedText*)*
-  |  text_fragment_firstTwo text_fragment*
+  :  forcedText
+  |  Section  
+  |  (Minus ~(Space | LineBreak))
+  |  (Plus ~Space)
+  |  (Numbers Dot ~(Space | LineBreak))
+  |  (Alphabet Dot ~(Space | LineBreak))
+  |  (Block ~Space)
+  |  (Alphabet ~(Dot | LineBreak))
+  |  text_fragment_start text_fragment_start+
+  |  Alphabet
+  |  '('
+  |  ')'
   |  '/'
-  |  '?'
-  |  Equal Equal
-  |  Alphabet text_fragment*
+  |  ';'
+  |  '"'
+  |  Space
+  |  Any
   ;
 
 forcedText 
@@ -159,14 +161,6 @@ forcedText
   |  '[*]' 
   |  '\'*\'' 
   |  '\'"*"\''
-  ; 
-
-textEnd
-  :  textAtoms
-  ;
-  
-textAtoms
-  : text_fragment+
   ;
 
 spanNoStar
@@ -194,23 +188,12 @@ quotedLiteral
   : '>' Space lineNoBreak
   ;
 
-text_fragment_firstTwo
-  :  (Minus ~(Space | LineBreak))
-  |  (Plus ~Space)
-  |  (Numbers Dot ~(Space | LineBreak))
-  |  (Block ~Space)
-  |  ('\\' '"' Star '"' ~'\\')
-  |  text_fragment_start text_fragment_start text_fragment
-  ;
-  
 text_fragment_start
-  :  Section
-  |  SemiColon
-  |  EscapeSequence
+  :  SemiColon
   |  UnderScore
   |  Numbers
   |  Alphabet
-  |  TimeStar
+  |  Space
   |  '/'
   |  '#'
   |  '['
@@ -229,20 +212,18 @@ text_fragment_start
 
 text_fragment
   :  text_fragment_start
+  |  forcedText
   |  Block
   |  Literal
   |  Comment
-  |  Space
   |  Dot
   |  Minus
   |  Quote
-  |  (Star Space)
   ;
 
 starText
   :  Star+ starNoSpace starAtoms (LineBreak Star* starNoSpace starAtoms)* Star* LineBreak
   |  Star+ starNoSpace starAtoms Star* LineBreak
-//  |  Star ~(Star | LineBreak)
   ;
 
 starAtoms
@@ -276,8 +257,8 @@ backTickNoSpace
   ;
 
 backTickAtom
-  :  ~BackTick
-  |  BackTick ~BackTick
+  :  ~(BackTick | LineBreak)
+  |  BackTick ~(BackTick | LineBreak)
   ;
 
 reference
@@ -386,10 +367,6 @@ Star
 Space
   :  ' ' 
   |  '\t'
-  ;
-
-EscapeSequence
-  :  '\\' ('\\' | Star)
   ;
 
 LineBreak

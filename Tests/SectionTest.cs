@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.Remoting;
-using Xunit;
+﻿using Xunit;
 
 namespace ReStructuredText.Tests
 {
