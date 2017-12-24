@@ -120,7 +120,7 @@ lineStar
   ;
  
 text
-  : textStart+ text_fragment* text*
+  : textStart+ text_fragment*
   ; 
 
 lineSpecial
