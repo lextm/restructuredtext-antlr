@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Antlr4JavaExecutable>/usr/bin/java</Antlr4JavaExecutable>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <DebugType>full</DebugType>
