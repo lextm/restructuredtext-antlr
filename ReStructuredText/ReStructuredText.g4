@@ -125,7 +125,7 @@ text
 
 lineSpecial
   :  Numbers Dot
-  |  Alphabet Dot
+  //|  Alphabet Dot
   ;
   
 empty_line
@@ -144,7 +144,7 @@ textStart
   |  (Numbers Dot ~(Space | LineBreak))
   |  (Alphabet Dot ~(Space | LineBreak))
   |  (Block ~Space)
-  |  (Alphabet ~(Dot | LineBreak))
+  //|  (Alphabet ~(Dot | LineBreak))
   |  text_fragment_start text_fragment_start+
   |  Alphabet
   |  '('
