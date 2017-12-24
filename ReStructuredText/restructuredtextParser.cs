@@ -399,7 +399,7 @@ namespace ReStructuredText
             {
                 var result = new List<ITextArea>();
                 var spanVisitor = new TextAreaVisitor().Inherit(this);
-                result.Add(spanVisitor.VisitSpanNoStar(context.spanNoStar()));
+                result.Add(spanVisitor.VisitSpanLineStartNoStar(context.spanLineStartNoStar()));
                 var spanContext = context.span();
                 if (spanContext != null)
                 {
@@ -442,23 +442,38 @@ namespace ReStructuredText
                 IndentationTracker.Track(length);
 
                 var spanVisitor = new TextAreaVisitor().Inherit(this);
+
+                var start = context.spanLineStartNoStar();
+                if (start != null)
+                {
+                    foreach (var item in start)
+                    {
+                        result.Add(spanVisitor.VisitSpanLineStartNoStar(item));
+                    }
+                }
+
                 var bodyContext = context.span();
                 foreach (var atom in bodyContext)
                 {
                     result.Add(spanVisitor.VisitSpan(atom));
                 }
 
-                result.Add(spanVisitor.VisitSpanNoStar(context.spanNoStar()));
-
+                var noStar = context.spanNoStar();
+                if (noStar != null)
                 {
-                    if (result.Last().TypeCode == ElementType.Text)
+                    foreach (var item in noStar)
                     {
-                        result.Last().Content.Append("\n");
+                        result.Add(spanVisitor.VisitSpanNoStar(item));
                     }
-                    else
-                    {
-                        result.Add(new TextArea("\n"));
-                    }
+                }
+
+                if (result.Last().TypeCode == ElementType.Text)
+                {
+                    result.Last().Content.Append("\n");
+                }
+                else
+                {
+                    result.Add(new TextArea("\n"));
                 }
 
                 result.First().Indentation = length;
@@ -479,10 +494,10 @@ namespace ReStructuredText
                 IndentationTracker.Track(length);
 
                 var spanVisitor = new TextAreaVisitor().Inherit(this);
-                var bodyContext = context.span();
+                var bodyContext = context.spanLineStartNoStar();
                 foreach (var atom in bodyContext)
                 {
-                    result.Add(spanVisitor.VisitSpan(atom));
+                    result.Add(spanVisitor.VisitSpanLineStartNoStar(atom));
                 }
 
                 var starText = context.starText();
@@ -527,6 +542,11 @@ namespace ReStructuredText
                 return new TextArea(context.GetText());
             }
 
+            public override ITextArea VisitTextLineStart([NotNull] TextLineStartContext context)
+            {
+                return new TextArea(context.GetText());
+            }
+
             public override ITextArea VisitSpan([NotNull] SpanContext context)
             {
                 var star = context.starText();
@@ -540,12 +560,6 @@ namespace ReStructuredText
 
             public override ITextArea VisitSpanNoStar([NotNull] SpanNoStarContext context)
             {
-                var stars = context.stars();
-                if (stars != null)
-                {
-                    return Strong.ParseStars(stars.GetText());
-                }
-
                 var inline = context.backTickText();
                 if (inline != null)
                 {
@@ -562,6 +576,24 @@ namespace ReStructuredText
                 return new TextArea(context.GetText());
             }
 
+            public override ITextArea VisitSpanLineStartNoStar([NotNull] SpanLineStartNoStarContext context)
+            {
+                var inline = context.backTickText();
+                if (inline != null)
+                {
+                    return VisitBackTickText(inline);
+                }
+
+                var text = context.textLineStart();
+                if (text != null)
+                {
+                    return VisitTextLineStart(text);
+                }
+
+                // TODO:
+                return new TextArea(context.GetText());
+            }
+
             public override ITextArea VisitBackTickText([NotNull] BackTickTextContext context)
             {
                 return new BackTickText(context.titled == null ? null : context.titled.Text, new TextArea(context.body().GetText()));
@@ -570,11 +602,6 @@ namespace ReStructuredText
             public override ITextArea VisitStarText([NotNull] StarTextContext context)
             {
                 return new StarText(new TextArea(context.GetText()));
-            }
-
-            public override ITextArea VisitTextStart([NotNull] TextStartContext context)
-            {
-                return new TextArea(context.GetText());
             }
         }
 

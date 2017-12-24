@@ -92,7 +92,7 @@ paragraphNoBreak
   ;
 
 lineNoBreak
-  :  indentation? spanNoStar span*?
+  :  indentation? spanLineStartNoStar span*?
   ;
   
 lines
@@ -111,20 +111,17 @@ linesStar
   ;
 
 lineNormal
-  :  LineBreak indentation? span*? spanNoStar
+  :  LineBreak indentation? spanLineStartNoStar+? (span*? spanNoStar+?)?
   |  lineSpecial
   ;
   
 lineStar
-  :  LineBreak indentation? span*? starText
+  :  LineBreak indentation? spanLineStartNoStar*? starText
   ;
  
-text
-  : textStart+ text_fragment*
-  ; 
-
 lineSpecial
   :  Numbers Dot
+  |  LineBreak indentation? Numbers
   //|  Alphabet Dot
   ;
   
@@ -136,15 +133,50 @@ indentation
   :  Space+
   ;
 
+spanLineStartNoStar
+  :  reference
+  |  referenceIn
+  |  hyperlinkTarget
+  |  hyperlink
+  |  hyperlinkDoc
+  |  backTickText
+  |  quotedLiteral
+  |  textLineStart
+  ;
+
+textLineStart
+  :  lineStart_fragment+ text_fragment*
+  ;
+
+lineStart_fragment
+  :  (Minus ~(Space | LineBreak))
+  |  (Plus ~Space)
+  |  (Numbers Dot ~(Space | LineBreak))
+  |  (Numbers ~(Dot | LineBreak))
+  //|  (Alphabet Dot ~(Space | LineBreak))
+  |  (Alphabet Dot)
+  |  (Block ~Space)
+  |  (UnderScore ~Space)
+  |  (Alphabet ~(Dot | LineBreak))
+  |  Alphabet
+  |  Equal Equal
+   |  '['
+    |  ']'
+    |  '('
+    |  ')'
+    |  '/'
+    |  ';'
+    |  '"'
+    |  '\''
+  ;
+  
+text
+  :  textStart+ text_fragment*
+  ;
+
 textStart
   :  forcedText
   |  Section  
-  |  (Minus ~(Space | LineBreak))
-  |  (Plus ~Space)
-  |  (Numbers Dot ~(Space | LineBreak))
-  |  (Alphabet Dot ~(Space | LineBreak))
-  |  (Block ~Space)
-  //|  (Alphabet ~(Dot | LineBreak))
   |  text_fragment_start text_fragment_start+
   |  Alphabet
   |  '('
@@ -152,8 +184,10 @@ textStart
   |  '/'
   |  ';'
   |  '"'
+  |  '\''
   |  Space
   |  Any
+  |  '.'
   ;
 
 forcedText 
@@ -172,16 +206,11 @@ spanNoStar
   |  backTickText
   |  quotedLiteral
   |  text
-  |  stars
   ;
 
 span
   :  starText
   |  spanNoStar
-  ;
-  
-stars
-  :  Star Star Star Star Star+
   ;
 
 quotedLiteral
@@ -190,7 +219,6 @@ quotedLiteral
 
 text_fragment_start
   :  SemiColon
-  |  UnderScore
   |  Numbers
   |  Alphabet
   |  Space
@@ -202,11 +230,13 @@ text_fragment_start
   |  ')'
   |  Colon
   |  Equal
+  |  Minus
   |  '?'
   |  '<'
   |  '>'
   |  '&'
   |  '"'
+  |  '.'
   |  Any
   ;
 
@@ -217,13 +247,13 @@ text_fragment
   |  Literal
   |  Comment
   |  Dot
-  |  Minus
   |  Quote
   ;
 
 starText
   :  Star+ starNoSpace starAtoms (LineBreak Star* starNoSpace starAtoms)* Star* LineBreak
   |  Star+ starNoSpace starAtoms Star* LineBreak
+  |  Star+ LineBreak
   ;
 
 starAtoms
@@ -239,7 +269,7 @@ starAtom
   ;
 
 backTickText
-  :  (Colon titled=Alphabet Colon)? body
+  :  (Colon titled=Alphabet Colon)? body UnderScore?
   ;
 
 body
@@ -274,7 +304,7 @@ hyperlinkTarget
   ;
   
 hyperlink
-  :  BackTick hyperlinkAtom+ Space '<' url '>' BackTick UnderScore
+  :  BackTick hyperlinkAtom+ Space '<' url '>' BackTick UnderScore Space
   ;
  
 hyperlinkDoc

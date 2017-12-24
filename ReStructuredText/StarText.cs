@@ -26,6 +26,22 @@ namespace ReStructuredText
         public void Process(IList<ITextArea> owner)
         {
             var content = _textArea.Content.Text;
+            var clean = content.TrimEnd();
+            if (clean.Count(_ => _ == '*') == clean.Length)
+            {
+                if (clean.Length > 4)
+                {
+                    owner.Add(Strong.ParseStars(clean));
+                    owner.Add(new TextArea("\n"));
+                }
+                else
+                {
+                    owner.Add(new TextArea(clean + '\n'));
+                }
+
+                return;
+            }
+            
             int level = 0;
             var length = 0;
             var maxLevel = 0;
@@ -202,7 +218,7 @@ namespace ReStructuredText
         {
             var previousChar2 = index - 2 >= 0 ? content[index - 2] : char.MinValue;
             var previousChar1 = index - 1 >= 0 ? content[index - 1] : char.MinValue;
-            var nextChar1 = content[index + 1];
+            var nextChar1 = index + 1 < content.Length ? content[index + 1] : char.MinValue;
             var nextChar2 = index + 2 < content.Length ? content[index + 2] : char.MinValue;
 
             if (previousChar1 == '\\')
