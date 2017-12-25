@@ -36,7 +36,31 @@ sectionElement
   ;
 
 comment
-  :  Space* Comment Space* (lineNoBreak lines*)?
+  :  Space* Comment Space* (commentLineNoBreak commentParagraphs?)?
+  ;
+  
+commentParagraphs
+  : main=commentParagraph commentRest
+  ;
+
+commentRest
+  : (empty_line commentParagraph)*
+  ;
+
+commentParagraph
+  :  commentLine+
+  ;
+
+commentLineNoBreak
+  :  commentLineAtoms
+  ;
+
+commentLine
+  :  LineBreak Space Space Space commentLineNoBreak
+  ;
+
+commentLineAtoms
+  :  ~(LineBreak)+
   ;
 
 paragraph

@@ -269,22 +269,22 @@ namespace ReStructuredText
         {
             public override Comment VisitComment([NotNull] CommentContext context)
             {
-                InComment = true;
                 var result = new List<ITextArea>();
-                var lineVisitor = new TextAreasVisitor().Inherit(this);
-                var commentLineContext = context.lineNoBreak();
+                var commentLineContext = context.commentLineNoBreak();
                 if (commentLineContext != null)
                 {
-                    result.AddRange(lineVisitor.VisitLineNoBreak(commentLineContext));
+                    var visitor = new TextAreaVisitor().Inherit(this);
+                    result.Add(visitor.VisitCommentLineNoBreak(commentLineContext));
                 }
 
-                var linesContext = context.lines();
-                foreach (var item in linesContext)
-                {
-                    result.AddRange(lineVisitor.VisitLines(item));
+                var linesContext = context.commentParagraphs();
+                if (linesContext != null)
+                {            
+                    var lineVisitor = new TextAreasVisitor().Inherit(this);
+                    
+                    result.AddRange(lineVisitor.VisitCommentParagraphs(linesContext));
                 }
 
-                InComment = false;
                 return new Comment(result);
             }
         }
@@ -322,6 +322,48 @@ namespace ReStructuredText
 
         class TextAreasVisitor : TrackedBaseVisitor<ITextArea[]>
         {
+            public override ITextArea[] VisitCommentParagraphs([NotNull] CommentParagraphsContext context)
+            {
+                var result = new List<ITextArea>();
+                result.AddRange(VisitCommentParagraph(context.main));
+                var rest = context.commentRest();
+                if (rest != null)
+                {
+                    result.AddRange(VisitCommentRest(rest));
+                }
+
+                return result.ToArray();
+            }
+            
+            public override ITextArea[] VisitCommentRest([NotNull] CommentRestContext context)
+            {
+                var result = new List<ITextArea>();
+                var rest = context.commentParagraph();
+                if (rest != null)
+                {
+                    foreach (var item in rest)
+                    {
+                        result.AddRange(VisitCommentParagraph(item));
+                    }
+                }
+
+                return result.ToArray();
+            }
+            
+            
+
+            public override ITextArea[] VisitCommentParagraph([NotNull] CommentParagraphContext context)
+            {
+                var lineVisitor = new TextAreaVisitor().Inherit(this);
+                var result = new List<ITextArea>();
+                foreach (var item in context.commentLine())
+                {
+                    result.Add(lineVisitor.VisitCommentLine(item));
+                }
+                
+                return result.ToArray();
+            }
+            
             public override ITextArea[] VisitTitle([NotNull] TitleContext context)
             {
                 var lineContext = context.lineNormal();
@@ -423,12 +465,6 @@ namespace ReStructuredText
 
             public override ITextArea[] VisitLineNormal([NotNull] LineNormalContext context)
             {
-                if (InComment)
-                {
-                    var text = context.GetText().TrimStart() + "\n";
-                    return new ITextArea[] { new TextArea(text) };
-                }
-
                 var result = new List<ITextArea>();
                 var special = context.lineSpecial();
                 if (special != null)
@@ -482,12 +518,6 @@ namespace ReStructuredText
 
             public override ITextArea[] VisitLineStar([NotNull] LineStarContext context)
             {
-                if (InComment)
-                {
-                    var text = context.GetText().TrimStart();
-                    return new ITextArea[] { new TextArea(text) };
-                }
-
                 var result = new List<ITextArea>();
                 var indentation = context.indentation();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
@@ -537,6 +567,16 @@ namespace ReStructuredText
 
         class TextAreaVisitor : TrackedBaseVisitor<ITextArea>
         {
+            public override ITextArea VisitCommentLine([NotNull] CommentLineContext context)
+            {
+                return VisitCommentLineNoBreak(context.commentLineNoBreak());
+            }
+            
+            public override ITextArea VisitCommentLineNoBreak([NotNull] CommentLineNoBreakContext context)
+            {
+                return new TextArea(context.commentLineAtoms().GetText() + "\n");
+            }
+            
             public override ITextArea VisitText([NotNull] TextContext context)
             {
                 return new TextArea(context.GetText());
@@ -611,13 +651,10 @@ namespace ReStructuredText
 
             public IndentationTracker IndentationTracker { get; set; }
 
-            public bool InComment { get; set; }
-
             internal TrackedBaseVisitor<T> Inherit(ITracked item)
             {
                 SectionTracker = item.SectionTracker;
                 IndentationTracker = item.IndentationTracker;
-                InComment = item.InComment;
                 return this;
             }
         }
@@ -627,7 +664,6 @@ namespace ReStructuredText
     {
         SectionTracker SectionTracker { get; }
         IndentationTracker IndentationTracker { get; }
-        bool InComment { get; set; }
     }
 
     class SectionTracker
