@@ -44,7 +44,7 @@ paragraph
   ;
 
 section
-  :  (LineBreak Section)? title LineBreak? Section (LineBreak)* sectionElement*
+  :  (LineBreak SectionSeparator)? title LineBreak? SectionSeparator (LineBreak)* sectionElement*
   ;
 
 title
@@ -70,7 +70,7 @@ listItemBullet
   ;
 
 bulletCrossLine
-  : LineBreak Space* bullet Space* (paragraph+)? 
+  :  LineBreak Space* bullet Space* (paragraph+)? 
   ;
 
 bulletSimple 
@@ -117,6 +117,7 @@ lineNormal
   
 lineStar
   :  LineBreak indentation? spanLineStartNoStar*? starText
+  |  LineBreak indentation? text_fragment+ starText
   ;
  
 lineSpecial
@@ -147,27 +148,35 @@ spanLineStartNoStar
 textLineStart
   :  lineStart_fragment+ text_fragment*
   ;
-
+  
 lineStart_fragment
-  :  (Minus ~(Space | LineBreak))
-  |  (Plus ~Space)
-  |  (Numbers Dot ~(Space | LineBreak))
-  |  (Numbers ~(Dot | LineBreak))
-  //|  (Alphabet Dot ~(Space | LineBreak))
+  :  (Minus ~(Space | LineBreak | Star))
+  |  (Plus ~(Space | Star))
+  |  (Numbers Dot ~(Space | LineBreak | Star))
+  |  (Numbers ~(Dot | LineBreak | Star))
+  //|  (Alphabet Dot ~(Space | LineBreak | Star))
   |  (Alphabet Dot)
-  |  (Block ~Space)
-  |  (UnderScore ~Space)
-  |  (Alphabet ~(Dot | LineBreak))
+  |  (Block ~(Space | Star))
+  |  (UnderScore ~(Space | Star))
+  |  (Alphabet ~(Dot | LineBreak | Star))
   |  Alphabet
-  |  Equal Equal
+  |  separator separator
+  |  TimeStar
    |  '['
     |  ']'
     |  '('
     |  ')'
     |  '/'
     |  ';'
+    |  ':'
     |  '"'
     |  '\''
+    |  '#'
+    |  '{'
+    |  '}'
+    |  '.'
+    |  '_'
+    |  Any
   ;
   
 text
@@ -176,18 +185,9 @@ text
 
 textStart
   :  forcedText
-  |  Section  
+  |  lineStart_fragment
   |  text_fragment_start text_fragment_start+
-  |  Alphabet
-  |  '('
-  |  ')'
-  |  '/'
-  |  ';'
-  |  '"'
-  |  '\''
   |  Space
-  |  Any
-  |  '.'
   ;
 
 forcedText 
@@ -229,14 +229,14 @@ text_fragment_start
   |  '('
   |  ')'
   |  Colon
-  |  Equal
-  |  Minus
+  |  separator
   |  '?'
   |  '<'
   |  '>'
   |  '&'
   |  '"'
   |  '.'
+  |  Star Space
   |  Any
   ;
 
@@ -251,9 +251,10 @@ text_fragment
   ;
 
 starText
-  :  Star+ starNoSpace starAtoms (LineBreak Star* starNoSpace starAtoms)* Star* LineBreak
+  :  Star+ LineBreak
+  |  Star+ starNoSpace starAtoms (LineBreak Star* starNoSpace starAtoms)* Star* LineBreak
   |  Star+ starNoSpace starAtoms Star* LineBreak
-  |  Star+ LineBreak
+  |  Star+ Space+ starAtoms Star+ LineBreak
   ;
 
 starAtoms
@@ -261,7 +262,7 @@ starAtoms
   ;
 
 starNoSpace
-  :  ~(Star | LineBreak | Space | Section)
+  :  ~(Star | LineBreak | Space | SectionSeparator)
   ;
 
 starAtom
@@ -324,14 +325,18 @@ hyperlinkAtom
   :  ~( LineBreak | '<' | '>' | BackTick | Star )
   ;
 
+separator
+  :  (Minus | Equal | Plus | '^')
+  ;
+
+SectionSeparator
+  :  (Minus | Equal | Plus | '^') (Minus | Equal | Plus | '^') (Minus | Equal | Plus | '^')+
+  ;
+
 Literal
   :  Colon LineBreak LineBreak* Colon Colon
   ;
 
-Section
-  :  (Minus | Equal | Plus) (Minus | Equal | Plus) (Minus | Equal | Plus)+
-  ;
-  
 TimeStar
   : Numbers Star
   | 'x' Star

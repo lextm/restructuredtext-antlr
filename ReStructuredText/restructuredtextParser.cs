@@ -152,7 +152,7 @@ namespace ReStructuredText
             {
                 var titleVisitor = new TextAreasVisitor().Inherit(this);
                 var title = titleVisitor.VisitTitle(context.title());
-                var separator = context.Section()[0].GetText();
+                var separator = context.SectionSeparator()[0].GetText();
                 var level = SectionTracker.Track(separator[0]);
                 var list = new List<IElement>();
                 var elementVisitor = new ElementVisitor().Inherit(this);
