@@ -123,6 +123,7 @@ lineStar
 lineSpecial
   :  Numbers Dot
   |  LineBreak indentation? Numbers
+  |  LineBreak indentation? SectionSeparator (Space+ SectionSeparator) Space* // for table.
   //|  Alphabet Dot
   ;
   
@@ -176,6 +177,7 @@ lineStart_fragment
     |  '}'
     |  '.'
     |  '_'
+    |  '<'
     |  Any
   ;
   
