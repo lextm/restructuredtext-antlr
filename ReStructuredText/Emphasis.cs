@@ -1,15 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class Emphasis : ITextArea
     {
         public IList<ITextArea> TextAreas { get; }
+        public Scope Scope { get; }
 
         public Emphasis(IList<ITextArea> textAreas)
         {
             TextAreas = textAreas;
+            Scope = new Scope
+            {
+                LineStart = TextAreas.First().Scope.LineStart,
+                LineEnd = TextAreas.Last().Scope.LineEnd
+            };
         }
 
         public bool IsIndented => TextAreas[0].IsIndented;

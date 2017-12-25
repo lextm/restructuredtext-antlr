@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <RuntimeIdentifiers>win7-x64</RuntimeIdentifiers>
+    <RootNamespace>Lextm.ReStructuredText.LanguageServer</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReStructuredText\ReStructuredText.csproj">
+      <Project>{a7e5ad0b-65f6-4c42-af05-b243ff5c4876}</Project>
+      <Name>ReStructuredText</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CXuesong.JsonRpc.Standard" Version="0.3.1" />
+    <PackageReference Include="CXuesong.JsonRpc.Streams" Version="0.3.1" />
+    <PackageReference Include="CXuesong.LanguageServer.VsCode" Version="0.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
+    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
+  </ItemGroup>
+</Project>

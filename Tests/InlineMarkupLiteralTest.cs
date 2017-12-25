@@ -1,7 +1,6 @@
-﻿using System.IO;
-using Xunit;
+﻿using Xunit;
 
-namespace ReStructuredText.Tests
+namespace Lextm.ReStructuredText.Tests
 {
     public class InlineMarkupLiteralTest
     {

@@ -16,10 +16,9 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class TextArea : ITextArea
     {
@@ -49,9 +48,12 @@ namespace ReStructuredText
         public bool IsQuoted => Content.Text.StartsWith("> ");
         public ElementType TypeCode => ElementType.Text;
 
-        public TextArea(string content)
+        public Scope Scope { get; }
+
+        public TextArea(string content, Scope scope)
         {
             Content = new Content(content);
+            Scope = scope;
         }
         
         public override string ToString()
@@ -59,21 +61,21 @@ namespace ReStructuredText
             return Content.Text;
         }
 
-        public static IList<ITextArea> Parse(string part)
+        public static IList<ITextArea> Parse(string part, Scope scope)
         {
             var result = new List<ITextArea>();
             var lines = part.TrimEnd('\n').Split('\n');
             if (lines.Length == 1)
             {
-                result.Add(new TextArea(part));
+                result.Add(new TextArea(part, scope));
             }
             else
             {
                 for (int j = 0; j < lines.Length; j++)
                 {
                     result.Add(j == lines.Length - 1
-                        ? new TextArea(lines[j])
-                        : new TextArea(lines[j] + '\n'));
+                        ? new TextArea(lines[j], scope)
+                        : new TextArea(lines[j] + '\n', scope));
                 }
             }
 

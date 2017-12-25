@@ -23,6 +23,9 @@ options {
   language=CSharp;
 }
 
+@parser::namespace { Lextm.ReStructuredText }
+@lexer::namespace { Lextm.ReStructuredText }
+
 parse
   :  (element | empty_line)+? EOF
   ;
@@ -68,7 +71,7 @@ paragraph
   ;
 
 section
-  :  (LineBreak SectionSeparator)? title LineBreak? SectionSeparator (LineBreak)* sectionElement*
+  :  (LineBreak overline=SectionSeparator)? title LineBreak? SectionSeparator (LineBreak)* sectionElement*
   ;
 
 title

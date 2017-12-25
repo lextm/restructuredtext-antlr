@@ -1,42 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class StarText : ITextArea
     {
-        private readonly TextArea _textArea;
+        private readonly string _content;
 
-        public StarText(TextArea textArea)
+        public StarText(string content, Scope scope)
         {
-            _textArea = textArea;
+            _content = content;
+            Scope = scope;
         }
 
-        public bool IsIndented => _textArea.IsIndented;
-        public Content Content => _textArea.Content;
-        public int Indentation
-        {
-            get => _textArea.Indentation;
-            set => _textArea.Indentation = value;
-        }
+        public bool IsIndented { get; }
+        public Content Content { get; }
+        public int Indentation { get; set; }
 
-        public bool IsQuoted => _textArea.IsQuoted;
+        public bool IsQuoted { get; }
         public ElementType TypeCode => ElementType.StarText;
+
+        public Scope Scope { get; }
 
         public void Process(IList<ITextArea> owner)
         {
-            var content = _textArea.Content.Text;
+            var content = _content;
             var clean = content.TrimEnd();
             if (clean.Count(_ => _ == '*') == clean.Length)
             {
                 if (clean.Length > 4)
                 {
-                    owner.Add(Strong.ParseStars(clean));
-                    owner.Add(new TextArea("\n"));
+                    owner.Add(Strong.ParseStars(clean, Scope));
+                    owner.Add(new TextArea("\n", Scope));
                 }
                 else
                 {
-                    owner.Add(new TextArea(clean + '\n'));
+                    owner.Add(new TextArea(clean + '\n', Scope));
                 }
 
                 return;
@@ -50,6 +49,7 @@ namespace ReStructuredText
             var lastLineStart = 0;
             var count = 0;
             ITextArea lastText = null;
+            int currentLine = Scope.LineStart;
             for (int j = 0; j < content.Length; j++)
             {
                 if (content[j] == '*')
@@ -65,7 +65,7 @@ namespace ReStructuredText
                         count++;
                         if (length > 0 && maxLevel == 0)
                         {
-                            foreach (var item in TextArea.Parse(fragment))
+                            foreach (var item in TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine }))
                             {
                                 list.Add(item);
                             }
@@ -87,15 +87,15 @@ namespace ReStructuredText
                         {
                             if (maxLevel == 2)
                             {
-                                list.Add(new Strong(TextArea.Parse(fragment)));
+                                list.Add(new Strong(TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine })));
                             }
                             else if (maxLevel == 1)
                             {
-                                list.Add(new Emphasis(TextArea.Parse(fragment)));
+                                list.Add(new Emphasis(TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine })));
                             }
                             else
                             {
-                                list.Add(new Strong(TextArea.Parse($"*{fragment}*")));
+                                list.Add(new Strong(TextArea.Parse($"*{fragment}*", new Scope { LineStart = currentLine, LineEnd = currentLine })));
                             }
 
                             length = 0;
@@ -108,15 +108,19 @@ namespace ReStructuredText
                     length++;
                 }
 
-                if (content[j] == '\n' && j != content.Length - 1)
+                if (content[j] == '\n')
                 {
-                    lastLineStart = j + 1;
-                    foreach (var item in list)
+                    currentLine++;
+                    if (j != content.Length - 1)
                     {
-                        owner.Add(item);
-                    }
+                        lastLineStart = j + 1;
+                        foreach (var item in list)
+                        {
+                            owner.Add(item);
+                        }
 
-                    list.Clear();
+                        list.Clear();
+                    }
                 }
             }
 
@@ -133,7 +137,7 @@ namespace ReStructuredText
                 if (length > 0)
                 {
                     var fragment = content.Substring(content.Length - length, length);
-                    lastText = TextArea.Parse(fragment)[0];
+                    lastText = TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine })[0];
                 }
             }
             else
@@ -157,7 +161,7 @@ namespace ReStructuredText
                             var fragment = content.Substring(j - length - (maxLevel == 0 ? 0 : maxLevel - 1), length);
                             if (length > 0 && maxLevel == 0)
                             {
-                                foreach (var item in TextArea.Parse(fragment))
+                                foreach (var item in TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine }))
                                 {
                                     owner.Add(item);
                                 }
@@ -179,15 +183,15 @@ namespace ReStructuredText
                             {
                                 if (maxLevel == 2)
                                 {
-                                    owner.Add(new Strong(TextArea.Parse(fragment)));
+                                    owner.Add(new Strong(TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine })));
                                 }
                                 else if (maxLevel == 1)
                                 {
-                                    owner.Add(new Emphasis(TextArea.Parse(fragment)));
+                                    owner.Add(new Emphasis(TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine })));
                                 }
                                 else
                                 {
-                                    owner.Add(new Strong(TextArea.Parse($"*{fragment}*")));
+                                    owner.Add(new Strong(TextArea.Parse($"*{fragment}*", new Scope { LineStart = currentLine, LineEnd = currentLine })));
                                 }
 
                                 length = 0;
@@ -204,7 +208,7 @@ namespace ReStructuredText
                 if (length > 0)
                 {
                     var fragment = content.Substring(content.Length - length, length);
-                    lastText = TextArea.Parse(fragment)[0];
+                    lastText = TextArea.Parse(fragment, new Scope { LineStart = currentLine, LineEnd = currentLine })[0];
                 }
             }
             

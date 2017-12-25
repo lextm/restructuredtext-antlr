@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class Section : IElement, IParent
     {
@@ -27,7 +27,9 @@ namespace ReStructuredText
         public IList<IElement> Elements { get; }
         public IList<ITextArea> Title { get; set; }
 
-        public Section(int level, IList<ITextArea> title, IList<IElement> content)
+        public bool Overline { get; }
+
+        public Section(int level, IList<ITextArea> title, IList<IElement> content, bool overline)
         {
             Title = new List<ITextArea>();
             foreach (var area in title)
@@ -55,6 +57,7 @@ namespace ReStructuredText
             
             Level = level;
             Elements = new List<IElement>();
+            Overline = overline;
             foreach (var item in content)
             {
                 item.Parent = this;
@@ -91,6 +94,36 @@ namespace ReStructuredText
                 var child = Elements.LastOrDefault() as Section;
                 child?.Add(current);
             }
+        }
+
+        public IElement Find(int line, int column)
+        {
+            var first = Title.First();
+            if (Overline && line == first.Scope.LineStart - 1)
+            {
+                return this;
+            }
+
+            if (line < first.Scope.LineStart)
+            {
+                return null;
+            }
+            
+            foreach (var item in Elements)
+            {
+                if (line < item.TextAreas.First().Scope.LineStart)
+                {
+                    return this;
+                }
+
+                var result = item.Find(line, column);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }

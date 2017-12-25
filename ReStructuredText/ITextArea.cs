@@ -1,4 +1,4 @@
-﻿namespace ReStructuredText
+﻿namespace Lextm.ReStructuredText
 {
     /// <summary>
     /// 
@@ -10,5 +10,6 @@
         int Indentation { get; set; }
         bool IsQuoted { get; }
         ElementType TypeCode { get; }
+        Scope Scope { get; }
     }
 }

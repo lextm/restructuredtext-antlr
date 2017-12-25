@@ -17,8 +17,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class LiteralBlock : IElement
     {
@@ -48,5 +49,17 @@ namespace ReStructuredText
         public ElementType TypeCode => ElementType.LiteralBlock;
         public IList<ITextArea> TextAreas { get; }
         public IParent Parent { get; set; }
+
+        public IElement Find(int line, int column)
+        {
+            var first = TextAreas.First();
+            var last = TextAreas.Last();
+            if (line < first.Scope.LineStart || line > last.Scope.LineEnd)
+            {
+                return null;
+            }
+
+            return this;
+        }
     }
 }

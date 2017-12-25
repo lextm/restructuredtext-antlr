@@ -16,10 +16,12 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public interface IParent
     {
         void Add(IElement element, int level = 0);
+
+        ElementType TypeCode { get; }
     }
 }

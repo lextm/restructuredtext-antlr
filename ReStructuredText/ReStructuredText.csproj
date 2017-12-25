@@ -3,6 +3,7 @@
     <Antlr4JavaExecutable Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">/usr/bin/java</Antlr4JavaExecutable>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <RootNamespace>Lextm.ReStructuredText</RootNamespace>
     <DebugType>full</DebugType>
     <Version>1.0.0</Version>
     <Authors>Lex Li</Authors>

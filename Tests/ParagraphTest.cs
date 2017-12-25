@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
-using Xunit;
+﻿using Xunit;
 
-namespace ReStructuredText.Tests
+namespace Lextm.ReStructuredText.Tests
 {
     public class ParagraphTest
     {

@@ -16,7 +16,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public enum ElementType
     {
@@ -39,6 +39,7 @@ namespace ReStructuredText
         Emphasis,
         Strong,
         StarText,
-        Line
+        Line,
+        Document
     }
 }

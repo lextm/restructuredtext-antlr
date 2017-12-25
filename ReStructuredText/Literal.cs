@@ -1,4 +1,4 @@
-﻿namespace ReStructuredText
+﻿namespace Lextm.ReStructuredText
 {
     public class Literal : ITextArea
     {
@@ -19,5 +19,7 @@
 
         public bool IsQuoted => _textArea.IsQuoted;
         public ElementType TypeCode => ElementType.Literal;
+
+        public Scope Scope => _textArea.Scope;
     }
 }

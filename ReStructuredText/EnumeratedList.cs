@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class EnumeratedList : IElement
     {
@@ -37,6 +37,20 @@ namespace ReStructuredText
         public void Add(IElement current)
         {
             Items.LastOrDefault()?.Elements.Add((Paragraph)current);
+        }
+
+        public IElement Find(int line, int column)
+        {
+            foreach (var item in Items)
+            {
+                var result = item.Find(line, column);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }

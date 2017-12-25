@@ -17,9 +17,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class LineBlock : IElement
     {
@@ -43,6 +42,20 @@ namespace ReStructuredText
                 
                 Elements.Add(line);
             }
+        }
+
+        public IElement Find(int line, int column)
+        {
+            foreach (var item in Elements)
+            {
+                var result = item.Find(line, column);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ReStructuredText.Tests
+namespace Lextm.ReStructuredText.Tests
 {
     public static class TestUtils
     {

@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace ReStructuredText.Tests
+namespace Lextm.ReStructuredText.Tests
 {
     public class EnumeratedListTest
     {

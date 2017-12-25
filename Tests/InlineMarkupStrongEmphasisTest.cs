@@ -1,7 +1,6 @@
-﻿using Antlr4.Runtime.Atn;
-using Xunit;
+﻿using Xunit;
 
-namespace ReStructuredText.Tests
+namespace Lextm.ReStructuredText.Tests
 {
     public class InlineMarkupStrongEmphasisTest
     {

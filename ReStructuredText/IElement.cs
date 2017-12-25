@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public interface IElement
     {
@@ -27,5 +27,7 @@ namespace ReStructuredText
         IList<ITextArea> TextAreas { get; }
 
         IParent Parent { get; set; }
+
+        IElement Find(int line, int column);
     }
 }

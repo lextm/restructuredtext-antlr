@@ -1,16 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class Strong : ITextArea
     {
         public IList<ITextArea> TextAreas { get; }
+        public Scope Scope { get; }
 
         public Strong(IList<ITextArea> textTextAreas)
         {
             TextAreas = textTextAreas;
+            Scope = new Scope
+            {
+                LineStart = TextAreas.First().Scope.LineStart,
+                LineEnd = TextAreas.Last().Scope.LineEnd
+            };
         }
 
         public bool IsIndented => TextAreas[0].IsIndented;
@@ -24,7 +30,7 @@ namespace ReStructuredText
         public bool IsQuoted => TextAreas[0].IsQuoted;
         public ElementType TypeCode => ElementType.Strong;
 
-        internal static ITextArea ParseStars(string stars)
+        internal static ITextArea ParseStars(string stars, Scope scope)
         {
             var length = stars.Length;
             var builder = new StringBuilder(length - 4);
@@ -33,7 +39,7 @@ namespace ReStructuredText
                 builder.Append("*");
             }
 
-            return new Strong(new ITextArea[] { new TextArea(builder.ToString()) });
+            return new Strong(new ITextArea[] { new TextArea(builder.ToString(), scope) });
         }
     }
 }

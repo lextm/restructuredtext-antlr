@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class Document : IParent
     {
@@ -28,7 +28,24 @@ namespace ReStructuredText
             Elements = new List<IElement>();
         }
 
+        public IElement Find(int line, int column)
+        {
+            line += 1; // IMPORTNANT: when parsing we add a \n at top.
+            foreach (var item in Elements)
+            {
+                var result = item.Find(line, column);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
         public IList<IElement> Elements { get; }
+
+        public ElementType TypeCode => ElementType.Document;
 
         public void Add(IList<ListItem> items)
         {

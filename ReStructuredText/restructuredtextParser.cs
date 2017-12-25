@@ -24,7 +24,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public partial class ReStructuredTextParser
     {
@@ -40,9 +40,13 @@ namespace ReStructuredText
 
         public static Document ParseDocument(string fileName)
         {
+            return ParseContent(File.ReadAllText(fileName));
+        }
+
+        public static Document ParseContent(string text)
+        {
             try
             {
-                var text = File.ReadAllText(fileName);
                 var lexer = new ReStructuredTextLexer(new AntlrInputStream('\n' + text));
                 var tokens = new CommonTokenStream(lexer);
                 var parser = new ReStructuredTextParser(tokens);
@@ -165,7 +169,7 @@ namespace ReStructuredText
                     }
                 }
 
-                return new Section(level, title, list);
+                return new Section(level, title, list, context.overline != null);
             }
         }
 
@@ -378,7 +382,8 @@ namespace ReStructuredText
                     return VisitLineStar(lineStarContext);
                 }
 
-                return new ITextArea[] { new TextArea(context.GetText()) };
+                return new ITextArea[] { new TextArea(context.GetText(), 
+                    new Scope { LineStart = context.Start.Line + 1, LineEnd = context.Stop.Line }) };
             }
 
             public override ITextArea[] VisitLines([NotNull] LinesContext context)
@@ -457,7 +462,7 @@ namespace ReStructuredText
                 }
                 else
                 {
-                    result.Add(new TextArea("\n"));
+                    result.Add(new TextArea("\n", result.Last().Scope));
                 }
 
                 return result.ToArray();
@@ -470,7 +475,7 @@ namespace ReStructuredText
                 if (special != null)
                 {
                     var text = context.GetText().TrimStart() + "\n";
-                    return new ITextArea[] { new TextArea(text) };
+                    return new ITextArea[] { new TextArea(text, new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line }) };
                 }
 
                 var indentation = context.indentation();
@@ -509,7 +514,7 @@ namespace ReStructuredText
                 }
                 else
                 {
-                    result.Add(new TextArea("\n"));
+                    result.Add(new TextArea("\n", result.Last().Scope));
                 }
 
                 result.First().Indentation = length;
@@ -574,17 +579,17 @@ namespace ReStructuredText
             
             public override ITextArea VisitCommentLineNoBreak([NotNull] CommentLineNoBreakContext context)
             {
-                return new TextArea(context.commentLineAtoms().GetText() + "\n");
+                return new TextArea(context.commentLineAtoms().GetText() + "\n", new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line });
             }
             
             public override ITextArea VisitText([NotNull] TextContext context)
             {
-                return new TextArea(context.GetText());
+                return new TextArea(context.GetText(), new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line });
             }
 
             public override ITextArea VisitTextLineStart([NotNull] TextLineStartContext context)
             {
-                return new TextArea(context.GetText());
+                return new TextArea(context.GetText(), new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line });
             }
 
             public override ITextArea VisitSpan([NotNull] SpanContext context)
@@ -613,7 +618,7 @@ namespace ReStructuredText
                 }
 
                 // TODO:
-                return new TextArea(context.GetText());
+                return new TextArea(context.GetText(), new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line });
             }
 
             public override ITextArea VisitSpanLineStartNoStar([NotNull] SpanLineStartNoStarContext context)
@@ -631,17 +636,20 @@ namespace ReStructuredText
                 }
 
                 // TODO:
-                return new TextArea(context.GetText());
+                return new TextArea(context.GetText(), new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line });
             }
 
             public override ITextArea VisitBackTickText([NotNull] BackTickTextContext context)
             {
-                return new BackTickText(context.titled == null ? null : context.titled.Text, new TextArea(context.body().GetText()));
+                return new BackTickText(
+                    context.titled == null ? null : context.titled.Text,
+                    context.body().GetText(),
+                    new Scope { LineStart = context.body().Start.Line, LineEnd = context.body().Stop.Line });
             }
 
             public override ITextArea VisitStarText([NotNull] StarTextContext context)
             {
-                return new StarText(new TextArea(context.GetText()));
+                return new StarText(context.GetText(), new Scope { LineStart = context.Start.Line, LineEnd = context.Stop.Line });
             }
         }
 

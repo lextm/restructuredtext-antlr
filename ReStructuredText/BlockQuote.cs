@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class BlockQuote : IElement, IParent
     {
@@ -66,6 +66,20 @@ namespace ReStructuredText
 
             Elements.Add(current);
             current.Parent = this;
+        }
+
+        public IElement Find(int line, int column)
+        {
+            foreach (var item in Elements)
+            {
+                var result = item.Find(line, column);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }

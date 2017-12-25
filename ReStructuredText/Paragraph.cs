@@ -17,8 +17,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class Paragraph : IElement
     {
@@ -55,6 +56,18 @@ namespace ReStructuredText
         public override string ToString()
         {
             return TextAreas[0].Content.Text;
+        }
+
+        public IElement Find(int line, int column)
+        {
+            var first = TextAreas.First();
+            var last = TextAreas.Last();
+            if (line < first.Scope.LineStart || line > last.Scope.LineEnd)
+            {
+                return null;
+            }
+
+            return this;
         }
     }
 }

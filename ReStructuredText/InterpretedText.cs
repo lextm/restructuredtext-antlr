@@ -1,8 +1,10 @@
-﻿namespace ReStructuredText
+﻿namespace Lextm.ReStructuredText
 {
     public class InterpretedText : ITextArea
     {
         public string Title { get; }
+        public Scope Scope => _textArea.Scope;
+
         private readonly TextArea _textArea;
 
         public InterpretedText(string title, TextArea textArea)

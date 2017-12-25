@@ -1,34 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
     public class BackTickText : ITextArea
     {
         public string Title { get; set; }
-        private readonly TextArea _textArea;
+        public Scope Scope { get; }
 
-        public BackTickText(string title, TextArea textArea)
+        private string _content;
+
+        public BackTickText(string title, string content, Scope scope)
         {
             Title = title;
-            _textArea = textArea;
+            Scope = scope;
+            _content = content;
         }
 
-        public bool IsIndented => _textArea.IsIndented;
-        public Content Content => _textArea.Content;
+        public bool IsIndented { get; }
+        public Content Content { get; }
         public int Indentation
         {
-            get => _textArea.Indentation;
-            set => _textArea.Indentation = value;
+            get; set;
         }
 
-        public bool IsQuoted => _textArea.IsQuoted;
+        public bool IsQuoted { get; }
         public ElementType TypeCode => ElementType.BackTickText;
 
         public void Process(IList<ITextArea> list)
         {
             int level = 0;
-            var content = _textArea.Content.Text;
+            var content = _content;
             var start = 0;
             var length = 0;
             var maxLevel = 0;
@@ -55,7 +57,7 @@ namespace ReStructuredText
                     var part = content.Substring(start + 1, length);
                     if (maxLevel == 2)
                     {
-                        list.Add(new Literal(new TextArea(part)));
+                        list.Add(new Literal(new TextArea(part, Scope)));
                     }
                     else if (maxLevel == 1)
                     {
@@ -74,15 +76,15 @@ namespace ReStructuredText
                             Title = null;
                         }
 
-                        list.Add(new InterpretedText(title, new TextArea(part)));
+                        list.Add(new InterpretedText(title, new TextArea(part, Scope)));
                     }
                     else if (maxLevel == 0)
                     {
-                        list.Add(new TextArea(part));
+                        list.Add(new TextArea(part, Scope));
                     }
                     else
                     {
-                        list.Add(new Literal(new TextArea($"`{part}`")));
+                        list.Add(new Literal(new TextArea($"`{part}`", Scope)));
                     }
 
                     maxLevel = 0;

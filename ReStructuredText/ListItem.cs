@@ -18,9 +18,9 @@
 
 using System.Collections.Generic;
 
-namespace ReStructuredText
+namespace Lextm.ReStructuredText
 {
-    public class ListItem : IElement
+    public class ListItem : IElement, IParent
     {
         public IList<Paragraph> Elements { get; }
 
@@ -34,6 +34,15 @@ namespace ReStructuredText
             }
             
             Elements = element;
+            foreach (var item in Elements)
+            {
+                item.Parent = this;
+            }
+        }
+
+        public void Add(IElement element, int level = 0)
+        {
+
         }
         
         public char Start { get; }
@@ -42,6 +51,21 @@ namespace ReStructuredText
 
         public ElementType TypeCode => ElementType.ListItem;
         public IList<ITextArea> TextAreas => Elements[0].TextAreas;
+
+        public IElement Find(int line, int column)
+        {
+            foreach (var item in Elements)
+            {
+                var result = item.Find(line, column);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
         public IParent Parent { get; set; }
         
         internal int LineNumber { get; set; }
