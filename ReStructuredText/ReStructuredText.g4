@@ -163,21 +163,18 @@ lineStart_fragment
   |  Alphabet
   |  separator separator
   |  TimeStar
-   |  '['
-    |  ']'
-    |  '('
-    |  ')'
-    |  '/'
-    |  ';'
-    |  ':'
-    |  '"'
-    |  '\''
-    |  '#'
-    |  '{'
-    |  '}'
-    |  '.'
-    |  '_'
-    |  '<'
+   |  SquareLeft
+    |  SquareRight
+    |  RoundLeft
+    |  RoundRight
+    |  SemiColon
+    |  Colon
+    |  QuotationDouble
+    |  QuotationSingle
+    |  Dot
+    |  UnderScore
+    |  AngleLeft
+    |  AngleRight
     |  Any
   ;
   
@@ -193,10 +190,10 @@ textStart
   ;
 
 forcedText 
-  :  '(*)' 
-  |  '[*]' 
-  |  '\'*\'' 
-  |  '\'"*"\''
+  :  RoundLeft Star RoundRight 
+  |  SquareLeft Star SquareRight 
+  |  QuotationSingle Star QuotationSingle 
+  |  QuotationSingle QuotationDouble Star QuotationDouble QuotationSingle
   ;
 
 spanNoStar
@@ -216,7 +213,7 @@ span
   ;
 
 quotedLiteral
-  : '>' Space lineNoBreak
+  : AngleRight Space lineNoBreak
   ;
 
 text_fragment_start
@@ -224,20 +221,16 @@ text_fragment_start
   |  Numbers
   |  Alphabet
   |  Space
-  |  '/'
-  |  '#'
-  |  '['
-  |  ']'
-  |  '('
-  |  ')'
+  |  SquareLeft
+  |  SquareRight
+  |  RoundLeft
+  |  RoundRight
   |  Colon
   |  separator
-  |  '?'
-  |  '<'
-  |  '>'
-  |  '&'
-  |  '"'
-  |  '.'
+  |  AngleLeft
+  |  AngleRight
+  |  QuotationDouble
+  |  Dot
   |  Star Space
   |  Any
   ;
@@ -307,11 +300,11 @@ hyperlinkTarget
   ;
   
 hyperlink
-  :  BackTick hyperlinkAtom+ Space '<' url '>' BackTick UnderScore Space
+  :  BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick UnderScore Space
   ;
  
 hyperlinkDoc
-  :  ':doc:' BackTick hyperlinkAtom+ Space '<' url '>' BackTick
+  :  ':doc:' BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick
   |  ':doc:' BackTick url BackTick
   ;
 
@@ -324,15 +317,15 @@ urlAtom
   ;
   
 hyperlinkAtom
-  :  ~( LineBreak | '<' | '>' | BackTick | Star )
+  :  ~( LineBreak | AngleLeft | AngleRight | BackTick | Star )
   ;
 
 separator
-  :  (Minus | Equal | Plus | '^')
+  :  (Minus | Equal | Plus | Hat)
   ;
 
 SectionSeparator
-  :  (Minus | Equal | Plus | '^') (Minus | Equal | Plus | '^') (Minus | Equal | Plus | '^')+
+  :  (Minus | Equal | Plus | Hat) (Minus | Equal | Plus | Hat) (Minus | Equal | Plus | Hat)+
   ;
 
 Literal
@@ -354,6 +347,42 @@ Numbers
 
 Quote
   :  Colon Colon
+  ;
+
+SquareLeft
+  :  '['
+  ;
+
+SquareRight
+  :  ']'
+  ;
+
+RoundLeft
+  :  '('
+  ;
+  
+RoundRight
+  :  ')'
+  ;
+  
+AngleLeft
+  :  '<'
+  ;
+
+AngleRight
+  :  '>'
+  ;
+
+Hat
+  :  '^'
+  ;
+  
+QuotationDouble
+  :  '"'
+  ;
+
+QuotationSingle
+  :  '\''
   ;
 
 Dot
