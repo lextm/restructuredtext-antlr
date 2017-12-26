@@ -8,7 +8,6 @@ namespace Lextm.ReStructuredText
         public Line(IList<ITextArea> areas)
         {
             TextAreas = new List<ITextArea>();
-            areas.Last().Content.RemoveEnd();
             foreach (var area in areas)
             {
                 if (area.TypeCode == ElementType.BackTickText)
@@ -24,6 +23,8 @@ namespace Lextm.ReStructuredText
                     TextAreas.Add(area);
                 }
             }
+
+            TextAreas.Last().Content.RemoveEnd();
         }
         
         public ElementType TypeCode => ElementType.Line;
