@@ -27,6 +27,7 @@ options {
 @lexer::namespace { Lextm.ReStructuredText }
 
 parse
+
   :  (element | empty_line)+? EOF
   ;
 
@@ -167,7 +168,7 @@ spanLineStartNoStar
   |  referenceIn
   |  hyperlinkTarget
   |  hyperlink
-  |  hyperlinkDoc
+ // |  hyperlinkDoc
   |  backTickText
   |  quotedLiteral
   |  textLineStart
@@ -207,8 +208,13 @@ lineStart_fragment
   
 text
   :  textStart+ text_fragment*
+  |  textSpecial
   ;
 
+textSpecial
+  :  BackTick
+  ;
+  
 textStart
   :  forcedText
   |  lineStart_fragment
@@ -228,7 +234,7 @@ spanNoStar
   |  referenceIn
   |  hyperlinkTarget
   |  hyperlink
-  |  hyperlinkDoc
+ // |  hyperlinkDoc
   |  backTickText
   |  quotedLiteral
   |  text
@@ -327,13 +333,13 @@ hyperlinkTarget
   ;
   
 hyperlink
-  :  BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick UnderScore Space
+  :  BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick UnderScore? Space
   ;
  
-hyperlinkDoc
-  :  ':doc:' BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick
-  |  ':doc:' BackTick url BackTick
-  ;
+//hyperlinkDoc
+//  :  ':doc:' BackTick hyperlinkAtom+ Space AngleLeft url AngleRight BackTick
+//  |  ':doc:' BackTick url BackTick
+//  ;
 
 url
   :  urlAtom+

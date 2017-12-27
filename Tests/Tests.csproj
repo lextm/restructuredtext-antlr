@@ -107,6 +107,12 @@
     <None Update="Input\enumeratedlist_simple">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Input\full_linenumbers">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Input\full_linestart">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Input\inlinemarkupemphasis_asterisk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -41,6 +41,19 @@ namespace Lextm.ReStructuredText.LanguageServer
                 return new CompletionList();
             }
 
+            var text = element.TextAreas[0];
+            if (text is InterpretedText interpreted)
+            {
+                if (interpreted.RoleName != "doc")
+                {
+                    return new CompletionList();
+                }
+            }
+            else if (!text.Content.Text.StartsWith(":doc:"))
+            {
+                return new CompletionList();
+            }
+
             var Files = new Dictionary<string, string>();
             foreach (string file in Directory.EnumerateFiles(
                 _root, "*.rst", SearchOption.AllDirectories))

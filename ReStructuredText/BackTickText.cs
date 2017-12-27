@@ -29,8 +29,14 @@ namespace Lextm.ReStructuredText
 
         public void Process(IList<ITextArea> list)
         {
-            int level = 0;
             var content = _content;
+            if (content.Length == 2)
+            {
+                list.Add(new InterpretedText(Title, new TextArea(string.Empty, Scope)));
+                return;
+            }
+
+            int level = 0;
             var start = 0;
             var length = 0;
             var maxLevel = 0;

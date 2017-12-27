@@ -28,7 +28,7 @@ namespace Lextm.ReStructuredText.Tests
             Assert.Equal(2, paragraph.TextAreas.Count);
             Assert.Equal(ElementType.InterpretedText, paragraph.TextAreas[0].TypeCode);
             var interpreted = (InterpretedText) paragraph.TextAreas[0];
-            Assert.Equal("title", interpreted.Title);
+            Assert.Equal("title", interpreted.RoleName);
             Assert.Equal("interpreted", paragraph.TextAreas[0].Content.Text);
         }
         
@@ -50,7 +50,7 @@ namespace Lextm.ReStructuredText.Tests
             
             Assert.Equal(ElementType.InterpretedText, paragraph.TextAreas[2].TypeCode);
             var bar = (InterpretedText) paragraph.TextAreas[2];
-            Assert.Equal("x", bar.Title);
+            Assert.Equal("x", bar.RoleName);
             Assert.Equal("bar", paragraph.TextAreas[2].Content.Text);
             
             Assert.Equal(ElementType.Text, paragraph.TextAreas[3].TypeCode);
