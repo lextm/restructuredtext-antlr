@@ -8,16 +8,16 @@ cd ..
 
 cd output
 cd win32_x86
-..\..\7z.exe a ..\win32_x86.zip *.*
+..\..\7z.exe a ..\win32_x86.zip *
 cd ..
 cd win32_x64
-..\..\7z.exe a ..\win32_x64.zip *.*
+..\..\7z.exe a ..\win32_x64.zip *
 cd ..
 cd linux_x64
-..\..\7z.exe a ..\linux_x64.zip *.*
+..\..\7z.exe a ..\linux_x64.zip *
 cd ..
 cd darwin_x64
-..\..\7z.exe a ..\darwin_x64.zip *.*
+..\..\7z.exe a ..\darwin_x64.zip *
 cd ..
 cd ..
 
