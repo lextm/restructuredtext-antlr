@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using JsonRpc.Standard;
 using JsonRpc.Standard.Contracts;
 using JsonRpc.Standard.Server;
@@ -29,8 +30,9 @@ namespace Lextm.ReStructuredText.LanguageServer.Services
         }
 
         [JsonRpcMethod(IsNotification = true)]
-        public void Initialized()
+        public async Task Initialized()
         {
+            //await Session.Client.Window.ShowMessage(MessageType.Info, "Hello from language server.");
         }
 
         [JsonRpcMethod]
