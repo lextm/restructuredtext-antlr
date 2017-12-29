@@ -124,7 +124,7 @@ namespace Lextm.ReStructuredText
                             }
                         }
                     }
-                    
+
                     if (section == null)
                     {
                         Add(current);
@@ -155,39 +155,89 @@ namespace Lextm.ReStructuredText
 
                 if (!(Elements.LastOrDefault() is BlockQuote block))
                 {
-                    if (current.TextAreas[0].IsIndented || current.TextAreas[0].IsQuoted)
+                    if (current is Paragraph paragraph)
                     {
-                        var last = Elements.LastOrDefault()?.TextAreas?.LastOrDefault()?.Content.Text.TrimEnd();
-                        if (last != null && last.EndsWith("::"))
+                        var definitionList = Elements.LastOrDefault() as DefinitionList;
+                        var definitionListItems = DefinitionListItem.Parse(paragraph);
+                        if (definitionListItems.Count > 0)
                         {
-                            current = new LiteralBlock(current.TextAreas);
-                            Elements.Last().TextAreas.Last().Content.RemoveLiteral();
+                            if (definitionList != null)
+                            {
+                                if (definitionList.Indentation == definitionListItems[0].Term.TextAreas[0].Indentation)
+                                {
+                                    foreach (var item in definitionListItems)
+                                    {
+                                        definitionList.Add(item);
+                                    }
+                                }
+                                else
+                                {
+                                    var sublist = definitionList.Items[0].Definition.Elements.Last() as DefinitionList;
+                                    if (sublist == null)
+                                    {
+                                        sublist = new DefinitionList(definitionListItems);
+                                        definitionList.Items[0].Definition.Elements.Add(sublist);
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in definitionListItems)
+                                        {
+                                            sublist.Add(item);
+                                        }
+                                    }
+                                }
+
+                                continue;
+                            }
+
+                            definitionList = new DefinitionList(definitionListItems);
+                            current = definitionList;
                         }
                         else
                         {
-                            if (Elements.LastOrDefault() is BulletList bullet)
+                            var lastItem = definitionList?.Items.Last();
+                            if (lastItem?.Definition.Elements.Last().TextAreas[0].Indentation ==
+                                paragraph.TextAreas[0].Indentation)
                             {
-                                if (current.TextAreas[0].Indentation == 2)
-                                {
-                                    bullet.Add(current);
-                                    continue;
-                                }
+                                lastItem.Definition.Add(paragraph);
+                                continue;
                             }
 
-                            if (Elements.LastOrDefault() is EnumeratedList list)
+                            if (current.TextAreas[0].IsIndented || current.TextAreas[0].IsQuoted)
                             {
-                                if (current.TextAreas[0].Indentation == 3)
+                                var last = Elements.LastOrDefault()?.TextAreas?.LastOrDefault()?.Content.Text.TrimEnd();
+                                if (last != null && last.EndsWith("::"))
                                 {
-                                    list.Add(current);
-                                    continue;
+                                    current = new LiteralBlock(current.TextAreas);
+                                    Elements.Last().TextAreas.Last().Content.RemoveLiteral();
                                 }
-                            }
+                                else
+                                {
+                                    if (Elements.LastOrDefault() is BulletList bullet)
+                                    {
+                                        if (current.TextAreas[0].Indentation == 2)
+                                        {
+                                            bullet.Add(current);
+                                            continue;
+                                        }
+                                    }
 
-                            var level = current.TextAreas[0].Indentation / indentation;
-                            while (level > 0)
-                            {
-                                current = new BlockQuote(level, current);
-                                level--;
+                                    if (Elements.LastOrDefault() is EnumeratedList list)
+                                    {
+                                        if (current.TextAreas[0].Indentation == 3)
+                                        {
+                                            list.Add(current);
+                                            continue;
+                                        }
+                                    }
+
+                                    var level = current.TextAreas[0].Indentation / indentation;
+                                    while (level > 0)
+                                    {
+                                        current = new BlockQuote(level, current);
+                                        level--;
+                                    }
+                                }
                             }
                         }
                     }

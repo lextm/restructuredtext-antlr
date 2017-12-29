@@ -263,6 +263,7 @@ text_fragment_start
   |  AngleLeft
   |  AngleRight
   |  QuotationDouble
+  |  QuotationSingle
   |  Dot
   |  Star Space
   |  Any

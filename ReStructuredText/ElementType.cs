@@ -38,8 +38,13 @@ namespace Lextm.ReStructuredText
         InterpretedText,
         Emphasis,
         Strong,
+        /// <summary>
+        /// Reserved. Used only for parsing process.
+        /// </summary>
         StarText,
         Line,
-        Document
+        Document,
+        DefinitionList,
+        DefinitionListItem
     }
 }

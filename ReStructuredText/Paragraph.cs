@@ -25,7 +25,7 @@ namespace Lextm.ReStructuredText
     {
         public IList<ITextArea> TextAreas { get; }
 
-        public Paragraph(IList<ITextArea> textAreas)
+        public Paragraph(IEnumerable<ITextArea> textAreas)
         {
             TextAreas = new List<ITextArea>();
             foreach (var area in textAreas)

@@ -445,6 +445,10 @@ namespace Lextm.ReStructuredText
             public override ITextArea[] VisitLineNoBreak([NotNull] LineNoBreakContext context)
             {
                 var result = new List<ITextArea>();
+                var indentation = context.indentation();
+                int length = indentation == null ? 0 : indentation.GetText().Length;
+                IndentationTracker.Track(length);
+
                 var spanVisitor = new TextAreaVisitor().Inherit(this);
                 result.Add(spanVisitor.VisitSpanLineStartNoStar(context.spanLineStartNoStar()));
                 var spanContext = context.span();
@@ -465,6 +469,7 @@ namespace Lextm.ReStructuredText
                     result.Add(new TextArea("\n", result.Last().Scope));
                 }
 
+                result.First().Indentation = length;
                 return result.ToArray();
             }
 
@@ -483,7 +488,6 @@ namespace Lextm.ReStructuredText
                 IndentationTracker.Track(length);
 
                 var spanVisitor = new TextAreaVisitor().Inherit(this);
-
                 var start = context.spanLineStartNoStar();
                 if (start != null)
                 {
