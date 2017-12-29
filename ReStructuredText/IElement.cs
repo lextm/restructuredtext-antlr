@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace Lextm.ReStructuredText
 {
-    public interface IElement
+    public interface IElement : IParent
     {
         ElementType TypeCode { get; }
 
@@ -29,5 +29,7 @@ namespace Lextm.ReStructuredText
         IParent Parent { get; set; }
 
         IElement Find(int line, int column);
+
+        void Add(IElement element, int level = 0);
     }
 }

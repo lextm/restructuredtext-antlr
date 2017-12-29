@@ -179,7 +179,7 @@ namespace Lextm.ReStructuredText
             {
                 if (context.special != null)
                 {
-                    return new ListItem(context.special.Text, null, new List<Paragraph>(0));
+                    return new ListItem(context.special.Text, null, new List<IElement>(0));
                 }
 
                 var simple = context.bulletSimple();
@@ -194,7 +194,7 @@ namespace Lextm.ReStructuredText
             public override ListItem VisitBulletSimple([NotNull] BulletSimpleContext context)
             {
                 var start = context.bullet().GetText();
-                var list = new List<Paragraph>();
+                var list = new List<IElement>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var first = context.paragraphNoBreak();
                 if (first != null)
@@ -217,7 +217,7 @@ namespace Lextm.ReStructuredText
             public override ListItem VisitBulletCrossLine([NotNull] BulletCrossLineContext context)
             {
                 var start = context.bullet().GetText();
-                var list = new List<Paragraph>();
+                var list = new List<IElement>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var paragraph = context.paragraph();
                 if (paragraph != null)
@@ -234,7 +234,7 @@ namespace Lextm.ReStructuredText
             public override ListItem VisitListItemEnumerated(ListItemEnumeratedContext context)
             {
                 var enumerator = context.enumerated.GetText();
-                var list = new List<Paragraph>();
+                var list = new List<IElement>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
                 var start = context.paragraphNoBreak();
                 if (start != null)
@@ -274,6 +274,10 @@ namespace Lextm.ReStructuredText
             public override Comment VisitComment([NotNull] CommentContext context)
             {
                 var result = new List<ITextArea>();
+                var indentation = context.indentation();
+                int length = indentation == null ? 0 : indentation.GetText().Length;
+                IndentationTracker.Track(length);
+                
                 var commentLineContext = context.commentLineNoBreak();
                 if (commentLineContext != null)
                 {
@@ -287,6 +291,12 @@ namespace Lextm.ReStructuredText
                     var lineVisitor = new TextAreasVisitor().Inherit(this);
                     
                     result.AddRange(lineVisitor.VisitCommentParagraphs(linesContext));
+                }
+
+                var first = result.FirstOrDefault();
+                if (first != null)
+                { 
+                    first.Indentation = length;
                 }
 
                 return new Comment(result);
@@ -353,8 +363,6 @@ namespace Lextm.ReStructuredText
 
                 return result.ToArray();
             }
-            
-            
 
             public override ITextArea[] VisitCommentParagraph([NotNull] CommentParagraphContext context)
             {

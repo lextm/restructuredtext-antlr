@@ -113,7 +113,121 @@ namespace Lextm.ReStructuredText.Tests
             Assert.True(document.Elements[2].TypeCode == ElementType.BlockQuote);
         }
 
-        // TODO: 'a comment in definition list item', and more from
-        // https://github.com/seikichi/restructured/blob/master/test/parser/CommentTest.js
+        [Fact]
+        public void DefinitionList()
+        {
+            var document = TestUtils.Test("comment_definitionlist");
+            Assert.Equal(1, document.Elements.Count);
+            var list = (DefinitionList)document.Elements[0];
+            {
+                var item = list.Items[0];
+                Assert.Equal("term 1", item.Term.TextAreas[0].Content.Text);
+                Assert.Equal(2, item.Definition.Elements.Count);
+                var paragraph = (Paragraph)item.Definition.Elements[0];
+                Assert.Equal("definition 1\n", paragraph.TextAreas[0].Content.Text);
+                var comment = (Comment)item.Definition.Elements[1];
+                Assert.Equal("a comment\n", comment.TextAreas[0].Content.Text);
+            }
+            {
+                var item = list.Items[1];
+                Assert.Equal("term 2", item.Term.TextAreas[0].Content.Text);
+                Assert.Equal(1, item.Definition.Elements.Count);
+                var paragraph = (Paragraph)item.Definition.Elements[0];
+                Assert.Equal("definition 2\n", paragraph.TextAreas[0].Content.Text);
+            }
+        }
+        
+        [Fact]
+        public void DefinitionListComment()
+        {
+            var document = TestUtils.Test("comment_definitionlist_comment");
+            Assert.Equal(3, document.Elements.Count);
+            {
+                var list = (DefinitionList)document.Elements[0];
+                var item = list.Items[0];
+                Assert.Equal("term 1", item.Term.TextAreas[0].Content.Text);
+                Assert.Equal(1, item.Definition.Elements.Count);
+                var paragraph = (Paragraph)item.Definition.Elements[0];
+                Assert.Equal("definition 1\n", paragraph.TextAreas[0].Content.Text);
+            }
+            var comment = (Comment)document.Elements[1];
+            Assert.Equal("a comment\n", comment.TextAreas[0].Content.Text);
+            {
+                var list = (DefinitionList)document.Elements[2];
+                var item = list.Items[0];
+                Assert.Equal("term 2", item.Term.TextAreas[0].Content.Text);
+                Assert.Equal(1, item.Definition.Elements.Count);
+                var paragraph = (Paragraph)item.Definition.Elements[0];
+                Assert.Equal("definition 2\n", paragraph.TextAreas[0].Content.Text);
+            }
+        }
+
+        [Fact]
+        public void BulletList()
+        {
+            var document = TestUtils.Test("comment_bulletlist");
+            Assert.Equal(1, document.Elements.Count);
+            var list = (BulletList)document.Elements[0];
+
+            var item = list.Items[0];
+            Assert.Equal('+', item.Start);
+            {
+                var paragraph = (Paragraph)item.Elements[0];
+                Assert.Equal("bullet paragraph 1\n", paragraph.TextAreas[0].Content.Text);
+            }
+            {
+                var paragraph = (Paragraph)item.Elements[1];
+                Assert.Equal("bullet paragraph 2\n", paragraph.TextAreas[0].Content.Text);
+            }
+
+            var comment = (Comment)item.Elements[2];
+            Assert.Equal("comment between bullet paragraphs 2 and 3\n", comment.TextAreas[0].Content.Text);
+
+            {
+                var paragraph = (Paragraph)item.Elements[3];
+                Assert.Equal("bullet paragraph 3\n", paragraph.TextAreas[0].Content.Text);
+            }
+        }
+
+        [Fact]
+        public void BulletListComment()
+        {
+            var document = TestUtils.Test("comment_bulletlist_comment");
+            Assert.Equal(1, document.Elements.Count);
+            var list = (BulletList)document.Elements[0];
+
+            var item = list.Items[0];
+            Assert.Equal('+', item.Start);
+            {
+                var paragraph = (Paragraph)item.Elements[0];
+                Assert.Equal("bullet paragraph 1\n", paragraph.TextAreas[0].Content.Text);
+            }
+
+            var comment = (Comment)item.Elements[1];
+            Assert.Equal("comment between bullet paragraphs 1 (leader) and 2\n", comment.TextAreas[0].Content.Text);
+
+            {
+                var paragraph = (Paragraph)item.Elements[2];
+                Assert.Equal("bullet paragraph 2\n", paragraph.TextAreas[0].Content.Text);
+            }
+        }
+
+        [Fact]
+        public void BulletListTrailing()
+        {
+            var document = TestUtils.Test("comment_bulletlist_trailing");
+            Assert.Equal(1, document.Elements.Count);
+            var list = (BulletList)document.Elements[0];
+
+            var item = list.Items[0];
+            Assert.Equal('+', item.Start);
+            {
+                var paragraph = (Paragraph)item.Elements[0];
+                Assert.Equal("bullet\n", paragraph.TextAreas[0].Content.Text);
+            }
+
+            var comment = (Comment)item.Elements[1];
+            Assert.Equal("trailing comment\n", comment.TextAreas[0].Content.Text);
+        }
     }
 }

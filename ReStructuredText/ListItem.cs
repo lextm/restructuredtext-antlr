@@ -22,9 +22,9 @@ namespace Lextm.ReStructuredText
 {
     public class ListItem : IElement, IParent
     {
-        public IList<Paragraph> Elements { get; }
+        public IList<IElement> Elements { get; }
 
-        public ListItem(string start, string enumerator, IList<Paragraph> element)
+        public ListItem(string start, string enumerator, IList<IElement> elements)
         {
             Start = start?[0] ?? char.MinValue;
             Enumerator = enumerator;
@@ -33,7 +33,7 @@ namespace Lextm.ReStructuredText
                 Index = int.Parse(Enumerator.TrimEnd('.', ' '));
             }
             
-            Elements = element;
+            Elements = elements;
             foreach (var item in Elements)
             {
                 item.Parent = this;
@@ -88,6 +88,11 @@ namespace Lextm.ReStructuredText
                     CreateNewList = false;
                 }
             }
+        }
+
+        public void Add(IElement element)
+        {
+            Parent.Add(element);
         }
     }
 }

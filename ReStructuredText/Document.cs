@@ -62,7 +62,7 @@ namespace Lextm.ReStructuredText
                 if (!(Elements.LastOrDefault() is BulletList list) || list.Start != item.Start)
                 {
                     list = new BulletList(item);
-                    Elements.Add(list);
+                    Add(list);
                 }
                 else
                 {
@@ -74,7 +74,7 @@ namespace Lextm.ReStructuredText
                 if (!(Elements.LastOrDefault() is EnumeratedList list))
                 {
                     list = new EnumeratedList(item);
-                    Elements.Add(list);
+                    Add(list);
                 }
                 else if (item.Index == list.Items.Last().Index + 1)
                 {
@@ -83,11 +83,11 @@ namespace Lextm.ReStructuredText
                 else if (item.CreateNewList)
                 {
                     list = new EnumeratedList(item);
-                    Elements.Add(list);
+                    Add(list);
                 }
                 else
                 {
-                    Elements.Add(new Paragraph(item.TextAreas));
+                    Add(new Paragraph(item.TextAreas));
                 }
             }
         }
@@ -107,12 +107,14 @@ namespace Lextm.ReStructuredText
         internal void Eat(List<IElement> raw, ITracked tracked)
         {
             var indentation = tracked.IndentationTracker.Minimum;
-            Section section = null;
+
             // IMPORTANT: block quote processing
             for (int i = 0; i < raw.Count; i++)
             {
+                IParent last = Elements.LastOrDefault();
+                last = last ?? this;
                 var current = raw[i];
-                if (current.TypeCode == ElementType.Comment || current.TypeCode == ElementType.ListItem)
+                if (current.TypeCode == ElementType.ListItem)
                 {
                     if (current is ListItem item && item.Enumerator != null)
                     {
@@ -125,39 +127,21 @@ namespace Lextm.ReStructuredText
                         }
                     }
 
-                    if (section == null)
-                    {
-                        Add(current);
-                    }
-                    else
-                    {
-                        section.Add(current);
-                    }
-
+                    last.Add(current);
                     continue;
                 }
 
-                if (current.TypeCode == ElementType.Section)
+                if (current.TypeCode == ElementType.Comment || current.TypeCode == ElementType.Section)
                 {
-                    var newSection = current as Section;
-                    if (section == null)
-                    {
-                        Add(current);
-                    }
-                    else
-                    {
-                        section.Add(current);
-                    }
-
-                    section = newSection ?? section;
+                    last.Add(current);
                     continue;
                 }
 
-                if (!(Elements.LastOrDefault() is BlockQuote block))
+                if (!(last is BlockQuote block))
                 {
                     if (current is Paragraph paragraph)
                     {
-                        var definitionList = Elements.LastOrDefault() as DefinitionList;
+                        var definitionList = last as DefinitionList;
                         var definitionListItems = DefinitionListItem.Parse(paragraph);
                         if (definitionListItems.Count > 0)
                         {
@@ -195,18 +179,10 @@ namespace Lextm.ReStructuredText
                         }
                         else
                         {
-                            var lastItem = definitionList?.Items.Last();
-                            if (lastItem?.Definition.Elements.Last().TextAreas[0].Indentation ==
-                                paragraph.TextAreas[0].Indentation)
-                            {
-                                lastItem.Definition.Add(paragraph);
-                                continue;
-                            }
-
                             if (current.TextAreas[0].IsIndented || current.TextAreas[0].IsQuoted)
                             {
-                                var last = Elements.LastOrDefault()?.TextAreas?.LastOrDefault()?.Content.Text.TrimEnd();
-                                if (last != null && last.EndsWith("::"))
+                                var lastText = Elements.LastOrDefault()?.TextAreas?.LastOrDefault()?.Content.Text.TrimEnd();
+                                if (lastText != null && lastText.EndsWith("::"))
                                 {
                                     current = new LiteralBlock(current.TextAreas);
                                     Elements.Last().TextAreas.Last().Content.RemoveLiteral();
@@ -242,15 +218,7 @@ namespace Lextm.ReStructuredText
                         }
                     }
 
-                    if (section == null)
-                    {
-                        Add(current);
-                    }
-                    else
-                    {
-                        section.Add(current);
-                    }
-
+                    last.Add(current);
                     continue;
                 }
 
@@ -261,14 +229,7 @@ namespace Lextm.ReStructuredText
                 }
                 else
                 {
-                    if (section == null)
-                    {
-                        Add(current);
-                    }
-                    else
-                    {
-                        section.Add(current);
-                    }
+                    last.Add(current);
                 }
             }
         }

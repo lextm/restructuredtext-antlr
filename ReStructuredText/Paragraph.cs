@@ -69,5 +69,10 @@ namespace Lextm.ReStructuredText
 
             return this;
         }
+
+        public void Add(IElement element, int level = 0)
+        {
+            Parent.Add(element);
+        }
     }
 }

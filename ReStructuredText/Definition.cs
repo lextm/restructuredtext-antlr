@@ -11,9 +11,9 @@ namespace Lextm.ReStructuredText
 
         public IList<IElement> Elements { get; }
 
-        public void Add(Paragraph paragraph)
+        public void Add(IElement element)
         {
-            Elements.Add(paragraph);
+            Elements.Add(element);
         }
     }
 }

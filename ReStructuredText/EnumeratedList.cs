@@ -34,9 +34,31 @@ namespace Lextm.ReStructuredText
         public IList<ITextArea> TextAreas => Items[0].TextAreas;
         public IParent Parent { get; set; }
 
-        public void Add(IElement current)
+        public void Add(IElement current, int level = 0)
         {
-            Items.LastOrDefault()?.Elements.Add((Paragraph)current);
+            if (current is ListItem item)
+            {
+                if (item.Enumerator == Items.First().Enumerator)
+                {
+                    Items.Add(item);
+                }
+                else
+                {
+                    Parent.Add(item);
+                }
+            }
+            else
+            {
+                var indentation = current.TextAreas[0].Indentation;
+                if (indentation == 0)
+                {
+                    Parent.Add(current);
+                }
+                else
+                {
+                    Items.LastOrDefault()?.Elements.Add(current);
+                }
+            }
         }
 
         public IElement Find(int line, int column)

@@ -53,8 +53,7 @@ namespace Lextm.ReStructuredText
 
             if (level < Level)
             {
-                var block = Parent as BlockQuote;
-                block?.Add(current, level);
+                Parent.Add(current, level);
                 return;
             }
 
@@ -80,6 +79,11 @@ namespace Lextm.ReStructuredText
             }
 
             return null;
+        }
+
+        public void Add(IElement element)
+        {
+            Parent.Add(element);
         }
     }
 }

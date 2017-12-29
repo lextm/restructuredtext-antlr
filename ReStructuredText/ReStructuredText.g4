@@ -40,7 +40,7 @@ sectionElement
   ;
 
 comment
-  :  Space* Comment Space* (commentLineNoBreak commentParagraphs?)?
+  :  LineBreak indentation? Comment Space* (commentLineNoBreak commentParagraphs?)?
   ;
   
 commentParagraphs

@@ -17,7 +17,16 @@ namespace Lextm.ReStructuredText
         
         public void Add(IElement element, int level = 0)
         {
-            
+            var lastItem = Items.Last();
+            if (lastItem?.Definition.Elements.First().TextAreas[0].Indentation ==
+                element.TextAreas[0].Indentation)
+            {
+                lastItem.Definition.Add(element);
+            }
+            else
+            {
+                Parent.Add(element);
+            }
         }
 
         public ElementType TypeCode => ElementType.DefinitionList;
@@ -45,6 +54,11 @@ namespace Lextm.ReStructuredText
         {
             Items.Add(definitionListItem);
             definitionListItem.Parent = this;
+        }
+
+        public void Add(IElement element)
+        {
+            Parent.Add(element);
         }
     }
 }
