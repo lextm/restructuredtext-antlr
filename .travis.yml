@@ -18,15 +18,9 @@ addons:
 
 # xamarinios10 and monoandroid44 are out of build, as not sure if they work.
 # net452 is out of testing, as dotnet test does not like it.
-before_script:
-- ./prepare.sh
 script:
 - set -e
 - export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
-- sed -i -e 's/netstandard1.3;net452;xamarinios10;monoandroid44/netstandard1.3;net452/' SharpSnmpLib/SharpSnmpLib.csproj
-- sed -i -e 's/netcoreapp1.0;net452/netcoreapp1.0/' Tests/CSharpCore/Tests.NetStandard.csproj
-- dotnet build SharpSnmpLib.NetStandard.macOS.sln
+- dotnet build ReStructuredText.sln
 - cd Tests
-- cd CSharpCore
-- dotnet test --filter "FullyQualifiedName~Lextm.SharpSnmpLib.Integration"
-- dotnet test --filter "FullyQualifiedName~Lextm.SharpSnmpLib.Unit"
+- dotnet test
