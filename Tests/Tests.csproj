@@ -17,6 +17,9 @@
     <ProjectReference Include="..\ReStructuredText\ReStructuredText.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Input\blockquote_attribution_complicated">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Input\blockquote_attribution_multiline">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

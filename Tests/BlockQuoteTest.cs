@@ -250,5 +250,32 @@ namespace Lextm.ReStructuredText.Tests
                 Assert.Equal("and line three\n", item2.Definition.Elements[0].TextAreas[0].Content.Text);
             }
         }
+
+        [Fact]
+        public void AttributionComplicated()
+        {
+            var document = TestUtils.Test("blockquote_attribution_complicated");
+            Assert.Equal(3, document.Elements.Count);
+            Paragraph paragraph = (Paragraph)document.Elements[0];
+            Assert.Equal("Paragraph.\n", paragraph.TextAreas[0].Content.Text);
+            {
+                BlockQuote element = (BlockQuote)document.Elements[1];
+                Paragraph paragraph2 = (Paragraph)element.Elements[0];
+                Assert.Equal("-- Not a valid attribution\n", paragraph2.TextAreas[0].Content.Text);
+                Paragraph paragraph3 = (Paragraph)element.Elements[1];
+                Assert.Equal("Block quote 1.\n", paragraph3.TextAreas[0].Content.Text);
+                Attribution attribution = element.Attribution;
+                Assert.Equal("Attribution 1\n", attribution.TextAreas[0].Content.Text);
+            }
+            {
+                BlockQuote element = (BlockQuote)document.Elements[2];
+                Paragraph paragraph2 = (Paragraph)element.Elements[0];
+                Assert.Equal("--Invalid attribution\n", paragraph2.TextAreas[0].Content.Text);
+                Paragraph paragraph3 = (Paragraph)element.Elements[1];
+                Assert.Equal("Block quote 2.\n", paragraph3.TextAreas[0].Content.Text);
+                Attribution attribution = element.Attribution;
+                Assert.Equal("Attribution 2\n", attribution.TextAreas[0].Content.Text);
+            }
+        }
     }
 }
