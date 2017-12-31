@@ -3,7 +3,7 @@ reStructuredText Grammar for ANTLR 4
 
 |              | Windows | Linux |
 |:------------:|:-------:|:-----:|
-| Build status | [![Build status](https://img.shields.io/appveyor/ci/lextm/restructuredtext-antlr/master.svg?label=appveyor&style=flat-square)](https://ci.appveyor.com/project/lextm/restructuredtext-antlr) |  |
+| Build status | [![Build status](https://img.shields.io/appveyor/ci/lextm/restructuredtext-antlr/master.svg?label=appveyor&style=flat-square)](https://ci.appveyor.com/project/lextm/restructuredtext-antlr) | [![Build status](https://img.shields.io/travis/lextm/restructuredtext-antlr/master.svg?label=travis&style=flat-square)](https://travis-ci.org/lextm/restructuredtext-antlr/) |
 
 This is the source code repo of reStructuredText grammar file for ANTLR 4. Visual Studio 2017/Rider is required to compile it. It should run cross platform.
 
