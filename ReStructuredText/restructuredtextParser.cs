@@ -179,7 +179,10 @@ namespace Lextm.ReStructuredText
             {
                 if (context.special != null)
                 {
-                    return new ListItem(context.special.Text, null, new List<IElement>(0));
+                    var indentation = context.indentation();
+                    int length = indentation == null ? 0 : indentation.GetText().Length;
+                    IndentationTracker.Track(length);
+                    return new ListItem(context.special.Text, null, new List<IElement>(0)) { Indentation = length };
                 }
 
                 var simple = context.bulletSimple();
@@ -193,6 +196,9 @@ namespace Lextm.ReStructuredText
 
             public override ListItem VisitBulletSimple([NotNull] BulletSimpleContext context)
             {
+                var indentation = context.indentation();
+                int length = indentation == null ? 0 : indentation.GetText().Length;
+                IndentationTracker.Track(length);
                 var start = context.bullet().GetText();
                 var list = new List<IElement>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
@@ -211,11 +217,14 @@ namespace Lextm.ReStructuredText
                     }
                 }
 
-                return new ListItem(start, null, list);
+                return new ListItem(start, null, list) { Indentation = length };
             }
 
             public override ListItem VisitBulletCrossLine([NotNull] BulletCrossLineContext context)
             {
+                var indentation = context.indentation();
+                int length = indentation == null ? 0 : indentation.GetText().Length;
+                IndentationTracker.Track(length);
                 var start = context.bullet().GetText();
                 var list = new List<IElement>();
                 var paragraphVisitor = new ParagraphVisitor().Inherit(this);
@@ -228,7 +237,7 @@ namespace Lextm.ReStructuredText
                     }
                 }
 
-                return new ListItem(start, null, list);
+                return new ListItem(start, null, list) { Indentation = length };
             }
 
             public override ListItem VisitListItemEnumerated(ListItemEnumeratedContext context)
@@ -277,7 +286,7 @@ namespace Lextm.ReStructuredText
                 var indentation = context.indentation();
                 int length = indentation == null ? 0 : indentation.GetText().Length;
                 IndentationTracker.Track(length);
-                
+
                 var commentLineContext = context.commentLineNoBreak();
                 if (commentLineContext != null)
                 {
@@ -293,13 +302,7 @@ namespace Lextm.ReStructuredText
                     result.AddRange(lineVisitor.VisitCommentParagraphs(linesContext));
                 }
 
-                var first = result.FirstOrDefault();
-                if (first != null)
-                { 
-                    first.Indentation = length;
-                }
-
-                return new Comment(result);
+                return new Comment(result) {Indentation = length};
             }
         }
 

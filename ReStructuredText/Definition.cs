@@ -4,16 +4,19 @@ namespace Lextm.ReStructuredText
 {
     public class Definition
     {
-        public Definition(Paragraph paragraph)
+        public Definition()
         {
-            Elements = new List<IElement> {paragraph};
+            Elements = new List<IElement>();
         }
 
         public IList<IElement> Elements { get; }
 
-        public void Add(IElement element)
+        public IParent Add(IElement element)
         {
             Elements.Add(element);
+            return element;
         }
+        
+        public int Indentation { get; set; }
     }
 }

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace Lextm.ReStructuredText
 {
-    public class ListItem : IElement, IParent
+    public class ListItem : IElement
     {
         public IList<IElement> Elements { get; }
 
@@ -40,11 +40,32 @@ namespace Lextm.ReStructuredText
             }
         }
 
-        public void Add(IElement element, int level = 0)
+        public IParent Add(IElement element, int level = 0)
         {
+            if (Enumerator == null)
+            {
+                if (element.Indentation == Indentation + 2)
+                {
+                    Elements.Add(element);
+                    element.Parent = this;
+                    return element;
+                }
+            }
+            else
+            {
+                if (element.Indentation == Indentation + 3)
+                {
+                    Elements.Add(element);
+                    element.Parent = this;
+                    return element;
+                }
+            }
 
+            return Parent.Add(element);
         }
-        
+
+        public int Indentation { get; set; }
+
         public char Start { get; }
         public string Enumerator { get; }
         public int Index { get; }

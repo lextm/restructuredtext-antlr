@@ -76,25 +76,27 @@ namespace Lextm.ReStructuredText
 
         public IParent Parent { get; set; }
 
-        public void Add(IElement current, int level = 0)
+        public IParent Add(IElement current, int level = 0)
         {
             if (!(current is Section section) || section.Level == Level + 1)
             {
                 Elements.Add(current);
                 current.Parent = this;
-                return;
+                return current;
             }
 
             if (section.Level <= Level)
             {
-                Parent?.Add(current);
+                return Parent?.Add(current);
             }
             else
             {
                 var child = Elements.LastOrDefault() as Section;
-                child?.Add(current);
+                return child?.Add(current);
             }
         }
+
+        public int Indentation => Title[0].Indentation;
 
         public IElement Find(int line, int column)
         {

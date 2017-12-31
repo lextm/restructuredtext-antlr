@@ -16,6 +16,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -28,6 +29,27 @@ namespace Lextm.ReStructuredText
         {
             Text = text;
             Unescape();
+        }
+
+        internal void RemoveAttribution()
+        {
+            if (Text.StartsWith("---"))
+            {
+                Text = Text.Substring("---".Length).TrimStart();
+                return;
+            }
+
+            if (Text.StartsWith("--"))
+            {
+                Text = Text.Substring("--".Length).TrimStart();
+                return;
+            }
+
+            if (Text.StartsWith("\u2014"))
+            {
+                Text = Text.Substring("\u2014".Length).TrimStart();
+                return;
+            }
         }
 
         public string Text { get; private set; }

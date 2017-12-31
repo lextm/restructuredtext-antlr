@@ -22,14 +22,13 @@ namespace Lextm.ReStructuredText
 {
     public interface IElement : IParent
     {
-        ElementType TypeCode { get; }
 
         IList<ITextArea> TextAreas { get; }
 
-        IParent Parent { get; set; }
-
         IElement Find(int line, int column);
 
-        void Add(IElement element, int level = 0);
+        IParent Add(IElement element, int level = 0);
+        
+        int Indentation { get; }
     }
 }

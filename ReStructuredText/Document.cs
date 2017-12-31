@@ -43,9 +43,13 @@ namespace Lextm.ReStructuredText
             return null;
         }
 
-        public IList<IElement> Elements { get; }
+        public IList<IElement> Elements { get; set; }
 
         public ElementType TypeCode => ElementType.Document;
+
+        public IParent Parent { get; set; }
+
+        public int Unit { get; set; }
 
         public void Add(IList<ListItem> items)
         {
@@ -55,7 +59,7 @@ namespace Lextm.ReStructuredText
             }
         }
 
-        private void Add(ListItem item)
+        private IParent Add(ListItem item)
         {
             if (item.Enumerator == null)
             {
@@ -63,11 +67,10 @@ namespace Lextm.ReStructuredText
                 {
                     list = new BulletList(item);
                     Add(list);
+                    return item;
                 }
-                else
-                {
-                    list.Items.Add(item);
-                }
+
+                return list.Add(item);
             }
             else
             {
@@ -75,44 +78,34 @@ namespace Lextm.ReStructuredText
                 {
                     list = new EnumeratedList(item);
                     Add(list);
+                    return item;
                 }
-                else if (item.Index == list.Items.Last().Index + 1)
-                {
-                    list.Items.Add(item);
-                }
-                else if (item.CreateNewList)
-                {
-                    list = new EnumeratedList(item);
-                    Add(list);
-                }
-                else
-                {
-                    Add(new Paragraph(item.TextAreas));
-                }
+
+                return list.Add(item);
             }
         }
 
-        public void Add(IElement element, int level = 0)
+        public IParent Add(IElement element, int level = 0)
         {
             if (element is ListItem listItem)
             {
-                Add(listItem);
-                return;
+                return Add(listItem);
             }
 
             Elements.Add(element);
             element.Parent = this;
+            return element;
         }
 
         internal void Eat(List<IElement> raw, ITracked tracked)
         {
-            var indentation = tracked.IndentationTracker.Minimum;
+            Unit = tracked.IndentationTracker.Minimum;
 
+            IParent last = this;
+            int parentIndentation = 0;
             // IMPORTANT: block quote processing
             for (int i = 0; i < raw.Count; i++)
             {
-                IParent last = Elements.LastOrDefault();
-                last = last ?? this;
                 var current = raw[i];
                 if (current.TypeCode == ElementType.ListItem)
                 {
@@ -127,110 +120,52 @@ namespace Lextm.ReStructuredText
                         }
                     }
 
-                    last.Add(current);
+                    last = last.Add(current);
                     continue;
                 }
 
                 if (current.TypeCode == ElementType.Comment || current.TypeCode == ElementType.Section)
                 {
-                    last.Add(current);
+                    last = last.Add(current);
+                    parentIndentation = current.Indentation;
                     continue;
                 }
 
-                if (!(last is BlockQuote block))
+                if (current is Paragraph paragraph)
                 {
-                    if (current is Paragraph paragraph)
+                    paragraph.Unit = Unit;
+                    if (last.TypeCode == ElementType.ListItem || last.Parent?.TypeCode == ElementType.ListItem)
                     {
-                        var definitionList = last as DefinitionList;
-                        var definitionListItems = DefinitionListItem.Parse(paragraph);
-                        if (definitionListItems.Count > 0)
+                        last = last.Add(current);
+                        continue;
+                    }
+
+                    if (last.TypeCode == ElementType.BlockQuote)
+                    {
+                        if (paragraph.IsAttribution())
                         {
-                            if (definitionList != null)
-                            {
-                                if (definitionList.Indentation == definitionListItems[0].Term.TextAreas[0].Indentation)
-                                {
-                                    foreach (var item in definitionListItems)
-                                    {
-                                        definitionList.Add(item);
-                                    }
-                                }
-                                else
-                                {
-                                    var sublist = definitionList.Items[0].Definition.Elements.Last() as DefinitionList;
-                                    if (sublist == null)
-                                    {
-                                        sublist = new DefinitionList(definitionListItems);
-                                        definitionList.Items[0].Definition.Elements.Add(sublist);
-                                    }
-                                    else
-                                    {
-                                        foreach (var item in definitionListItems)
-                                        {
-                                            sublist.Add(item);
-                                        }
-                                    }
-                                }
-
-                                continue;
-                            }
-
-                            definitionList = new DefinitionList(definitionListItems);
-                            current = definitionList;
-                        }
-                        else
-                        {
-                            if (current.TextAreas[0].IsIndented || current.TextAreas[0].IsQuoted)
-                            {
-                                var lastText = Elements.LastOrDefault()?.TextAreas?.LastOrDefault()?.Content.Text.TrimEnd();
-                                if (lastText != null && lastText.EndsWith("::"))
-                                {
-                                    current = new LiteralBlock(current.TextAreas);
-                                    Elements.Last().TextAreas.Last().Content.RemoveLiteral();
-                                }
-                                else
-                                {
-                                    if (Elements.LastOrDefault() is BulletList bullet)
-                                    {
-                                        if (current.TextAreas[0].Indentation == 2)
-                                        {
-                                            bullet.Add(current);
-                                            continue;
-                                        }
-                                    }
-
-                                    if (Elements.LastOrDefault() is EnumeratedList list)
-                                    {
-                                        if (current.TextAreas[0].Indentation == 3)
-                                        {
-                                            list.Add(current);
-                                            continue;
-                                        }
-                                    }
-
-                                    var level = current.TextAreas[0].Indentation / indentation;
-                                    while (level > 0)
-                                    {
-                                        current = new BlockQuote(level, current);
-                                        level--;
-                                    }
-                                }
-                            }
+                            last = last.Add(paragraph);
+                            continue;
                         }
                     }
 
-                    last.Add(current);
-                    continue;
+                    var tuple = paragraph.Parse(parentIndentation, Unit, last);
+                    if (tuple.Item1)
+                    {
+                        last = tuple.Item2;
+                        continue;
+                    }
+
+                    current = tuple.Item2;
                 }
 
-                if (current.TextAreas[0].IsIndented)
-                {
-                    var level = current.TextAreas[0].Indentation / indentation;
-                    block.Add(current, level);
-                }
-                else
-                {
-                    last.Add(current);
-                }
+                last = last.Add(current);
+                parentIndentation = current.Indentation;
+            }
+
+            if (Elements.LastOrDefault() is BlockQuote end)
+            {
+                end.FillAttribution();
             }
         }
     }

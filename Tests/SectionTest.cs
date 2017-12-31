@@ -273,7 +273,7 @@ namespace Lextm.ReStructuredText.Tests
             Assert.Equal("==\n", block.TextAreas[1].Content.Text);
             Assert.Equal("Underline too short.\n", block.Elements[1].TextAreas[0].Content.Text);
         }
-        
+
         [Fact]
         public void Empty()
         {

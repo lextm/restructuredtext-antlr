@@ -94,15 +94,15 @@ lineBlockLine
 listItemBullet
   :  bulletCrossLine
   |  bulletSimple
-  |  LineBreak Space* special=(Minus | Plus)
+  |  LineBreak indentation? special=(Minus | Plus)
   ;
 
 bulletCrossLine
-  :  LineBreak Space* bullet Space* (paragraph+)? 
+  :  LineBreak indentation? bullet Space* (paragraph+)? 
   ;
 
 bulletSimple 
-  :  LineBreak Space* bullet Space+ paragraphNoBreak paragraph* 
+  :  LineBreak indentation? bullet Space+ paragraphNoBreak paragraph* 
   ;
 
 bullet
@@ -204,6 +204,7 @@ lineStart_fragment
     |  AngleLeft
     |  AngleRight
     |  Any
+    |  SectionSeparator
   ;
   
 text

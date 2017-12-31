@@ -21,51 +21,14 @@ using System.Linq;
 
 namespace Lextm.ReStructuredText
 {
-    public class BulletList : IElement
+    public class Attribution
     {
-        public IList<ListItem> Items { get; }
-        
-        public BulletList(ListItem listItem)
+        public Attribution(IList<ITextArea> textAreas)
         {
-            Items = new List<ListItem> {listItem};
-            Start = listItem.Start;
-            listItem.Parent = this;
+            TextAreas = textAreas;
+            TextAreas.First().Content.RemoveAttribution();
         }
 
-        public ElementType TypeCode => ElementType.BulletList;
         public IList<ITextArea> TextAreas { get; }
-        public IParent Parent { get; set; }
-        public char Start { get; }
-
-        public IParent Add(IElement current, int level = 0)
-        {
-            if (current is ListItem item)
-            {
-                if (item.Start == Start)
-                {
-                    Items.Add(item);
-                    item.Parent = this;
-                    return item;
-                }
-            }
-
-            return Parent.Add(current);
-        }
-
-        public int Indentation => Items[0].Indentation;
-
-        public IElement Find(int line, int column)
-        {
-            foreach (var item in Items)
-            {
-                var result = item.Find(line, column);
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-
-            return null;
-        }
     }
 }

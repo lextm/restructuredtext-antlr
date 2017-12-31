@@ -58,9 +58,11 @@ namespace Lextm.ReStructuredText
             return null;
         }
 
-        public void Add(IElement element, int level = 0)
+        public IParent Add(IElement element, int level = 0)
         {
-            Parent.Add(element);
+            return Parent.Add(element);
         }
+
+        public int Indentation => Elements[0].Indentation;
     }
 }

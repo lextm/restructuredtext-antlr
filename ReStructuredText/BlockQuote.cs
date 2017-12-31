@@ -17,23 +17,30 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lextm.ReStructuredText
 {
-    public class BlockQuote : IElement, IParent
+    public class BlockQuote : IElement
     {
-        public int Level { get; }
-        public IList<IElement> Elements { get; }
+        private readonly int _unit;
 
-        public BlockQuote(int level, params IElement[] content)
+        public BlockQuote(int indentation, int unit, params IElement[] content)
         {
-            Level = level;
+            _unit = unit;
+            Indentation = indentation;
             Elements = new List<IElement>(content);
             foreach (var item in Elements)
             {
                 item.Parent = this;
             }
         }
+
+        public Attribution Attribution { get; private set; }
+
+        public int Indentation { get; }
+
+        public IList<IElement> Elements { get; private set; }
 
         public ElementType TypeCode => ElementType.BlockQuote;
 
@@ -42,29 +49,42 @@ namespace Lextm.ReStructuredText
 
         public IParent Parent { get; set; }
 
-        public void Add(IElement current, int level)
+        public int Level => Indentation / _unit;
+
+        public IParent Add(IElement current, int level = 0)
         {
-            if (level == Level)
+            if (current is BlockQuote block)
+            {
+                var quoteLevel = block.Level;
+                if (quoteLevel == Level)
+                {
+                    foreach (var item in block.Elements)
+                    {
+                        Elements.Add(item);
+                        item.Parent = this;
+                    }
+
+                    return this;
+                }
+
+                if (quoteLevel < Level)
+                {
+                    return Parent.Add(current, quoteLevel);
+                }
+
+                Elements.Add(block);
+                block.Parent = this;
+                return this;
+            }
+
+            if (current.Indentation >= Indentation)
             {
                 Elements.Add(current);
-                current.Parent = this;
-                return;
+                return this;
             }
 
-            if (level < Level)
-            {
-                Parent.Add(current, level);
-                return;
-            }
-
-            while (level > Level)
-            {
-                current = new BlockQuote(level, current);
-                level--;
-            }
-
-            Elements.Add(current);
-            current.Parent = this;
+            FillAttribution();
+            return Parent.Add(current);
         }
 
         public IElement Find(int line, int column)
@@ -81,9 +101,67 @@ namespace Lextm.ReStructuredText
             return null;
         }
 
-        public void Add(IElement element)
+        internal void FillAttribution()
         {
-            Parent.Add(element);
+            for (var index = 1; index < Elements.Count; index++)
+            {
+                var item = Elements[index];
+                if (item is Paragraph last)
+                {
+                    var text = last.TextAreas[0].Content.Text;
+                    if (text.StartsWith("--") || text.StartsWith("\u2014"))
+                    {
+                        int line = 0;
+                        int? indent = null;
+                        bool isAttribution = true;
+                        for (var i = 0; i < last.TextAreas.Count; i++)
+                        {
+                            var info = last.TextAreas[i];
+                            if (info.Content.Text.Last() == '\n')
+                            {
+                                if (line > 0)
+                                {
+                                    var next = i + 1;
+                                    if (next == last.TextAreas.Count)
+                                    {
+                                        continue;
+                                    }
+
+                                    var indentation = last.TextAreas[next].Indentation;
+                                    if (indent == null)
+                                    {
+                                        indent = indentation;
+                                    }
+                                    else
+                                    {
+                                        if (indentation != indent)
+                                        {
+                                            isAttribution = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                line++;
+                            }
+                        }
+
+                        if (isAttribution)
+                        {
+                            Attribution = new Attribution(last.TextAreas);
+                            if (index < Elements.Count - 1)
+                            {
+                                var newItem = new BlockQuote(Indentation, _unit, Elements.Skip(index + 1).ToArray());
+                                newItem.FillAttribution();
+                                Parent.Add(newItem);
+                                Elements = Elements.Take(index + 1).ToList();
+                            }
+
+                            Elements.Remove(last);
+                        }
+                    }
+                }
+            }
         }
     }
 }

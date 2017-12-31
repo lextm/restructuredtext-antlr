@@ -6,7 +6,7 @@ namespace Lextm.ReStructuredText
 {
     public class DefinitionListItem : IElement
     {
-        private DefinitionListItem(IEnumerable<ITextArea> take, IEnumerable<ITextArea> skip)
+        private DefinitionListItem(IList<ITextArea> take, IEnumerable<ITextArea> skip, int unit, IParent parent)
         {
             var term = new List<ITextArea>();
             var rest = new List<ITextArea>();
@@ -21,7 +21,7 @@ namespace Lextm.ReStructuredText
 
                     var content = item.Content.Text;
                     int index;
-                    while ((index = content.IndexOf(" : ")) > -1)
+                    while ((index = content.IndexOf(" : ", StringComparison.Ordinal)) > -1)
                     {
                         var text = new TextArea(content.Substring(0, index), item.Scope);
                         if (Term == null)
@@ -84,7 +84,9 @@ namespace Lextm.ReStructuredText
                 Classifiers.Add(new Classifier(rest));
             }
 
-            Definition = new Definition(new Paragraph(skip));
+            var paragraph = new Paragraph(skip) { Unit = unit };
+            Definition = new Definition {Indentation = paragraph.Indentation};
+            Definition.Add(paragraph.Parse(paragraph.Indentation, paragraph.Unit, this).Item2);
         }
 
         public IList<Classifier> Classifiers { get; } = new List<Classifier>();
@@ -102,7 +104,7 @@ namespace Lextm.ReStructuredText
             return null;
         }
 
-        public static IList<DefinitionListItem> Parse(Paragraph paragraph)
+        public static IList<DefinitionListItem> Parse(Paragraph paragraph, IParent last)
         {
             if (paragraph.TextAreas.Count < 2)
             {
@@ -118,39 +120,41 @@ namespace Lextm.ReStructuredText
                 for (var index = 0; index < rest.Count; index++)
                 {
                     var item = rest[index];
-                    if (item.Content.Text.Last() == '\n')
+                    if (item.Content.Text.Last() != '\n')
                     {
-                        var next = index + 1;
-                        if (index + 1 == rest.Count)
-                        {
-                            if (term == null)
-                            {
-                                return Array.Empty<DefinitionListItem>();
-                            }
-
-                            result.Add(new DefinitionListItem(term, rest));
-                            return result;
-                        }
-
-                        var indentation = rest[next].Indentation;
+                        continue;
+                    }
+                    
+                    var next = index + 1;
+                    if (index + 1 == rest.Count)
+                    {
                         if (term == null)
                         {
-                            if (indentation > firstIndentation)
-                            {
-                                term = rest.Take(next);
-                                rest = rest.Skip(next).ToList();
-                                break;
-                            }
+                            return Array.Empty<DefinitionListItem>();
                         }
-                        else if (indentation == firstIndentation)
+
+                        result.Add(new DefinitionListItem(term.ToList(), rest, paragraph.Unit, last));
+                        return result;
+                    }
+
+                    var indentation = rest[next].Indentation;
+                    if (term == null)
+                    {
+                        if (indentation > firstIndentation)
                         {
-                            // another term starts.
-                            var body = rest.Take(next);
+                            term = rest.Take(next);
                             rest = rest.Skip(next).ToList();
-                            result.Add(new DefinitionListItem(term, body));
-                            term = null;
                             break;
                         }
+                    }
+                    else if (indentation == firstIndentation)
+                    {
+                        // another term starts.
+                        var body = rest.Take(next);
+                        rest = rest.Skip(next).ToList();
+                        result.Add(new DefinitionListItem(term.ToList(), body, paragraph.Unit, last));
+                        term = null;
+                        break;
                     }
                 }
             }
@@ -158,9 +162,17 @@ namespace Lextm.ReStructuredText
             return Array.Empty<DefinitionListItem>();
         }
 
-        public void Add(IElement element, int level = 0)
+        public IParent Add(IElement element, int level = 0)
         {
-            Parent.Add(element);
+            if (element.Indentation == Definition.Indentation)
+            {
+                element.Parent = this;
+                return Definition.Add(element);
+            }
+
+            return Parent.Add(element);
         }
+
+        public int Indentation => Term.TextAreas[0].Indentation;
     }
 }

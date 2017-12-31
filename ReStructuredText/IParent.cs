@@ -20,8 +20,10 @@ namespace Lextm.ReStructuredText
 {
     public interface IParent
     {
-        void Add(IElement element, int level = 0);
+        IParent Add(IElement element, int level = 0);
 
         ElementType TypeCode { get; }
+
+        IParent Parent { get; set; }
     }
 }

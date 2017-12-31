@@ -28,38 +28,39 @@ namespace Lextm.ReStructuredText
         public EnumeratedList(ListItem item)
         {
             Items = new List<ListItem>{item};
+            item.Parent = this;
         }
 
         public ElementType TypeCode => ElementType.EnumeratedList;
         public IList<ITextArea> TextAreas => Items[0].TextAreas;
         public IParent Parent { get; set; }
 
-        public void Add(IElement current, int level = 0)
+        public IParent Add(IElement current, int level = 0)
         {
             if (current is ListItem item)
             {
-                if (item.Enumerator == Items.First().Enumerator)
+                if (item.Index == Items.Last().Index + 1)
                 {
                     Items.Add(item);
+                    item.Parent = this;
+                    return item;
                 }
-                else
+                
+                if (item.CreateNewList)
                 {
-                    Parent.Add(item);
+                    var list = new EnumeratedList(item);
+                    Parent.Add(list);
+                    return item;
                 }
+
+                // downgrade to paragraph.
+                current = new Paragraph(item.TextAreas);
             }
-            else
-            {
-                var indentation = current.TextAreas[0].Indentation;
-                if (indentation == 0)
-                {
-                    Parent.Add(current);
-                }
-                else
-                {
-                    Items.LastOrDefault()?.Elements.Add(current);
-                }
-            }
+
+            return Parent.Add(current);
         }
+
+        public int Indentation => Items[0].Indentation;
 
         public IElement Find(int line, int column)
         {
