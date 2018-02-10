@@ -9,6 +9,7 @@
     public class ReStructuredTextSettings
     {
         public string ConfPath { get; set; }
+        public string WorkspaceRoot { get; set; }
         public LanguageServerSettings LanguageServer { get; set; } = new LanguageServerSettings();
     }
 

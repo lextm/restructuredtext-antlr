@@ -14,7 +14,9 @@ namespace Lextm.ReStructuredText.LanguageServer
         public void Refresh(ReStructuredTextSettings sessionSettings)
         {
             // TODO: check conf.py for include files.
-            _root = sessionSettings.ConfPath;
+             var setting = sessionSettings.ConfPath;
+             var workspaceRoot = sessionSettings.WorkspaceRoot;
+             _root = setting.Replace("${workspaceRoot}", workspaceRoot);
         }
 
         public void RefreshDocument(TextDocument doc)
