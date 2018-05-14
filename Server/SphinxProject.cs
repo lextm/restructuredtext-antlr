@@ -51,7 +51,7 @@ namespace Lextm.ReStructuredText.LanguageServer
                     return new CompletionList();
                 }
             }
-            else if (!text.Content.Text.StartsWith(":doc:"))
+            else if (!text.Content.Text.StartsWith(":doc:", StringComparison.Ordinal))
             {
                 return new CompletionList();
             }
@@ -69,8 +69,8 @@ namespace Lextm.ReStructuredText.LanguageServer
                 Files.Add(GetPath(file), file);
             }
 
-            return new CompletionList(true, Files.Select(_ =>
-                new CompletionItem(_.Key, CompletionItemKind.Text, _.Value, null)));
+            return new CompletionList(Files.Select(_ =>
+                new CompletionItem(_.Key, CompletionItemKind.Text, _.Value, null)), true);
         }
 
         private string GetPath(string file)
