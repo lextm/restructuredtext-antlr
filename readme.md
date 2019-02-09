@@ -1,6 +1,8 @@
 reStructuredText Grammar for ANTLR 4
 ====================================
 
+[![Build Status](https://dev.azure.com/lextudio/vscode-restructuredtext/_apis/build/status/lextm.restructuredtext-antlr?branchName=master)](https://dev.azure.com/lextudio/vscode-restructuredtext/_build/latest?definitionId=3&branchName=master)
+
 This is the source code repo of reStructuredText grammar file for ANTLR 4. Visual Studio 2017/Rider is required to compile it. It should run cross platform.
 
 It is licensed under MIT license.
