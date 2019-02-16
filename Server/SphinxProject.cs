@@ -32,26 +32,7 @@ namespace Lextm.ReStructuredText.LanguageServer
         public CompletionList GetCompletionList(DocumentState textDocument, Position position)
         {
             var document = textDocument.LintedDocument;
-            var element = document.Find(position.Line + 1, position.Character);
-            if (element == null || element.TypeCode != ElementType.Paragraph)
-            {
-                return new CompletionList();
-            }
-
-            if (element.Parent == null || element.Parent.TypeCode != ElementType.ListItem)
-            {
-                return new CompletionList();
-            }
-
-            var text = element.TextAreas[0];
-            if (text is InterpretedText interpreted)
-            {
-                if (interpreted.RoleName != "doc")
-                {
-                    return new CompletionList();
-                }
-            }
-            else if (!text.Content.Text.StartsWith(":doc:", StringComparison.Ordinal))
+            if (!document.TriggerDocumentList(position.Line, position.Character))
             {
                 return new CompletionList();
             }

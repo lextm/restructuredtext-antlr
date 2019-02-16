@@ -16,6 +16,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -167,6 +168,51 @@ namespace Lextm.ReStructuredText
             {
                 end.FillAttribution();
             }
+        }
+
+        public bool TriggerDocumentList(int line, int character)
+        {
+            var element = Find(line + 1, character);
+            if (element == null || element.TypeCode != ElementType.Paragraph)
+            {
+                return false;
+            }
+
+            if (element.Parent == null)
+            {
+                return false;
+            }
+
+            if (element.Parent.TypeCode == ElementType.ListItem)
+            {
+                var text = element.TextAreas[0];
+                if (text is InterpretedText interpreted)
+                {
+                    if (interpreted.RoleName != "doc")
+                    {
+                        return false;
+                    }
+                }
+                else if (!text.Content.Text.StartsWith(":doc:", StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            if (element.Parent.TypeCode == ElementType.Section && element.TextAreas.Count >= 3)
+            {
+                var last = element.TextAreas.Last();
+                var previous = element.TextAreas[element.TextAreas.Count - 2];
+                var text = element.TextAreas[element.TextAreas.Count - 3];
+                if (last.Content.Text == "/\n" && previous.Content.Text == "`" && text.Content.Text.EndsWith(":doc:"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
