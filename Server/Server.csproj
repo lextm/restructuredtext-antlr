@@ -6,7 +6,6 @@
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <RootNamespace>Lextm.ReStructuredText.LanguageServer</RootNamespace>
     <PublishTrimmed>true</PublishTrimmed>
-    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReStructuredText\ReStructuredText.csproj">

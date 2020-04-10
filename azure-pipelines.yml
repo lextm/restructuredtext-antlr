@@ -7,7 +7,7 @@ jobs:
 - job: Linux
 
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-latest'
 
   variables:
     solution: '**/*.sln'
@@ -23,7 +23,7 @@ jobs:
 - job: macOS
 
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-latest'
 
   variables:
     solution: '**/*.sln'
@@ -39,7 +39,7 @@ jobs:
 - job: Windows
 
   pool:
-    vmImage: 'VS2019-Win2019'
+    vmImage: 'windows-latest'
 
   variables:
     solution: '**/*.sln'
@@ -48,6 +48,5 @@ jobs:
 
   steps:
   - script: |
-      git submodule update --init --recursive
-      .\build.release.bat
+      dotnet build ReStructuredText.sln --configuration $(buildConfiguration)
       dotnet test Tests/Tests.csproj --configuration $(buildConfiguration) --no-build
