@@ -7,7 +7,7 @@ jobs:
 - job: Linux
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-18.04'
 
   variables:
     solution: '**/*.sln'
@@ -23,7 +23,7 @@ jobs:
 - job: macOS
 
   pool:
-    vmImage: 'macOS-10.13'
+    vmImage: 'macOS-10.14'
 
   variables:
     solution: '**/*.sln'
@@ -39,7 +39,7 @@ jobs:
 - job: Windows
 
   pool:
-    vmImage: 'VS2017-Win2016'
+    vmImage: 'VS2019-Win2019'
 
   variables:
     solution: '**/*.sln'
