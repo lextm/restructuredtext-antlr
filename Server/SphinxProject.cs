@@ -8,14 +8,13 @@ namespace Lextm.ReStructuredText.LanguageServer
 {
     public class SphinxProject
     {
-        private string _root;
+        string _root;
 
         public void Refresh(ReStructuredTextSettings sessionSettings)
         {
             // TODO: check conf.py for include files.
              var setting = sessionSettings.ConfPath;
-             var workspaceRoot = sessionSettings.WorkspaceRoot;
-             _root = setting.Replace("${workspaceFolder}", workspaceRoot);
+             _root = setting.Replace("${workspaceFolder}", WorkspaceRoot);
         }
 
         public void RefreshDocument(TextDocument doc)
@@ -58,5 +57,7 @@ namespace Lextm.ReStructuredText.LanguageServer
             var part = file.Substring(_root.Length);
             return part.TrimStart('\\', '/').Replace('\\', '/').Replace(".rst", null).Replace(".rest", null);
         }
+
+        public string WorkspaceRoot { get; set; }
     }
 }

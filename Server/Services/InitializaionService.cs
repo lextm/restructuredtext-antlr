@@ -11,9 +11,10 @@ namespace Lextm.ReStructuredText.LanguageServer.Services
     public class InitializaionService : LanguageServiceBase
     {
         [JsonRpcMethod(AllowExtensionData = true)]
-        public InitializeResult Initialize(int processId, Uri rootUri, ClientCapabilities capabilities,
+        public async Task<InitializeResult> Initialize(int processId, Uri rootUri, ClientCapabilities capabilities,
             JToken initializationOptions = null, string trace = null)
         {
+            Session.Project.WorkspaceRoot = rootUri.LocalPath;
             // inform the language server client of server capabilities.
             return new InitializeResult(new ServerCapabilities
             {
