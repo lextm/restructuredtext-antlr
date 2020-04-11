@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LanguageServer.VsCode.Contracts;
@@ -16,7 +15,7 @@ namespace Lextm.ReStructuredText.LanguageServer
             // TODO: check conf.py for include files.
              var setting = sessionSettings.ConfPath;
              var workspaceRoot = sessionSettings.WorkspaceRoot;
-             _root = setting.Replace("${workspaceRoot}", workspaceRoot);
+             _root = setting.Replace("${workspaceFolder}", workspaceRoot);
         }
 
         public void RefreshDocument(TextDocument doc)
