@@ -1,18 +1,15 @@
 ﻿//#define WAIT_FOR_DEBUGGER
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using JsonRpc.Standard.Client;
-using JsonRpc.Standard.Contracts;
-using JsonRpc.Standard.Server;
+using JsonRpc.Client;
+using JsonRpc.Contracts;
+using JsonRpc.Server;
 using JsonRpc.Streams;
 using LanguageServer.VsCode;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
 
 namespace Lextm.ReStructuredText.LanguageServer
 {
@@ -81,8 +78,12 @@ namespace Lextm.ReStructuredText.LanguageServer
         private static IJsonRpcServiceHost BuildServiceHost(TextWriter logWriter,
             IJsonRpcContractResolver contractResolver, bool debugMode)
         {
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddProvider(new DebugLoggerProvider(null));
+            var loggerFactory = LoggerFactory.Create(builder => builder.AddDebug());
+            if (debugMode)
+            {
+                loggerFactory.AddFile("logs-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".log");
+            }
+            
             var builder = new JsonRpcServiceHostBuilder
             {
                 ContractResolver = contractResolver,

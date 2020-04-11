@@ -26,10 +26,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4">
-      <Version>4.6.5-rc001</Version>
+      <Version>4.6.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.5-rc001</Version>
+      <Version>4.6.6</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

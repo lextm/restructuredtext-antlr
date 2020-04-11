@@ -1,4 +1,4 @@
-﻿using JsonRpc.Standard.Server;
+﻿using JsonRpc.Server;
 
 namespace Lextm.ReStructuredText.LanguageServer.Services
 {

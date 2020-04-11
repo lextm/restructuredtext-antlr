@@ -1,4 +1,4 @@
-﻿using JsonRpc.Standard.Contracts;
+﻿using JsonRpc.Contracts;
 using LanguageServer.VsCode.Contracts;
 
 namespace Lextm.ReStructuredText.LanguageServer.Services

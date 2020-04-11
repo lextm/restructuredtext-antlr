@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using JsonRpc.DynamicProxy.Client;
-using JsonRpc.Standard.Client;
-using JsonRpc.Standard.Contracts;
+using JsonRpc.Client;
+using JsonRpc.Contracts;
 using LanguageServer.VsCode.Contracts;
 using LanguageServer.VsCode.Contracts.Client;
 using LanguageServer.VsCode.Server;
@@ -158,11 +158,9 @@ namespace Lextm.ReStructuredText.LanguageServer
         /// <summary>
         /// Apply impending changes to <see cref="LintedDocument"/> right now.
         /// </summary>
-        public async Task AnalyzeAsync(CancellationToken ct)
-        {
-            ct.ThrowIfCancellationRequested();
-            await Synchronizer.ApplyChangesAsync();
-            ct.ThrowIfCancellationRequested();
+        public void AnalyzeAsync()
+        {            
+            //await Synchronizer.ApplyChangesAsync();
             //await DocumentLinter.AnalyzeAsync(ct);
             //if (LintedDocument == null || TextDocument.)
             {

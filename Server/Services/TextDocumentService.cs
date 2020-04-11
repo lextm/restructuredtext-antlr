@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using JsonRpc.Standard.Contracts;
+using JsonRpc.Contracts;
 using LanguageServer.VsCode;
 using LanguageServer.VsCode.Contracts;
 
@@ -59,13 +59,12 @@ namespace Lextm.ReStructuredText.LanguageServer.Services
 
 
         [JsonRpcMethod]
-        public async Task<CompletionList> Completion(TextDocumentIdentifier textDocument, Position position,
-            CancellationToken ct)
+        public CompletionList Completion(TextDocumentIdentifier textDocument, Position position, CompletionContext context)
         {
             var doc = Session.DocumentStates[textDocument.Uri];
-            await doc.AnalyzeAsync(ct);
+            doc.AnalyzeAsync();
             return 
-                Session.Project.GetCompletionList(doc, position); //position, Session.PageInfoStore));
+                Session.Project.GetCompletionList(doc, position, context); //position, Session.PageInfoStore));
         }
     }
 }

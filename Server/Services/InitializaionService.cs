@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using JsonRpc.Standard;
-using JsonRpc.Standard.Contracts;
-using JsonRpc.Standard.Server;
+using JsonRpc.Messages;
+using JsonRpc.Contracts;
+using JsonRpc.Server;
 using LanguageServer.VsCode.Contracts;
 using Newtonsoft.Json.Linq;
 

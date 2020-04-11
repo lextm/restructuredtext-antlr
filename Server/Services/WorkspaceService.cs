@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using JsonRpc.Standard.Contracts;
+using JsonRpc.Contracts;
 using LanguageServer.VsCode.Contracts;
 namespace Lextm.ReStructuredText.LanguageServer.Services
 {

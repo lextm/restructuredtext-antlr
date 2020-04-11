@@ -27,10 +27,12 @@ namespace Lextm.ReStructuredText.LanguageServer
 //            }
         }
 
-        public CompletionList GetCompletionList(DocumentState textDocument, Position position)
+        public CompletionList GetCompletionList(DocumentState textDocument, Position position, CompletionContext context)
         {
             var document = textDocument.LintedDocument;
-            if (!document.TriggerDocumentList(position.Line, position.Character))
+            if (context.TriggerKind != CompletionTriggerKind.TriggerCharacter
+                || context.TriggerCharacter != '/'
+                || !document.TriggerDocumentList(position.Line, position.Character))
             {
                 return new CompletionList();
             }
