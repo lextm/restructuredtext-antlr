@@ -14,7 +14,7 @@ namespace Lextm.ReStructuredText.LanguageServer.Services
         public async Task<InitializeResult> Initialize(int processId, Uri rootUri, ClientCapabilities capabilities,
             JToken initializationOptions = null, string trace = null)
         {
-            Session.Project.WorkspaceRoot = rootUri.LocalPath;
+            Session.Project.WorkspaceRoot = new Uri($"file://{rootUri.LocalPath}").LocalPath;
             // inform the language server client of server capabilities.
             return new InitializeResult(new ServerCapabilities
             {

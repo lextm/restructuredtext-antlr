@@ -12,7 +12,6 @@ namespace Lextm.ReStructuredText.LanguageServer.Services
         public async Task DidChangeConfiguration(SettingsRoot settings)
         {
             Session.Settings = settings.ReStructuredText;
-            Session.Project.Refresh(Session.Settings);
             foreach (var doc in Session.DocumentStates.Values)
             {
                 //Session.Project.RefreshDocument(doc.Document);

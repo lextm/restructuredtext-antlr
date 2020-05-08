@@ -8,15 +8,6 @@ namespace Lextm.ReStructuredText.LanguageServer
 {
     public class SphinxProject
     {
-        string _root;
-
-        public void Refresh(ReStructuredTextSettings sessionSettings)
-        {
-            // TODO: check conf.py for include files.
-             var setting = sessionSettings.ConfPath;
-             _root = setting.Replace("${workspaceFolder}", WorkspaceRoot);
-        }
-
         public void RefreshDocument(TextDocument doc)
         {
 //            var key = doc.Uri.ToString();
@@ -39,24 +30,25 @@ namespace Lextm.ReStructuredText.LanguageServer
 
             var Files = new Dictionary<string, string>();
             foreach (string file in Directory.EnumerateFiles(
-                _root, "*.rst", SearchOption.AllDirectories))
+                WorkspaceRoot, "*.rst", SearchOption.AllDirectories))
             {
                 Files.Add(GetPath(file), file);
             }
 
             foreach (string file in Directory.EnumerateFiles(
-                _root, "*.rest", SearchOption.AllDirectories))
+                WorkspaceRoot, "*.rest", SearchOption.AllDirectories))
             {
                 Files.Add(GetPath(file), file);
             }
 
+            bool incomplete = Files.Count > 50;
             return new CompletionList(Files.Select(_ =>
-                new CompletionItem(_.Key, CompletionItemKind.Text, _.Value, null)), true);
+                new CompletionItem(_.Key, CompletionItemKind.File, _.Value, null)).Take(50), incomplete);
         }
 
         private string GetPath(string file)
         {
-            var part = file.Substring(_root.Length);
+            var part = file.Substring(WorkspaceRoot.Length);
             return part.TrimStart('\\', '/').Replace('\\', '/').Replace(".rst", null).Replace(".rest", null);
         }
 
