@@ -14,9 +14,11 @@ Set-Location win32_x64
 Compress-Archive * -DestinationPath ..\win32_x64.zip
 Set-Location ..
 Set-Location linux_x64
+chmod a+x Server
 Compress-Archive * -DestinationPath ..\linux_x64.zip
 Set-Location ..
 Set-Location darwin_x64
+chmod a+x Server
 Compress-Archive * -DestinationPath ..\darwin_x64.zip
 Set-Location ..
 Set-Location ..
